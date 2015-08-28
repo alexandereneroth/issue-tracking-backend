@@ -11,7 +11,7 @@ import nu.jixa.its.model.exception.RepositoryModelException;
 
 @Entity
 @Table(name = "tblUser")
-public class User {
+public class User extends AbstractEntity{
 
   @Column(name = "id", unique = true, nullable = false)
   private Long id;
