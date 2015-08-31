@@ -26,6 +26,9 @@
 # .idea/gradle.xml
 # .idea/libraries
 
+## Web target folder:
+**/target/
+
  Mongo Explorer plugin:
  .idea/mongoSettings.xml
 

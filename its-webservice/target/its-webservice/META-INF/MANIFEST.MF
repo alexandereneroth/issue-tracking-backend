@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Implementation-Title: its-webservice
-Implementation-Version: 1.0-SNAPSHOT
-Implementation-Vendor-Id: nu.jixa.its
-Build-Jdk: 1.8.0_25
-Built-By: Jitan
-Created-By: IntelliJ IDEA
-Main-Class: ${start-class}
-
