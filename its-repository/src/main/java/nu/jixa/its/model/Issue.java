@@ -8,7 +8,7 @@ import nu.jixa.its.model.exception.RepositoryModelException;
 
 @Entity
 @Table(name = "tblIssue")
-public class Issue {
+public class Issue extends AbstractEntity{
   @Column(name = "id", unique = true, nullable = false)
   private Long id;
   @Column(name = "string")
