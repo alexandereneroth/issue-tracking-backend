@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import nu.jixa.its.model.exception.RepositoryModelException;
 
 @Entity
 @Table(name = "tblUser")

@@ -1,4 +1,4 @@
-package nu.jixa.its.model.exception;
+package nu.jixa.its.model;
 
 public class RepositoryModelException extends RuntimeException {
 
