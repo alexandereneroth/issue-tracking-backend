@@ -15,6 +15,7 @@ import nu.jixa.its.model.exception.RepositoryModelException;
 @Entity
 @Table(name = "tblWorkItem")
 public class WorkItem extends AbstractEntity{
+
   @Column(name = "id", unique = true, nullable = false)
   private Long id;
 

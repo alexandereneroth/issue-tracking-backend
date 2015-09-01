@@ -6,7 +6,10 @@ import nu.jixa.its.model.Status;
 import nu.jixa.its.model.Team;
 import nu.jixa.its.model.User;
 import nu.jixa.its.model.WorkItem;
+import nu.jixa.its.repository.IssueRepository;
+import nu.jixa.its.repository.TeamRepository;
 import nu.jixa.its.repository.UserRepository;
+import nu.jixa.its.repository.WorkItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,24 +21,41 @@ public class ServiceImpl implements Service {
   @Autowired
   private UserRepository userRepository;
 
+  @Autowired
+  private WorkItemRepository workItemRepository;
+
+  @Autowired
+  private IssueRepository issueRepository;
+
+  @Autowired
+  private TeamRepository teamRepository;
+
+  @Transactional
   @Override public WorkItem addWorkItem(WorkItem workItem) {
-    return null;
+    issueRepository.save(workItem.getIssue());
+    return workItemRepository.save(workItem);
   }
 
+  @Transactional
   @Override public WorkItem removeWorkItem(Long workItemId) {
-    return null;
+    //WorkItem item = workItemRepository.findByWorkItemId(workItemId);
+    return workItemRepository.deleteById(workItemId);
   }
-
+  @Transactional
   @Override public void setWorkItemStatus(Long workItemId, Status status) {
-
+    WorkItem item = workItemRepository.findByWorkItemId(workItemId);
+    item.setStatus(status);
+    workItemRepository.save(item);
   }
 
   @Override public Collection<WorkItem> getWorkItemsByStatus(Status status) {
-    return null;
+    return workItemRepository.findByStatus(status);
   }
 
   @Override public Collection<WorkItem> getWorkItemsByTeam(Long teamId) {
-    return null;
+
+    userRepository.selectUserByTeamId(teamId);
+    return workItemRepository.getWorkItemsByTeam(teamId);
   }
 
   @Override public Collection<WorkItem> getWorkItemsByUser(Long userId) {
@@ -56,6 +76,7 @@ public class ServiceImpl implements Service {
 
   @Transactional
   @Override public User addUser(User user) {
+    workItemRepository.save(user.getWorkItems());
     return userRepository.save(user);
   }
 
@@ -114,4 +135,6 @@ public class ServiceImpl implements Service {
   @Override public Issue updateIssue(Issue issue) {
     return null;
   }
+
+
 }
