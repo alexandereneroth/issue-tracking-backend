@@ -12,28 +12,29 @@ import javax.persistence.Table;
 @Table(name = "tblTeam")
 public class Team extends AbstractEntity {
 
-  @Column(name = "id", unique = true, nullable = false)
-  private Long id;
+  @Column(name = "number", unique = true, nullable = false)
+  private Long number;
 
   @OneToMany(mappedBy = "team", fetch = FetchType.EAGER)
   Collection<User> users;
 
-  public Team(@NotNull final Long id) {
-    if (id == null) {
+  protected  Team(){}
+  public Team(@NotNull final Long number) {
+    if (number == null) {
       throw new RepositoryModelException("Null argument not allowed");
     }
-    this.id = id;
+    this.number = number;
   }
 
-  public Long getId() {
-    return id;
+  public Long getNumber() {
+    return number;
   }
 
-  public void setId(@NotNull final Long id) {
-    if (id == null) {
+  public void setNumber(@NotNull final Long number) {
+    if (number == null) {
       throw new RepositoryModelException("Null argument not allowed");
     }
-    this.id = id;
+    this.number = number;
   }
 
   public Collection<User> getUsers() {
@@ -45,5 +46,18 @@ public class Team extends AbstractEntity {
       throw new RepositoryModelException("Null argument not allowed");
     }
     users.add(user);
+  }
+
+  @Override public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    Team team = (Team) o;
+
+    return getNumber().equals(team.getNumber());
+  }
+
+  @Override public int hashCode() {
+    return getNumber().hashCode();
   }
 }

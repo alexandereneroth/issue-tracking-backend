@@ -38,12 +38,12 @@ public class ServiceImpl implements Service {
 
   @Transactional
   @Override public WorkItem removeWorkItem(Long workItemId) {
-    //WorkItem item = workItemRepository.findByWorkItemId(workItemId);
+    //WorkItem item = workItemRepository.findByNumber(workItemId);
     return workItemRepository.deleteById(workItemId);
   }
   @Transactional
   @Override public void setWorkItemStatus(Long workItemId, Status status) {
-    WorkItem item = workItemRepository.findByWorkItemId(workItemId);
+    WorkItem item = workItemRepository.findById(workItemId);
     item.setStatus(status);
     workItemRepository.save(item);
   }
@@ -54,8 +54,9 @@ public class ServiceImpl implements Service {
 
   @Override public Collection<WorkItem> getWorkItemsByTeam(Long teamId) {
 
-    userRepository.selectUserByTeamId(teamId);
-    return workItemRepository.getWorkItemsByTeam(teamId);
+    //userRepository.selectUserByTeamId(teamId);
+    //return workItemRepository.getWorkItemsByTeam(teamId);
+    return null;
   }
 
   @Override public Collection<WorkItem> getWorkItemsByUser(Long userId) {
@@ -80,16 +81,27 @@ public class ServiceImpl implements Service {
     return userRepository.save(user);
   }
 
+  @Transactional
   @Override public User updateUser(User user) {
-    return null;
+    workItemRepository.save(user.getWorkItems());
+    return userRepository.save(user);
   }
 
   @Override public User deleteUser(Long userId) {
-    return null;
+    User deletedUser = userRepository.findByNumber(userId);
+    if(deletedUser == null) {
+      throw new ServiceException("Could not delete User: No user with id " + userId);
+    }
+    userRepository.delete(deletedUser);
+    return deletedUser;
   }
 
   @Override public User getUser(Long userId) {
-    return null;
+    User gotUser = userRepository.findByNumber(userId);
+    if(gotUser == null) {
+      throw new ServiceException("Could not get User: No user with id " + userId);
+    }
+    return gotUser;
   }
 
   @Override public User getUserByTeam(Long teamId) {

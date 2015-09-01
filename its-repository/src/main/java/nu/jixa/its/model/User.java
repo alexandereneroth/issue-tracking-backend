@@ -4,16 +4,19 @@ import com.sun.istack.internal.NotNull;
 import java.util.Collection;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "tblUser")
-public class User extends AbstractEntity{
+public class User extends AbstractEntity {
 
-  @Column(name = "id", unique = true, nullable = false)
-  private Long id;
+  @Column(name = "number", unique = true, nullable = false)
+  private Long number;
 
   @Column(name = "username", unique = true, nullable = false)
   private String username;
@@ -24,16 +27,23 @@ public class User extends AbstractEntity{
   @Column(name = "lastname", nullable = false)
   private String lastname;
 
-  @Column(name = "team", nullable = false)
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "team")
   private Team team;
 
-  @ManyToMany
-  @JoinTable(name = "user_work-items")
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(name = "tblUser_tblWorkItem",
+      joinColumns = @JoinColumn( name = "userId", referencedColumnName="id"),
+      inverseJoinColumns = @JoinColumn(name ="workItemId", referencedColumnName="id")
+  )
   private Collection<WorkItem> workItems;
 
-  public User(Long id, String username, String firstname, String lastname) {
-    if (id == null) {
-      throw new RepositoryModelException("Null argument not allowed: id");
+  protected User() {
+  }
+
+  public User(Long number, String username, String firstname, String lastname) {
+    if (number == null) {
+      throw new RepositoryModelException("Null argument not allowed: number");
     }
     if (username == null) {
       throw new RepositoryModelException("Null argument not allowed: username");
@@ -44,21 +54,21 @@ public class User extends AbstractEntity{
     if (lastname == null) {
       throw new RepositoryModelException("Null argument not allowed: lastname");
     }
-    this.id = id;
+    this.number = number;
     this.username = username;
     this.firstname = firstname;
     this.lastname = lastname;
   }
 
-  public Long getId() {
-    return id;
+  public Long getNumber() {
+    return number;
   }
 
-  public void setId(@NotNull final Long id) {
-    if (id == null) {
+  public void setNumber(@NotNull final Long number) {
+    if (number == null) {
       throw new RepositoryModelException("Null argument not allowed");
     }
-    this.id = id;
+    this.number = number;
   }
 
   public String getUsername() {
@@ -93,7 +103,10 @@ public class User extends AbstractEntity{
     }
     this.lastname = lastname;
   }
-  public Team getTeam(Team team) { return team; }
+
+  public Team getTeam(Team team) {
+    return team;
+  }
 
   public void setTeam(@NotNull final Team team) {
     if (team == null) {
@@ -101,7 +114,28 @@ public class User extends AbstractEntity{
     }
     this.team = team;
   }
+
   public Collection<WorkItem> getWorkItems() {
     return workItems;
+  }
+
+  @Override public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    User user = (User) o;
+
+    if (!getNumber().equals(user.getNumber())) return false;
+    if (!getUsername().equals(user.getUsername())) return false;
+    if (!getFirstname().equals(user.getFirstname())) return false;
+    return getLastname().equals(user.getLastname());
+  }
+
+  @Override public int hashCode() {
+    int result = getNumber().hashCode();
+    result = 31 * result + getUsername().hashCode();
+    result = 31 * result + getFirstname().hashCode();
+    result = 31 * result + getLastname().hashCode();
+    return result;
   }
 }

@@ -1,5 +1,5 @@
 <dataset>
-  <users id="44" username="TestUser1" firstname="Barack" lastname="Osama"/>
-  <users id="55" username="TestUser2" firstname="Obama" lastname="Binladen"/>
+  <users number="44" username="TestUser1" firstname="Barack" lastname="Osama"/>
+  <users number="55" username="TestUser2" firstname="Obama" lastname="Binladen"/>
 </dataset>
 

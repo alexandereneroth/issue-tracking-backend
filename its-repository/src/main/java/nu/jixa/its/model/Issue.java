@@ -8,36 +8,39 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "tblIssue")
 public class Issue extends AbstractEntity{
-  @Column(name = "id", unique = true, nullable = false)
-  private Long id;
+  @Column(name = "number", unique = true, nullable = false)
+  private Long number;
   @Column(name = "string")
   private String string;
 
-  public Issue(@NotNull final Long id) {
-
-    if (id == null) {
-      throw new RepositoryModelException("Null argument not allowed");
-    }
-    this.id = id;
+  protected Issue() {
   }
 
-  public Issue(@NotNull final Long id, final String string) {
-    if (id == null) {
+  public Issue(@NotNull final Long number) {
+
+    if (number == null) {
       throw new RepositoryModelException("Null argument not allowed");
     }
-    this.id = id;
+    this.number = number;
+  }
+
+  public Issue(@NotNull final Long number, final String string) {
+    if (number == null) {
+      throw new RepositoryModelException("Null argument not allowed");
+    }
+    this.number = number;
     this.string = string;
   }
 
-  public Long getId() {
-    return id;
+  public Long getNumber() {
+    return number;
   }
 
-  public void setId(@NotNull final Long id) {
-    if (id == null) {
+  public void setNumber(@NotNull final Long number) {
+    if (number == null) {
       throw new RepositoryModelException("Null argument not allowed");
     }
-    this.id = id;
+    this.number = number;
   }
 
   public String getString() {
@@ -46,5 +49,18 @@ public class Issue extends AbstractEntity{
 
   public void setString(final String string) {
     this.string = string;
+  }
+
+  @Override public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    Issue issue = (Issue) o;
+
+    return getNumber().equals(issue.getNumber());
+  }
+
+  @Override public int hashCode() {
+    return getNumber().hashCode();
   }
 }

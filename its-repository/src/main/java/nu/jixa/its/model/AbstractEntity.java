@@ -1,20 +1,20 @@
 package nu.jixa.its.model;
 
 import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import org.springframework.data.annotation.Id;
 
 @MappedSuperclass
-public class AbstractEntity {
+public abstract class AbstractEntity {
 
   @Id
   @GeneratedValue
-  private int dbId;
+  private Long id;
 
   protected AbstractEntity() {
   }
 
-  public int getDbId() {
-    return dbId;
+  public final Long getId() {
+    return id;
   }
 }

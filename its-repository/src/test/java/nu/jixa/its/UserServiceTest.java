@@ -28,7 +28,7 @@ import static org.junit.Assert.fail;
 public class UserServiceTest {
 
   @Rule
-  ExpectedException expectedException = ExpectedException.none();
+  public ExpectedException expectedException = ExpectedException.none();
 
   @Autowired
   Service service;
@@ -53,33 +53,36 @@ public class UserServiceTest {
   @Test
   public void canGet() {
     User testUser = service.getUser(testUserId);
-    assertEquals(testUser.getId(), testUserId);
+    assertEquals(testUser.getNumber(), testUserId);
   }
 
   @Test
   public void canSaveAndRemove() {
-    Long userId = 1L;
-    User user = new User(userId, "Jixa", "Andromeda", "Wasilewskji");
+    Long userNumber = 1L;
+    User user = new User(userNumber, "Jixa", "Andromeda", "Wasilewskji");
 
     service.addUser(user);
-    User userInRepoAfterAdd = service.getUser(userId);
+    User userInRepoAfterAdd = service.getUser(userNumber);
+
     assertNotNull(user);
     assertEquals(user, userInRepoAfterAdd);
 
-    service.deleteUser(userId);
+    service.deleteUser(userNumber);
 
     expectedException.expect(ServiceException.class);
-    service.getUser(userId);
+    expectedException.expectMessage("Could not get User");
+    service.getUser(userNumber);
   }
 
   @Test
   public void canUpdate() {
+
+    User userToUpdate = service.getUser(testUserId);
     final String updatedFirstname = "UPDATED_FIRSTNAME";
+    userToUpdate.setFirstname(updatedFirstname);
 
-    User testUserMod = generateSimpleUser(testUserId);
-    testUserMod.setFirstname(updatedFirstname);
+    service.updateUser(userToUpdate);
 
-    service.updateUser(testUserMod);
     User testUserAfterUpdate = service.getUser(testUserId);
     assertEquals(testUserAfterUpdate.getFirstname(), updatedFirstname);
   }
@@ -104,7 +107,7 @@ public class UserServiceTest {
     fail();
   }
 
-  private User generateSimpleUser(@NotNull final Long id) {
-    return new User(id, "account" + id, "firstname" + id, "lastname" + id);
+  private User generateSimpleUser(@NotNull final Long number) {
+    return new User(number, "account" + number, "firstname" + number, "lastname" + number);
   }
 }

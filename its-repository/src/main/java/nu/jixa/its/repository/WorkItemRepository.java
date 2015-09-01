@@ -9,13 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface WorkItemRepository extends CrudRepository<WorkItem, Long> {
 
-  WorkItem findByWorkItemId(Long workItemId);
+  WorkItem findById(Long id);
 
   @Transactional
   WorkItem deleteById(Long Id);
 
   Collection<WorkItem> findByStatus(Status status);
 
-  @Query("select w from WorkItem w where User u w.teamId = ?1")
-  Collection<WorkItem> getWorkItemsByTeam(Long teamId);
 }
