@@ -22,6 +22,9 @@ public class WorkItem extends AbstractEntity {
   @Column(name = "status", nullable = false)
   private Status status;
 
+  @Column(name = "description", unique = true, nullable = false)
+  private String description;
+
   @OneToOne(cascade = CascadeType.REMOVE)
   @JoinColumn
   private Issue issue;
@@ -42,9 +45,7 @@ public class WorkItem extends AbstractEntity {
   }
 
   public void setNumber(@NotNull final Long number) {
-    if (number == null) {
-      throw new RepositoryModelException("Null argument not allowed");
-    }
+    throwExceptionIfArgIsNull(number);
     this.number = number;
   }
 
@@ -53,9 +54,7 @@ public class WorkItem extends AbstractEntity {
   }
 
   public void setStatus(@NotNull final Status status) {
-    if (number == null) {
-      throw new RepositoryModelException("Null argument not allowed");
-    }
+    throwExceptionIfArgIsNull(status);
     this.status = status;
   }
 
@@ -65,6 +64,21 @@ public class WorkItem extends AbstractEntity {
 
   public void setIssue(Issue issue) {
     this.issue = issue;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    throwExceptionIfArgIsNull(description);
+    this.description = description;
+  }
+
+  private <T>void throwExceptionIfArgIsNull(T arg){
+    if (arg == null) {
+      throw new RepositoryModelException("Null argument not allowed");
+    }
   }
 
   @Override public boolean equals(Object o) {

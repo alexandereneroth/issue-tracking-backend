@@ -51,13 +51,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void canGet() {
-    User testUser = service.getUser(testUserId);
-    assertEquals(testUser.getNumber(), testUserId);
-  }
-
-  @Test
-  public void canSaveAndRemove() {
+  public void canSaveGetAndDelete() {
     Long userNumber = 1L;
     User user = new User(userNumber, "Jixa", "Andromeda", "Wasilewskji");
 

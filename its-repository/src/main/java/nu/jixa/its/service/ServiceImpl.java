@@ -41,6 +41,7 @@ public class ServiceImpl implements Service {
     //WorkItem item = workItemRepository.findByNumber(workItemId);
     return workItemRepository.deleteById(workItemId);
   }
+
   @Transactional
   @Override public void setWorkItemStatus(Long workItemId, Status status) {
     WorkItem item = workItemRepository.findById(workItemId);
@@ -60,15 +61,15 @@ public class ServiceImpl implements Service {
   }
 
   @Override public Collection<WorkItem> getWorkItemsByUser(Long userId) {
-    return null;
+    return workItemRepository.findByUsersId(userId);
   }
 
   @Override public Collection<WorkItem> getWorkItemsByIssue(Long issueId) {
-    return null;
+    return workItemRepository.findByIssueId(issueId);
   }
 
   @Override public Collection<WorkItem> getWorkItemByDescriptionLike(String descriptionLike) {
-    return null;
+    return workItemRepository.findWorkItemByDescLike(descriptionLike);
   }
 
   @Override public WorkItem addIssueToWorkItem(Long workItemId, Long IssueId) {
@@ -89,7 +90,7 @@ public class ServiceImpl implements Service {
 
   @Override public User deleteUser(Long userId) {
     User deletedUser = userRepository.findByNumber(userId);
-    if(deletedUser == null) {
+    if (deletedUser == null) {
       throw new ServiceException("Could not delete User: No user with id " + userId);
     }
     userRepository.delete(deletedUser);
@@ -98,7 +99,7 @@ public class ServiceImpl implements Service {
 
   @Override public User getUser(Long userId) {
     User gotUser = userRepository.findByNumber(userId);
-    if(gotUser == null) {
+    if (gotUser == null) {
       throw new ServiceException("Could not get User: No user with id " + userId);
     }
     return gotUser;
@@ -147,6 +148,4 @@ public class ServiceImpl implements Service {
   @Override public Issue updateIssue(Issue issue) {
     return null;
   }
-
-
 }
