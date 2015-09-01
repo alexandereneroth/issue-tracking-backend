@@ -96,6 +96,7 @@ public class User extends AbstractEntity{
   }
   public Team getTeam(Team team) { return team; }
 
+
   public void setTeam(@NotNull final Team team) {
     if (team == null) {
       throw new RepositoryModelException("Null argument not allowed");

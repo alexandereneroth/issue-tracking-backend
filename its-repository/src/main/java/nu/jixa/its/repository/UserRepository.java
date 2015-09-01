@@ -7,6 +7,6 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface UserRepository extends CrudRepository<User, Long> {
 
-  //@Query("select u from User u join u.team t where t.id = ?1")
-  Collection<User> selectUserByTeamId(Long id);
+  @Query("select u from User u join u.team t where t.id = ?1")
+  Collection<User> selectUserByTeamId(Long teamId);
 }

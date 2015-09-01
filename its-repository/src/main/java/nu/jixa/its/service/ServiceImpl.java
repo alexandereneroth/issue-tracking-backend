@@ -54,20 +54,21 @@ public class ServiceImpl implements Service {
 
   @Override public Collection<WorkItem> getWorkItemsByTeam(Long teamId) {
 
-    userRepository.selectUserByTeamId(teamId);
-    return workItemRepository.getWorkItemsByTeam(teamId);
+   /* userRepository.selectUserByTeamId(teamId);
+    return workItemRepository.getWorkItemsByTeam(teamId);*/
+    return null;
   }
 
   @Override public Collection<WorkItem> getWorkItemsByUser(Long userId) {
-    return null;
+    return workItemRepository.findByUserId(userId);
   }
 
   @Override public Collection<WorkItem> getWorkItemsByIssue(Long issueId) {
-    return null;
+    return workItemRepository.findByIssueId(issueId);
   }
 
   @Override public Collection<WorkItem> getWorkItemByDescriptionLike(String descriptionLike) {
-    return null;
+    return workItemRepository.findWorkItemByDescLike(descriptionLike);
   }
 
   @Override public WorkItem addIssueToWorkItem(Long workItemId, Long IssueId) {
