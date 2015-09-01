@@ -24,6 +24,9 @@ public class User extends AbstractEntity{
   @Column(name = "lastname", nullable = false)
   private String lastname;
 
+  @Column(name = "team", nullable = false)
+  private Team team;
+
   @ManyToMany
   @JoinTable(name = "user_work-items")
   private Collection<WorkItem> workItems;
@@ -89,5 +92,16 @@ public class User extends AbstractEntity{
       throw new RepositoryModelException("Null argument not allowed");
     }
     this.lastname = lastname;
+  }
+  public Team getTeam(Team team) { return team; }
+
+  public void setTeam(@NotNull final Team team) {
+    if (team == null) {
+      throw new RepositoryModelException("Null argument not allowed");
+    }
+    this.team = team;
+  }
+  public Collection<WorkItem> getWorkItems() {
+    return workItems;
   }
 }

@@ -14,6 +14,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "tblWorkItem")
 public class WorkItem extends AbstractEntity{
+
   @Column(name = "id", unique = true, nullable = false)
   private Long id;
 
