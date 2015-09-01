@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package nu.jixa.its;
+package nu.jixa.its.endpoint;
 
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;

@@ -21,16 +21,19 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
 
 @SpringBootApplication
-public class SampleJerseyApplication extends SpringBootServletInitializer {
+public class Application extends SpringBootServletInitializer {
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(SampleJerseyApplication.class);
+    // Customize the application or call application.sources(...) to add sources
+    // Since our example is itself a @Configuration class we actually don't
+    // need to override this method.
+    return application.sources(Application.class);
 	}
 
 	public static void main(String[] args) {
-		new SampleJerseyApplication().configure(
-				new SpringApplicationBuilder(SampleJerseyApplication.class)).run(args);
+		new Application().configure(
+				new SpringApplicationBuilder(Application.class)).run(args);
 	}
 
 }

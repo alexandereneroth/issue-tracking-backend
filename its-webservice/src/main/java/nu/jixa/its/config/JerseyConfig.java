@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2014 the original author or authors.
+ * Copyright 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,19 @@
  * limitations under the License.
  */
 
-package nu.jixa.its;
+package nu.jixa.its.config;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import org.springframework.beans.factory.annotation.Autowired;
+import nu.jixa.its.endpoint.Endpoint;
+import nu.jixa.its.endpoint.ReverseEndpoint;
+import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.stereotype.Component;
 
 @Component
-@Path("/hello")
-public class Endpoint {
+public class JerseyConfig extends ResourceConfig {
 
-	private Service service;
-
-	@Autowired
-	public Endpoint(Service service) {
-		this.service = service;
-	}
-
-	@GET
-	public String message() {
-		return "Hello " + this.service.message();
+	public JerseyConfig() {
+		register(Endpoint.class);
+		register(ReverseEndpoint.class);
 	}
 
 }
