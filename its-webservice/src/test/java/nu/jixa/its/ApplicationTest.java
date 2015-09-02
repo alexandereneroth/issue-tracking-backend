@@ -1,5 +1,6 @@
 package nu.jixa.its;
 
+import nu.jixa.its.model.User;
 import nu.jixa.its.web.Application;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +15,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
@@ -50,12 +52,11 @@ public class ApplicationTest {
     assertEquals(HttpStatus.BAD_REQUEST, entity.getStatusCode());
   }
 
-  // TODO Make this test work
-  //@Test
-  //public void mockGetUserById() {
-  //  ResponseEntity<User> entity = this.restTemplate.getForEntity(
-  //      BASE_URL + this.port + USERS_ENDPOINT + "/5", User.class);
-  //  assertEquals(HttpStatus.OK, entity.getStatusCode());
-  //  assertTrue(5L == entity.getBody().getId());
-  //}
+  @Test
+  public void getUserByNumber() {
+    ResponseEntity<User> entity = this.restTemplate.getForEntity(
+        BASE_URL + this.port + USERS_ENDPOINT + "/5", User.class);
+    assertEquals(HttpStatus.OK, entity.getStatusCode());
+    assertTrue(5L == entity.getBody().getNumber());
+  }
 }

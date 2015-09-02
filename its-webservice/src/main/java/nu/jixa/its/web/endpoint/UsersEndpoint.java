@@ -19,32 +19,20 @@ import org.springframework.stereotype.Component;
 @Consumes(MediaType.APPLICATION_JSON)
 public class UsersEndpoint {
 
+  @Autowired
   private MockService mockService;
 
   @Autowired
   private UserRepository userRepository;
 
-  @Autowired
-  public UsersEndpoint(MockService mockService) {
-    this.mockService = mockService;
-  }
-
-  //@GET
-  //@Path("{userId}")
-  //public Response getCustomer(@PathParam("userId") final int userId)
-  //{
-  //  User user = mockService.getUserWithId(userId);
-  //  return Response.ok(user).build();
-  //}
-
   @GET
-  @Path("{userId}")
-  public Response getCustomer(@PathParam("userId") final long userId)
+  @Path("{userNumber}")
+  public Response getCustomer(@PathParam("userNumber") final long userNumber)
   {
-    User user = mockService.getUserWithId(userId);
+    User user = mockService.getUserWithId(userNumber);
     userRepository.save(user);
 
-    User repoUser = userRepository.findByNumber(userId);
+    User repoUser = userRepository.findByNumber(userNumber);
     return Response.ok(repoUser).build();
   }
 }
