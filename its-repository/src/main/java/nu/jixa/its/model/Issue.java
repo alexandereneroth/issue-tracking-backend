@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tblIssue")
-public class Issue extends AbstractEntity{
+public class Issue extends AbstractEntity {
   @Column(name = "number", unique = true, nullable = false)
   private Long number;
   @Column(name = "string")
@@ -17,17 +17,12 @@ public class Issue extends AbstractEntity{
   }
 
   public Issue(@NotNull final Long number) {
-
-    if (number == null) {
-      throw new RepositoryModelException("Null argument not allowed");
-    }
+    ModelUtil.throwExceptionIfArgIsNull(number, "number");
     this.number = number;
   }
 
   public Issue(@NotNull final Long number, final String string) {
-    if (number == null) {
-      throw new RepositoryModelException("Null argument not allowed");
-    }
+    ModelUtil.throwExceptionIfArgIsNull(number, "number");
     this.number = number;
     this.string = string;
   }
@@ -37,9 +32,7 @@ public class Issue extends AbstractEntity{
   }
 
   public void setNumber(@NotNull final Long number) {
-    if (number == null) {
-      throw new RepositoryModelException("Null argument not allowed");
-    }
+    ModelUtil.throwExceptionIfArgIsNull(number, "number");
     this.number = number;
   }
 

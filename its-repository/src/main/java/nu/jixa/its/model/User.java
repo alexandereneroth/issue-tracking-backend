@@ -2,6 +2,8 @@ package nu.jixa.its.model;
 
 import com.sun.istack.internal.NotNull;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -33,27 +35,24 @@ public class User extends AbstractEntity {
 
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "tblUser_tblWorkItem",
-      joinColumns = @JoinColumn( name = "userId", referencedColumnName="id"),
-      inverseJoinColumns = @JoinColumn(name ="workItemId", referencedColumnName="id")
+      joinColumns = @JoinColumn(name = "userId", referencedColumnName = "id"),
+      inverseJoinColumns = @JoinColumn(name = "workItemId", referencedColumnName = "id")
   )
   private Collection<WorkItem> workItems;
 
   protected User() {
   }
 
-  public User(Long number, String username, String firstname, String lastname) {
-    if (number == null) {
-      throw new RepositoryModelException("Null argument not allowed: number");
-    }
-    if (username == null) {
-      throw new RepositoryModelException("Null argument not allowed: username");
-    }
-    if (firstname == null) {
-      throw new RepositoryModelException("Null argument not allowed: firstname");
-    }
-    if (lastname == null) {
-      throw new RepositoryModelException("Null argument not allowed: lastname");
-    }
+  public User(@NotNull Long number, @NotNull String username, @NotNull String firstname,
+      @NotNull String lastname) {
+    HashMap<Object, String> argsWithNames = new HashMap<>();
+    argsWithNames.put(number, "number");
+    argsWithNames.put(username, "username");
+    argsWithNames.put(firstname, "firstname");
+    argsWithNames.put(lastname, "lastname");
+
+    ModelUtil.throwExceptionIfArgIsNull(argsWithNames);
+
     this.number = number;
     this.username = username;
     this.firstname = firstname;
@@ -65,9 +64,7 @@ public class User extends AbstractEntity {
   }
 
   public void setNumber(@NotNull final Long number) {
-    if (number == null) {
-      throw new RepositoryModelException("Null argument not allowed");
-    }
+    ModelUtil.throwExceptionIfArgIsNull(number, "number");
     this.number = number;
   }
 
@@ -76,9 +73,7 @@ public class User extends AbstractEntity {
   }
 
   public void setUsername(@NotNull final String username) {
-    if (username == null) {
-      throw new RepositoryModelException("Null argument not allowed");
-    }
+    ModelUtil.throwExceptionIfArgIsNull(username, "username");
     this.username = username;
   }
 
@@ -87,9 +82,7 @@ public class User extends AbstractEntity {
   }
 
   public void setFirstname(@NotNull final String firstname) {
-    if (firstname == null) {
-      throw new RepositoryModelException("Null argument not allowed");
-    }
+    ModelUtil.throwExceptionIfArgIsNull(firstname, "firstname");
     this.firstname = firstname;
   }
 
@@ -98,9 +91,7 @@ public class User extends AbstractEntity {
   }
 
   public void setLastname(@NotNull final String lastname) {
-    if (lastname == null) {
-      throw new RepositoryModelException("Null argument not allowed");
-    }
+    ModelUtil.throwExceptionIfArgIsNull(lastname, "lastname");
     this.lastname = lastname;
   }
 
@@ -108,11 +99,8 @@ public class User extends AbstractEntity {
     return team;
   }
 
-
   public void setTeam(@NotNull final Team team) {
-    if (team == null) {
-      throw new RepositoryModelException("Null argument not allowed");
-    }
+    ModelUtil.throwExceptionIfArgIsNull(team, "team");
     this.team = team;
   }
 

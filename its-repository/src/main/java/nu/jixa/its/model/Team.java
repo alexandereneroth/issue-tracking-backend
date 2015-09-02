@@ -18,11 +18,11 @@ public class Team extends AbstractEntity {
   @OneToMany(mappedBy = "team", fetch = FetchType.EAGER)
   Collection<User> users;
 
-  protected  Team(){}
+  protected Team() {
+  }
+
   public Team(@NotNull final Long number) {
-    if (number == null) {
-      throw new RepositoryModelException("Null argument not allowed");
-    }
+    ModelUtil.throwExceptionIfArgIsNull(number, "number");
     this.number = number;
   }
 
@@ -31,9 +31,7 @@ public class Team extends AbstractEntity {
   }
 
   public void setNumber(@NotNull final Long number) {
-    if (number == null) {
-      throw new RepositoryModelException("Null argument not allowed");
-    }
+    ModelUtil.throwExceptionIfArgIsNull(number, "number");
     this.number = number;
   }
 
@@ -42,9 +40,7 @@ public class Team extends AbstractEntity {
   }
 
   public void addUser(@NotNull final User user) {
-    if (user == null) {
-      throw new RepositoryModelException("Null argument not allowed");
-    }
+    ModelUtil.throwExceptionIfArgIsNull(user, "user");
     users.add(user);
   }
 

@@ -45,7 +45,7 @@ public class WorkItem extends AbstractEntity {
   }
 
   public void setNumber(@NotNull final Long number) {
-    throwExceptionIfArgIsNull(number);
+    ModelUtil.throwExceptionIfArgIsNull(number, "number");
     this.number = number;
   }
 
@@ -54,7 +54,7 @@ public class WorkItem extends AbstractEntity {
   }
 
   public void setStatus(@NotNull final Status status) {
-    throwExceptionIfArgIsNull(status);
+    ModelUtil.throwExceptionIfArgIsNull(status, "status");
     this.status = status;
   }
 
@@ -71,14 +71,8 @@ public class WorkItem extends AbstractEntity {
   }
 
   public void setDescription(String description) {
-    throwExceptionIfArgIsNull(description);
+    ModelUtil.throwExceptionIfArgIsNull(description, "description");
     this.description = description;
-  }
-
-  private <T>void throwExceptionIfArgIsNull(T arg){
-    if (arg == null) {
-      throw new RepositoryModelException("Null argument not allowed");
-    }
   }
 
   @Override public boolean equals(Object o) {
