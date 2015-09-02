@@ -30,7 +30,7 @@ public class MockService {
 		return this.msg;
 	}
 
-  public User getUserWithId(int userId) {
-    return new User((long) userId, "UserName" + userId, "firstName" + userId, "lastName" + userId);
+  public User getUserWithId(long userId) {
+    return new User(userId, "UserName" + userId, "firstName" + userId, "lastName" + userId);
   }
 }
