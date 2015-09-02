@@ -7,7 +7,7 @@ import nu.jixa.its.model.Team;
 import nu.jixa.its.model.User;
 import nu.jixa.its.model.WorkItem;
 
-public interface Service {
+public interface ITSRepository {
 
   // WorkItem
   WorkItem addWorkItem(WorkItem workItem);

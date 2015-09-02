@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Created by gina on 2015-09-01.
  */
-public class ServiceImpl implements Service {
+public class ITSRepositoryImpl implements ITSRepository {
 
   @Autowired
   private UserRepository userRepository;
@@ -91,7 +91,7 @@ public class ServiceImpl implements Service {
   @Override public User deleteUser(Long userId) {
     User deletedUser = userRepository.findByNumber(userId);
     if (deletedUser == null) {
-      throw new ServiceException("Could not delete User: No user with id " + userId);
+      throw new ITSRepositoryException("Could not delete User: No user with id " + userId);
     }
     userRepository.delete(deletedUser);
     return deletedUser;
@@ -100,7 +100,7 @@ public class ServiceImpl implements Service {
   @Override public User getUser(Long userId) {
     User gotUser = userRepository.findByNumber(userId);
     if (gotUser == null) {
-      throw new ServiceException("Could not get User: No user with id " + userId);
+      throw new ITSRepositoryException("Could not get User: No user with id " + userId);
     }
     return gotUser;
   }

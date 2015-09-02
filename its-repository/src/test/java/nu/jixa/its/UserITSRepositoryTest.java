@@ -4,8 +4,8 @@ import com.sun.istack.internal.NotNull;
 import nu.jixa.its.config.InfrastructureConfig;
 import nu.jixa.its.config.ServiceConfig;
 import nu.jixa.its.model.User;
-import nu.jixa.its.service.Service;
-import nu.jixa.its.service.ServiceException;
+import nu.jixa.its.service.ITSRepository;
+import nu.jixa.its.service.ITSRepositoryException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -24,13 +24,13 @@ import static org.junit.Assert.assertNotNull;
 @ContextConfiguration(classes = { InfrastructureConfig.class,
     ServiceConfig.class }, loader = AnnotationConfigContextLoader.class)
 //@DatabaseSetup("userData.xml")TODO try to use this when the other stuff works
-public class UserServiceTest {
+public class UserITSRepositoryTest {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
 
   @Autowired
-  Service service;
+  ITSRepository repository;
 
   final Long testUserId = 10L;
 
@@ -38,15 +38,15 @@ public class UserServiceTest {
   public void before() {
     User user = generateSimpleUser(testUserId);
 
-    service.addUser(user);
-    User userInRepoAfterAdd = service.getUser(testUserId);
+    repository.addUser(user);
+    User userInRepoAfterAdd = repository.getUser(testUserId);
     assertNotNull(user);
     assertEquals(user, userInRepoAfterAdd);
   }
 
   @After
   public void after() {
-    service.deleteUser(testUserId);
+    repository.deleteUser(testUserId);
   }
 
   @Test
@@ -54,29 +54,29 @@ public class UserServiceTest {
     Long userNumber = 1L;
     User user = new User(userNumber, "Jixa", "Andromeda", "Wasilewskji");
 
-    service.addUser(user);
-    User userInRepoAfterAdd = service.getUser(userNumber);
+    repository.addUser(user);
+    User userInRepoAfterAdd = repository.getUser(userNumber);
 
     assertNotNull(user);
     assertEquals(user, userInRepoAfterAdd);
 
-    service.deleteUser(userNumber);
+    repository.deleteUser(userNumber);
 
-    expectedException.expect(ServiceException.class);
+    expectedException.expect(ITSRepositoryException.class);
     expectedException.expectMessage("Could not get User");
-    service.getUser(userNumber);
+    repository.getUser(userNumber);
   }
 
   @Test
   public void canUpdate() {
 
-    User userToUpdate = service.getUser(testUserId);
+    User userToUpdate = repository.getUser(testUserId);
     final String updatedFirstname = "UPDATED_FIRSTNAME";
     userToUpdate.setFirstname(updatedFirstname);
 
-    service.updateUser(userToUpdate);
+    repository.updateUser(userToUpdate);
 
-    User testUserAfterUpdate = service.getUser(testUserId);
+    User testUserAfterUpdate = repository.getUser(testUserId);
     assertEquals(testUserAfterUpdate.getFirstname(), updatedFirstname);
   }
 
