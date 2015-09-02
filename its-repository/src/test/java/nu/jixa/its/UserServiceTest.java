@@ -80,25 +80,25 @@ public class UserServiceTest {
     assertEquals(testUserAfterUpdate.getFirstname(), updatedFirstname);
   }
 
-  @Test
+  /*@Test
   public void canGetById() {
     //TODO implement
-  }
+  }*/
 
-  @Test
+ /* @Test
   public void canGetByTeam() {
     //TODO implement
-  }
+  }*/
 
-  @Test
+  /*@Test
   public void canGetByNameLike() {
     //TODO implement
-  }
+  }*/
 
-  @Test
+  /*@Test
   public void canAddWorkItemTo() {
     //TODO implement
-  }
+  }*/
 
   private User generateSimpleUser(@NotNull final Long number) {
     return new User(number, "account" + number, "firstname" + number, "lastname" + number);
