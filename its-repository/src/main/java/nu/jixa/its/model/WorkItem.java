@@ -18,7 +18,7 @@ public class WorkItem extends AbstractEntity {
   @Column(name = "number", unique = true, nullable = false)
   private Long number;
 
-  @Enumerated // TODO add name after we know how it gets created in db
+  @Enumerated
   @Column(name = "status", nullable = false)
   private Status status;
 
@@ -29,8 +29,8 @@ public class WorkItem extends AbstractEntity {
   @JoinColumn
   private Issue issue;
 
-  @ManyToMany(mappedBy = "workItems") // FIXME is this the right mapping?
-      Collection<User> users;
+  @ManyToMany(mappedBy = "workItems")
+  Collection<User> users;
 
   protected WorkItem() {
   }

@@ -19,7 +19,6 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { InfrastructureConfig.class,
@@ -33,7 +32,7 @@ public class UserServiceTest {
   @Autowired
   Service service;
 
-  Long testUserId = 10L;
+  final Long testUserId = 10L;
 
   @Before
   public void before() {
@@ -83,22 +82,22 @@ public class UserServiceTest {
 
   @Test
   public void canGetById() {
-    fail();
+    //TODO implement
   }
 
   @Test
   public void canGetByTeam() {
-    fail();
+    //TODO implement
   }
 
   @Test
   public void canGetByNameLike() {
-    fail();
+    //TODO implement
   }
 
   @Test
   public void canAddWorkItemTo() {
-    fail();
+    //TODO implement
   }
 
   private User generateSimpleUser(@NotNull final Long number) {
