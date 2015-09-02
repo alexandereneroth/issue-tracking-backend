@@ -2,10 +2,9 @@ package nu.jixa.its;
 
 import java.util.HashMap;
 import nu.jixa.its.config.InfrastructureConfig;
-import nu.jixa.its.config.ServiceConfig;
+import nu.jixa.its.config.ITSRepositoryConfig;
 import nu.jixa.its.model.ModelUtil;
 import nu.jixa.its.model.RepositoryModelException;
-import nu.jixa.its.model.User;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -16,7 +15,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { InfrastructureConfig.class,
-    ServiceConfig.class }, loader = AnnotationConfigContextLoader.class)
+    ITSRepositoryConfig.class }, loader = AnnotationConfigContextLoader.class)
 public class ModelUtilTest {
   @Rule
   public ExpectedException expectedException = ExpectedException.none();

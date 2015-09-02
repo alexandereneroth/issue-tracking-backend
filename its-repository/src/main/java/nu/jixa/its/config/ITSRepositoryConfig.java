@@ -1,13 +1,14 @@
 package nu.jixa.its.config;
 
+import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.service.ITSRepositoryImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ServiceConfig {
+public class ITSRepositoryConfig {
 
-  @Bean ITSRepositoryImpl serviceImpl(){
+  @Bean ITSRepository ITSRepository(){
     return new ITSRepositoryImpl();
   }
 }

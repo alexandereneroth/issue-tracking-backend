@@ -2,10 +2,11 @@ package nu.jixa.its;
 
 import com.sun.istack.internal.NotNull;
 import nu.jixa.its.config.InfrastructureConfig;
-import nu.jixa.its.config.ServiceConfig;
+import nu.jixa.its.config.ITSRepositoryConfig;
 import nu.jixa.its.model.User;
 import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.service.ITSRepositoryException;
+import nu.jixa.its.service.ITSRepositoryImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -22,7 +23,7 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { InfrastructureConfig.class,
-    ServiceConfig.class }, loader = AnnotationConfigContextLoader.class)
+    ITSRepositoryConfig.class }, loader = AnnotationConfigContextLoader.class)
 //@DatabaseSetup("userData.xml")TODO try to use this when the other stuff works
 public class UserITSRepositoryTest {
 
