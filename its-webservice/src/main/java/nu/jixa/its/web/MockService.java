@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 the original author or authors.
+ * Copyright 2012-2014 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package nu.jixa.its.config;
+package nu.jixa.its.web;
 
-import nu.jixa.its.endpoint.Endpoint;
-import nu.jixa.its.endpoint.ReverseEndpoint;
-import org.glassfish.jersey.server.ResourceConfig;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JerseyConfig extends ResourceConfig {
+public class MockService {
 
-	public JerseyConfig() {
-		register(Endpoint.class);
-		register(ReverseEndpoint.class);
+	@Value("${message:World}")
+	private String msg;
+
+	public String message() {
+		return this.msg;
 	}
 
+  public User getUserWithId(int userId) {
+    return new User((long) userId, "UserName" + userId, "firstName" + userId, "lastName" + userId);
+  }
 }

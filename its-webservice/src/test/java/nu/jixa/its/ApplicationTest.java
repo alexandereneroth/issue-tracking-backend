@@ -1,5 +1,6 @@
 package nu.jixa.its;
 
+import nu.jixa.its.web.Application;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,20 +22,23 @@ import static org.junit.Assert.assertEquals;
 public class ApplicationTest {
   @Value("${local.server.port}")
   private int port;
+  private final String BASE_URL = "http://localhost:";
+  private final String USERS_ENDPOINT = "/users";
 
   private RestTemplate restTemplate = new TestRestTemplate();
+
 
   @Test
   public void contextLoads() {
     ResponseEntity<String> entity = this.restTemplate.getForEntity(
-        "http://localhost:" + this.port + "/hello", String.class);
+        BASE_URL + this.port + "/hello", String.class);
     assertEquals(HttpStatus.OK, entity.getStatusCode());
   }
 
   @Test
   public void reverse() {
     ResponseEntity<String> entity = this.restTemplate.getForEntity(
-        "http://localhost:" + this.port + "/reverse?input=olleh", String.class);
+        BASE_URL + this.port + "/reverse?input=olleh", String.class);
     assertEquals(HttpStatus.OK, entity.getStatusCode());
     assertEquals("hello", entity.getBody());
   }
@@ -42,7 +46,16 @@ public class ApplicationTest {
   @Test
   public void validation() {
     ResponseEntity<String> entity = this.restTemplate.getForEntity(
-        "http://localhost:" + this.port + "/reverse", String.class);
+        BASE_URL + this.port + "/reverse", String.class);
     assertEquals(HttpStatus.BAD_REQUEST, entity.getStatusCode());
   }
+
+  // TODO Make this test work
+  //@Test
+  //public void mockGetUserById() {
+  //  ResponseEntity<User> entity = this.restTemplate.getForEntity(
+  //      BASE_URL + this.port + USERS_ENDPOINT + "/5", User.class);
+  //  assertEquals(HttpStatus.OK, entity.getStatusCode());
+  //  assertTrue(5L == entity.getBody().getId());
+  //}
 }

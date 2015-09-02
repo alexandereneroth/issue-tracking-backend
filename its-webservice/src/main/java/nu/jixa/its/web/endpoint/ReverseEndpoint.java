@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2014 the original author or authors.
+ * Copyright 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,28 +14,21 @@
  * limitations under the License.
  */
 
-package nu.jixa.its.endpoint;
+package nu.jixa.its.web.endpoint;
 
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import nu.jixa.its.MockService;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.ws.rs.QueryParam;
 import org.springframework.stereotype.Component;
 
 @Component
-@Path("/hello")
-public class Endpoint {
-
-	private MockService mockService;
-
-	@Autowired
-	public Endpoint(MockService mockService) {
-		this.mockService = mockService;
-	}
+@Path("/reverse")
+public class ReverseEndpoint {
 
 	@GET
-	public String message() {
-		return "Hello " + this.mockService.message();
+	public String reverse(@QueryParam("input") @NotNull String input) {
+		return new StringBuilder(input).reverse().toString();
 	}
 
 }

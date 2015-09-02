@@ -97,5 +97,13 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- Its-Repo -->
+
+    <!--<dependency>-->
+      <!--<groupId>nu.jixa.its</groupId>-->
+      <!--<artifactId>its-repository</artifactId>-->
+      <!--<version>1.0-SNAPSHOT</version>-->
+    <!--</dependency>-->
+
   </dependencies>
 </project>
