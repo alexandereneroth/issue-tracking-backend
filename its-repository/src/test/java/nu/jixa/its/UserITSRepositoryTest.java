@@ -2,7 +2,6 @@ package nu.jixa.its;
 
 import com.sun.istack.internal.NotNull;
 import java.util.Collection;
-import java.util.List;
 import nu.jixa.its.config.ITSRepositoryConfig;
 import nu.jixa.its.config.InfrastructureConfig;
 import nu.jixa.its.model.User;

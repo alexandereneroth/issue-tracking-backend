@@ -41,4 +41,5 @@ public class ModelUtilTest {
 
     ModelUtil.throwExceptionIfArgIsNull(argsWithNames);
   }
+
 }

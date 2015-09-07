@@ -1,8 +1,6 @@
 package nu.jixa.its.repository;
 
-import java.util.Collection;
 import nu.jixa.its.model.Team;
-import nu.jixa.its.model.User;
 import org.springframework.data.repository.CrudRepository;
 
 /**
@@ -10,6 +8,7 @@ import org.springframework.data.repository.CrudRepository;
  */
 public interface TeamRepository extends CrudRepository<Team, Long> {
 
+  Team findByNumber(Long teamNumber);
 }
 
 

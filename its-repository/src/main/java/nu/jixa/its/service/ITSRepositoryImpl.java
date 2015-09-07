@@ -60,8 +60,8 @@ public class ITSRepositoryImpl implements ITSRepository {
 
   @Override public Collection<WorkItem> getWorkItemsByTeam(Long teamId) {
 
-    //userRepository.selectUserByTeamId(teamId);
-    //return workItemRepository.getWorkItemsByTeam(teamId);
+    //userRepository.selectUserByTeamId(teamNumber);
+    //return workItemRepository.getWorkItemsByTeam(teamNumber);
     return null;
   }
 
@@ -95,7 +95,7 @@ public class ITSRepositoryImpl implements ITSRepository {
 
   @Override public User deleteUser(Long userId) {
     User deletedUser = userRepository.findByNumber(userId);
-    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(deletedUser,"Could not delete User: No user with id " + userId );
+    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(deletedUser,"Could not delete User: No user with number " + userId );
     userRepository.delete(deletedUser);
     return deletedUser;
   }
@@ -108,8 +108,8 @@ public class ITSRepositoryImpl implements ITSRepository {
     return gotUser;
   }
 
-  @Override public User getUserByTeam(Long teamId) {
-    return null;
+  @Override public Iterable<User> getUsersByTeam(Long teamNumber) {
+    return userRepository.findByTeamNumber(teamNumber);
   }
 
   @Override public Collection<User> getUsersByNameLike(String nameLike) {
@@ -121,20 +121,41 @@ public class ITSRepositoryImpl implements ITSRepository {
   }
 
   @Override public Team addTeam(Team team) {
-    teamRepository.save(team);
-    return team;
+    return teamRepository.save(team);
   }
 
   @Override public Team updateTeam(Team team) {
-    return null;
+    return teamRepository.save(team);
+  }
+
+  @Override public Team deleteTeam(Long teamNumber) {
+    Team deletedTeam = teamRepository.findByNumber(teamNumber);
+    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(deletedTeam,"Could not delete Team: No team with number " + teamNumber );
+    teamRepository.delete(deletedTeam);
+    return deletedTeam;
+  }
+
+  @Override public Team deleteTeam(Team team) {
+    Team deletedTeam = teamRepository.findOne(team.getId());
+    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(deletedTeam,
+        "Could not delete Team: Team not in repository");
+
+    teamRepository.delete(deletedTeam);
+    return team;
+  }
+
+  @Override public Team getTeam(Long teamNumber) {
+    Team team = teamRepository.findByNumber(teamNumber);
+    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(team,"Could not find Team: No team with number " + teamNumber );
+    return team;
   }
 
   @Override public Team removeTeamWithId(Long teamId) {
     return null;
   }
 
-  @Override public Collection<Team> getAllTeams() {
-    return null;
+  @Override public Iterable<Team> getAllTeams() {
+    return teamRepository.findAll();
   }
 
   @Override public Team addUserToTeamWithId(Long teamId, Long userId) {

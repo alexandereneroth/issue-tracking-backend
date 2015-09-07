@@ -39,7 +39,7 @@ public interface ITSRepository {
 
   User getUser(Long userId);
 
-  User getUserByTeam(Long teamId);
+  Iterable<User> getUsersByTeam(Long teamId);
 
   /**
    * Get all users that has
@@ -55,9 +55,15 @@ public interface ITSRepository {
 
   Team updateTeam(Team team);
 
+  Team deleteTeam(Long teamNumber);
+
+  Team deleteTeam(Team testTeam);
+
+  Team getTeam(Long teamNumber);
+
   Team removeTeamWithId(Long teamId);
 
-  Collection<Team> getAllTeams();
+  Iterable<Team> getAllTeams();
 
   Team addUserToTeamWithId(Long teamId, Long userId);
 

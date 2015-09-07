@@ -6,22 +6,22 @@ import org.junit.runners.Suite;
 /*
 
 FUNKTIONSKRAV
- __________________________
-| Location  | Requirement |
+ ____________________________________________________
+| Location  | Requirement                           |
 USER
 ✓User       | Skapa en User
 ✓User       | Uppdatera en User
 ✓User       | Ta bort* en User
 ✓User       | Hämta en User baserat på user id (inte entity id)
-User        | Söka efter en User baserat på förnamn eller efternamn eller användarnamn
+✓User       | Söka efter en User baserat på förnamn eller efternamn eller användarnamn
 ✓UserTeam   | Hämta alla User som ingår i ett visst team
 
 TEAM
-            | Skapa ett team
-            | Uppdatera ett team
-            | Ta bort* ett team
-            | Hämta alla team
-            | Lägga till en User till ett team
+✓Team       | Skapa ett team
+✓Team       | Uppdatera ett team
+✓Team       | Ta bort* ett team
+✓Team       | Hämta alla team
+✓UserTeam   | Lägga till en User till ett team
 
 WorkItem
             | Skapa en work item
@@ -46,7 +46,8 @@ Issue
     ModelUtilTest.class,
     UserITSRepositoryTest.class,
     UserTeamITSRepositoryTest.class,
-    WorkItemRepositoryTest.class
+    WorkItemRepositoryTest.class,
+    TeamITSRepositoryTest.class
 })
 public class AllTestsSuite {
 }
