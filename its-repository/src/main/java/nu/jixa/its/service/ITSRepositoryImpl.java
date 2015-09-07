@@ -33,6 +33,8 @@ public class ITSRepositoryImpl implements ITSRepository {
   private TeamRepository teamRepository;
 
   @Override public WorkItem updateWorkItem(WorkItem updatedWorkItem) {
+    WorkItem workItem = getWorkItemById(updatedWorkItem.getNumber());
+    workItemRepository.save(workItem);
     return null;
   }
   @Transactional
@@ -47,7 +49,6 @@ public class ITSRepositoryImpl implements ITSRepository {
     workItemRepository.delete(deleteItem);
     return deleteItem;
   }
-  @Transactional
   @Override public WorkItem getWorkItemById(Long workItemId) {
     WorkItem workItemInDB = workItemRepository.findByNumber(workItemId);
     RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(workItemInDB,
