@@ -1,6 +1,8 @@
 package nu.jixa.its;
 
 import com.sun.istack.internal.NotNull;
+import java.util.Collection;
+import java.util.List;
 import nu.jixa.its.config.ITSRepositoryConfig;
 import nu.jixa.its.config.InfrastructureConfig;
 import nu.jixa.its.model.User;
@@ -17,6 +19,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -36,15 +40,16 @@ public class UserITSRepositoryTest {
   final String testUserUsername = "Username";
   final String testUserFirstname = "John";
   final String testUserLastname = "Doe";
+  User testUser;
 
   @Before
   public void before() {
-    User user = new User(testUserId,testUserUsername, testUserFirstname,testUserLastname);
+  testUser = new User(testUserId,testUserUsername, testUserFirstname,testUserLastname);
 
-    repository.addUser(user);
+    repository.addUser(testUser);
     User userInRepoAfterAdd = repository.getUser(testUserId);
-    assertNotNull(user);
-    assertEquals(user, userInRepoAfterAdd);
+    assertNotNull(testUser);
+    assertEquals(testUser, userInRepoAfterAdd);
   }
 
   @After
@@ -85,7 +90,29 @@ public class UserITSRepositoryTest {
 
   @Test
   public void canGetByNameLike() {
+    Collection<User> usersWithName = repository.getUsersByNameLike(testUserUsername);
 
+    assertThat(usersWithName.size(), is(1));
+    for(User user : usersWithName)
+    {
+      assertEquals(user, testUser);
+    }
+
+    usersWithName = repository.getUsersByNameLike(testUserFirstname);
+
+    assertThat(usersWithName.size(), is(1));
+    for(User user : usersWithName)
+    {
+      assertEquals(user, testUser);
+    }
+
+    usersWithName = repository.getUsersByNameLike(testUserLastname);
+
+    assertThat(usersWithName.size(), is(1));
+    for(User user : usersWithName)
+    {
+      assertEquals(user, testUser);
+    }
   }
 
   /*@Test
