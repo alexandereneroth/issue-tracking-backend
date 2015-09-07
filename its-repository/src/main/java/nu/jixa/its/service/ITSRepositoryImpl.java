@@ -2,11 +2,13 @@ package nu.jixa.its.service;
 
 import java.util.Collection;
 import nu.jixa.its.model.Issue;
+import nu.jixa.its.model.ModelUtil;
 import nu.jixa.its.model.Status;
 import nu.jixa.its.model.Team;
 import nu.jixa.its.model.User;
 import nu.jixa.its.model.WorkItem;
 import nu.jixa.its.repository.IssueRepository;
+import nu.jixa.its.repository.RepositoryUtil;
 import nu.jixa.its.repository.TeamRepository;
 import nu.jixa.its.repository.UserRepository;
 import nu.jixa.its.repository.WorkItemRepository;
@@ -32,19 +34,26 @@ public class ITSRepositoryImpl implements ITSRepository {
 
   @Transactional
   @Override public WorkItem addWorkItem(WorkItem workItem) {
-    issueRepository.save(workItem.getIssue());
+    //issueRepository.save(workItem.getIssue());
     return workItemRepository.save(workItem);
   }
 
   @Transactional
-  @Override public WorkItem removeWorkItem(Long workItemId) {
-    //WorkItem item = workItemRepository.findByNumber(workItemId);
-    return workItemRepository.deleteById(workItemId);
+  @Override public WorkItem removeWorkItem(Long workItemNr) {
+    WorkItem deleteItem = findByNumber(workItemNr);
+    workItemRepository.delete(deleteItem);
+    return deleteItem;
   }
-
+  @Transactional
+  @Override public WorkItem getWorkItemById(Long workItemId) {
+    WorkItem workItemInDB = workItemRepository.findByNumber(workItemId);
+    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(workItemInDB,
+        "Could not find workItem: No item with nr " + workItemId);
+    return workItemRepository.findByNumber(workItemId);
+  }
   @Transactional
   @Override public void setWorkItemStatus(Long workItemId, Status status) {
-    WorkItem item = workItemRepository.findById(workItemId);
+    WorkItem item = workItemRepository.findByNumber(workItemId);
     item.setStatus(status);
     workItemRepository.save(item);
   }
@@ -90,9 +99,7 @@ public class ITSRepositoryImpl implements ITSRepository {
 
   @Override public User deleteUser(Long userId) {
     User deletedUser = userRepository.findByNumber(userId);
-    if (deletedUser == null) {
-      throw new ITSRepositoryException("Could not delete User: No user with id " + userId);
-    }
+    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(deletedUser,"Could not delete User: No user with id " + userId );
     userRepository.delete(deletedUser);
     return deletedUser;
   }
@@ -148,5 +155,10 @@ public class ITSRepositoryImpl implements ITSRepository {
 
   @Override public Issue updateIssue(Issue issue) {
     return null;
+  }
+  @Override public WorkItem findByNumber(Long workItemNr) {
+    WorkItem item = workItemRepository.findByNumber(workItemNr);
+    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(item,"Could not find User: No user with id" + workItemNr );
+    return item;
   }
 }

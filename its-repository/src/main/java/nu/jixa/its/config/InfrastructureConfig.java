@@ -41,9 +41,9 @@ public class InfrastructureConfig
     HikariConfig config = new HikariConfig();
 
     config.setDriverClassName("com.mysql.jdbc.Driver");
-    config.setJdbcUrl("jdbc:mysql://localhost:3306/its-backend");
+    config.setJdbcUrl("jdbc:mysql://localhost:3307/its-backend");
     config.setUsername("root");
-    config.setPassword("");
+    config.setPassword("root");
 
     return new HikariDataSource(config);
   }

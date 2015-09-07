@@ -45,7 +45,8 @@ Issue
 @Suite.SuiteClasses({
     ModelUtilTest.class,
     UserITSRepositoryTest.class,
-    UserTeamITSRepositoryTest.class
+    UserTeamITSRepositoryTest.class,
+    WorkItemRepositoryTest.class
 })
 public class AllTestsSuite {
 }
