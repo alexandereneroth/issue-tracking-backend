@@ -30,9 +30,6 @@ public final class HelperMethods {
   /**
    * Converts an iterable to a HashSet, if it only contains unique elements.
    * Otherwise throws IllegalArgumentException.
-   * @param iterable
-   * @param <T>
-   * @return
    */
   public static <T> HashSet<T> toHashSet(Iterable<T> iterable) {
     HashSet<T> newSet = new HashSet<T>();
@@ -45,14 +42,20 @@ public final class HelperMethods {
     return newSet;
   }
 
-  public static <T> HashSet<T> newHashSetContaining(T[] items)
+  /**
+   * Converts an array to a HashSet, if it only contains unique elements.
+   * Otherwise throws IllegalArgumentException.
+   */
+  public static <T> HashSet<T> toHashSet(T[] items)
   {
-    HashSet<T> hashSet = new HashSet<>();
-
+    HashSet<T> newSet = new HashSet<>();
     for(int i = 0; i < items.length; i++)
     {
-      hashSet.add(items[i]);
+      if (newSet.add(items[i]) == false) {
+        throw new IllegalArgumentException(
+            "Cannot convert iterable to set: iterable contains duplicate elements");
+      }
     }
-    return hashSet;
+    return newSet;
   }
 }

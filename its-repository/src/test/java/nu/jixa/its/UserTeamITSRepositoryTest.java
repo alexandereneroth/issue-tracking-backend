@@ -70,7 +70,7 @@ public class UserTeamITSRepositoryTest {
     Iterable<User> iterableUsersInTeamInRepo = repository.getUsersByTeam(teamNumber);
 
     Set<User> usersInTeamInRepo = HelperMethods.toHashSet(iterableUsersInTeamInRepo);
-    Set<User> usersInTeam = HelperMethods.newHashSetContaining(new User[]{user,user2});
+    Set<User> usersInTeam = HelperMethods.toHashSet(new User[] { user, user2 });
 
     assert(HelperMethods.isEqualSet(usersInTeam, usersInTeamInRepo));
 

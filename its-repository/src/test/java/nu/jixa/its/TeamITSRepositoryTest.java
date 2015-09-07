@@ -1,6 +1,5 @@
 package nu.jixa.its;
 
-import java.util.HashSet;
 import java.util.Set;
 import nu.jixa.its.config.ITSRepositoryConfig;
 import nu.jixa.its.config.InfrastructureConfig;
@@ -98,15 +97,10 @@ public class TeamITSRepositoryTest {
     repository.addTeam(tmpTeam3);
 
     Set<Team> allTeamsInRepo = HelperMethods.toHashSet(repository.getAllTeams());
+    Set<Team> allTeams =
+        HelperMethods.toHashSet(new Team[] { testTeam, tmpTeam1, tmpTeam2, tmpTeam3 });
 
-    Set<Team> allTeams = new HashSet<>();
-    allTeams.add(testTeam);
-    allTeams.add(tmpTeam1);
-    allTeams.add(tmpTeam2);
-    allTeams.add(tmpTeam3);
-
-
-    assert(HelperMethods.isEqualSet(allTeams,allTeamsInRepo));
+    assert (HelperMethods.isEqualSet(allTeams, allTeamsInRepo));
   }
   //| Lägga till en User till ett team
 }
