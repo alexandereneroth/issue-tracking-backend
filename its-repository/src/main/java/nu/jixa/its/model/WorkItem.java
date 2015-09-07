@@ -107,7 +107,6 @@ public class WorkItem extends AbstractEntity {
 
     if (!getNumber().equals(workItem.getNumber())) return false;
     if (getStatus() != workItem.getStatus()) return false;
-   // if (getUsers() != null ? !getUsers().equals(workItem.getUsers()) : workItem.getUsers() != null) return false;
       return !(getIssue() != null ? !getIssue().equals(workItem.getIssue())
         : workItem.getIssue() != null);
   }

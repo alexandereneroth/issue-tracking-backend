@@ -91,9 +91,11 @@ public class WorkItemRepositoryTest {
     WorkItem updatedItem = repository.updateWorkItem(itemInRepository);
 
 
+
     //WorkItem updatedWorkItem = repository.updateWorkItem(itemInRepository);
     //assertNotNull(updatedWorkItem);
     assertNotNull(updatedItem);
+    assert HelperMethods.isEqualSet(itemInRepository.getUsers(), updatedItem.getUsers());
     assertEquals(itemInRepository, updatedItem);
   }
 
