@@ -79,19 +79,22 @@ public class WorkItemRepositoryTest {
 
     //WorkItem item = repository.findByNumber();
     Issue issue = new Issue(14L);
-    //assertNotNull(item);
     Collection<User> users = new ArrayList();
 
-    users.add(new User(8L,"Simba","Ba", "Sim"));
-    WorkItem itemInRepository = generateSimpleWorkItem(testWorkitemNr);
+    users.add(new User(8L, "Simba", "Ba", "Sim"));
+    WorkItem itemInRepository = repository.findByNumber(testWorkitemNr);
+
     itemInRepository.setStatus(Status.IN_PROGRESS);
     itemInRepository.setDescription("updated item");
     itemInRepository.setIssue(issue);
     itemInRepository.setUsers(users);
+    WorkItem updatedItem = repository.updateWorkItem(itemInRepository);
 
-    WorkItem updatedWorkItem = repository.updateWorkItem(itemInRepository);
-    assertNotNull(updatedWorkItem);
-    assertEquals(itemInRepository, updatedWorkItem);
+
+    //WorkItem updatedWorkItem = repository.updateWorkItem(itemInRepository);
+    //assertNotNull(updatedWorkItem);
+    assertNotNull(updatedItem);
+    assertEquals(itemInRepository, updatedItem);
   }
 
   private WorkItem generateSimpleWorkItem(@NotNull final Long number) {

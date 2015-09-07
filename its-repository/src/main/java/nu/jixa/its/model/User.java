@@ -118,6 +118,7 @@ public class User extends AbstractEntity {
     if (!getFirstname().equals(user.getFirstname())) return false;
     if (!getLastname().equals(user.getLastname())) return false;
     return !(team != null ? !team.equals(user.team) : user.team != null);
+    //return !(team != null ? !team.equals(user.team) : user.team != null);
   }
 
   @Override public int hashCode() {

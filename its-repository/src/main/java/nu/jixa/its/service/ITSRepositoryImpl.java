@@ -29,9 +29,9 @@ public class ITSRepositoryImpl implements ITSRepository {
   private TeamRepository teamRepository;
 
   @Override public WorkItem updateWorkItem(WorkItem updatedWorkItem) {
-    WorkItem workItem = getWorkItemById(updatedWorkItem.getNumber());
-    workItemRepository.save(workItem);
-    return null;
+    workItemRepository.save(updatedWorkItem);
+
+    return getWorkItemById(updatedWorkItem.getNumber());
   }
   @Transactional
   @Override public WorkItem addWorkItem(WorkItem workItem) {
@@ -184,6 +184,7 @@ public class ITSRepositoryImpl implements ITSRepository {
   @Override public Issue updateIssue(Issue issue) {
     return null;
   }
+
   @Override public WorkItem findByNumber(Long workItemNr) {
     WorkItem item = workItemRepository.findByNumber(workItemNr);
     RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(item,"Could not find User: No user with id" + workItemNr );

@@ -13,7 +13,7 @@ public interface WorkItemRepository extends CrudRepository<WorkItem, Long> {
   WorkItem findByNumber(Long id);
 
   Collection<WorkItem> findByStatus(Status status);
-  WorkItem update(WorkItem workItem);
+  //WorkItem update(WorkItem workItem);
   //TODO confusing method names?
   WorkItem findByUsers(User user);
   Collection<WorkItem> findByUsersId(Long userId);

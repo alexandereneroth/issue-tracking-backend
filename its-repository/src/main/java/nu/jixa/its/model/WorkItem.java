@@ -26,7 +26,7 @@ public class WorkItem extends AbstractEntity {
   @Column(name = "description", unique = true)
   private String description;
 
-  @OneToOne(cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
+  @OneToOne(cascade = {CascadeType.REMOVE,CascadeType.PERSIST, CascadeType.MERGE})
   @JoinColumn
   private Issue issue;
 
@@ -107,7 +107,8 @@ public class WorkItem extends AbstractEntity {
 
     if (!getNumber().equals(workItem.getNumber())) return false;
     if (getStatus() != workItem.getStatus()) return false;
-    return !(getIssue() != null ? !getIssue().equals(workItem.getIssue())
+    if (getUsers() != null ? !getUsers().equals(workItem.getUsers()) : workItem.getUsers() != null) return false;
+      return !(getIssue() != null ? !getIssue().equals(workItem.getIssue())
         : workItem.getIssue() != null);
   }
 
