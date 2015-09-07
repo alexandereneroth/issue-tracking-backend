@@ -121,7 +121,7 @@ public class ITSRepositoryImpl implements ITSRepository {
   }
 
   @Override public Collection<User> getUsersByNameLike(String nameLike) {
-    return null;
+    return userRepository.selectByNameLike(nameLike);
   }
 
   @Override public void addWorkItemToUser(Long userId, WorkItem workItem) {
