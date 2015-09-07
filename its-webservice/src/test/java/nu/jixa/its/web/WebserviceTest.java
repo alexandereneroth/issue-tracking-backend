@@ -1,6 +1,5 @@
 package nu.jixa.its.web;
 
-import nu.jixa.its.model.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +13,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
@@ -24,7 +22,6 @@ public class WebserviceTest {
   @Value("${local.server.port}")
   private int port;
   private final String BASE_URL = "http://localhost:";
-  private final String USERS_ENDPOINT = "/users";
 
   private RestTemplate restTemplate = new TestRestTemplate();
 
@@ -33,13 +30,5 @@ public class WebserviceTest {
     ResponseEntity<String> entity = this.restTemplate.getForEntity(
         BASE_URL + this.port + "/hello", String.class);
     assertEquals(HttpStatus.OK, entity.getStatusCode());
-  }
-
-  @Test
-  public void getUserByNumber() {
-    ResponseEntity<User> entity = this.restTemplate.getForEntity(
-        BASE_URL + this.port + USERS_ENDPOINT + "/5", User.class);
-    assertEquals(HttpStatus.OK, entity.getStatusCode());
-    assertTrue(5L == entity.getBody().getNumber());
   }
 }

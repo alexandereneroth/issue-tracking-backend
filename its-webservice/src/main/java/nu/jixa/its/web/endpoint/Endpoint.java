@@ -18,24 +18,15 @@ package nu.jixa.its.web.endpoint;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import nu.jixa.its.web.MockService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 @Path("/hello")
 public class Endpoint {
 
-	private MockService mockService;
-
-	@Autowired
-	public Endpoint(MockService mockService) {
-		this.mockService = mockService;
-	}
-
 	@GET
 	public String message() {
-		return "Hello " + this.mockService.message();
+		return "Hello world";
 	}
 
 }
