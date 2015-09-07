@@ -1,6 +1,10 @@
 package nu.jixa.its;
 
 import com.sun.istack.internal.NotNull;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 import nu.jixa.its.config.ITSRepositoryConfig;
 import nu.jixa.its.config.InfrastructureConfig;
 import nu.jixa.its.model.Issue;
@@ -68,6 +72,26 @@ public class WorkItemRepositoryTest {
     expectedException.expect(ITSRepositoryException.class);
     expectedException.expectMessage("Could not find workItem");
     repository.getWorkItemById(workItemInRepoAfterAdd.getId());
+  }
+
+  @Test
+  public void testCanUpdateWorkItem(){
+
+    //WorkItem item = repository.findByNumber();
+    Issue issue = new Issue(14L);
+    //assertNotNull(item);
+    Collection<User> users = new ArrayList();
+
+    users.add(new User(8L,"Simba","Ba", "Sim"));
+    WorkItem itemInRepository = generateSimpleWorkItem(testWorkitemNr);
+    itemInRepository.setStatus(Status.IN_PROGRESS);
+    itemInRepository.setDescription("updated item");
+    itemInRepository.setIssue(issue);
+    itemInRepository.setUsers(users);
+
+    WorkItem updatedWorkItem = repository.updateWorkItem(itemInRepository);
+    assertNotNull(updatedWorkItem);
+    assertEquals(itemInRepository, updatedWorkItem);
   }
 
   private WorkItem generateSimpleWorkItem(@NotNull final Long number) {

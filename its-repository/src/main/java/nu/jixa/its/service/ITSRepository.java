@@ -69,4 +69,6 @@ public interface ITSRepository {
   Issue updateIssue(Issue issue);
 
   WorkItem findByNumber(Long id);
+
+  WorkItem updateWorkItem(WorkItem updatedWorkItem);
 }
