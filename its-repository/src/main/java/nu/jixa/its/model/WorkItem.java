@@ -5,6 +5,7 @@ import java.util.Collection;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
@@ -18,14 +19,14 @@ public class WorkItem extends AbstractEntity {
   @Column(name = "number", unique = true, nullable = false)
   private Long number;
 
-  @Enumerated
+  @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false)
   private Status status;
 
-  @Column(name = "description", unique = true, nullable = false)
+  @Column(name = "description", unique = true)
   private String description;
 
-  @OneToOne(cascade = CascadeType.REMOVE)
+  @OneToOne(cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
   @JoinColumn
   private Issue issue;
 

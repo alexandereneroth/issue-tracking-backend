@@ -44,7 +44,8 @@ Issue
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     ModelUtilTest.class,
-    UserITSRepositoryTest.class
+    UserITSRepositoryTest.class,
+    WorkItemRepositoryTest.class
 })
 public class AllTestsSuite {
 }

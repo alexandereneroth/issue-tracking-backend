@@ -10,10 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface WorkItemRepository extends CrudRepository<WorkItem, Long> {
 
-  WorkItem findById(Long id);
-
-  @Transactional
-  WorkItem deleteById(Long Id);
+  WorkItem findByNumber(Long id);
 
   Collection<WorkItem> findByStatus(Status status);
 

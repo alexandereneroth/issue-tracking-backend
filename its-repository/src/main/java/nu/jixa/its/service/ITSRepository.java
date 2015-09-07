@@ -28,6 +28,8 @@ public interface ITSRepository {
 
   WorkItem addIssueToWorkItem(Long workItemId, Long IssueId);
 
+  WorkItem getWorkItemById(Long workItemId);
+
   // User
   User addUser(User user);
 
@@ -66,4 +68,5 @@ public interface ITSRepository {
 
   Issue updateIssue(Issue issue);
 
+  WorkItem findByNumber(Long id);
 }
