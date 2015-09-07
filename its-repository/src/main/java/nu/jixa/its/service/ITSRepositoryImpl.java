@@ -2,7 +2,6 @@ package nu.jixa.its.service;
 
 import java.util.Collection;
 import nu.jixa.its.model.Issue;
-import nu.jixa.its.model.ModelUtil;
 import nu.jixa.its.model.Status;
 import nu.jixa.its.model.Team;
 import nu.jixa.its.model.User;
@@ -15,9 +14,6 @@ import nu.jixa.its.repository.WorkItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Created by gina on 2015-09-01.
- */
 public class ITSRepositoryImpl implements ITSRepository {
 
   @Autowired

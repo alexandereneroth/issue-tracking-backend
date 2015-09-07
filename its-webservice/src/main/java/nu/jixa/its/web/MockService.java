@@ -14,28 +14,23 @@
  * limitations under the License.
  */
 
-package nu.jixa.its.endpoint;
+package nu.jixa.its.web;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import nu.jixa.its.MockService;
-import org.springframework.beans.factory.annotation.Autowired;
+import nu.jixa.its.model.User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-@Path("/hello")
-public class Endpoint {
+public class MockService {
 
-	private MockService mockService;
+	@Value("${message:World}")
+	private String msg;
 
-	@Autowired
-	public Endpoint(MockService mockService) {
-		this.mockService = mockService;
-	}
-
-	@GET
 	public String message() {
-		return "Hello " + this.mockService.message();
+		return this.msg;
 	}
 
+  public User getUserWithId(long userId) {
+    return new User(userId, "UserName" + userId, "firstName" + userId, "lastName" + userId);
+  }
 }
