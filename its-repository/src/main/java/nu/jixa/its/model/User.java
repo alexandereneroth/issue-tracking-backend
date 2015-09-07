@@ -3,7 +3,6 @@ package nu.jixa.its.model;
 import com.sun.istack.internal.NotNull;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -117,7 +116,8 @@ public class User extends AbstractEntity {
     if (!getNumber().equals(user.getNumber())) return false;
     if (!getUsername().equals(user.getUsername())) return false;
     if (!getFirstname().equals(user.getFirstname())) return false;
-    return getLastname().equals(user.getLastname());
+    if (!getLastname().equals(user.getLastname())) return false;
+    return !(team != null ? !team.equals(user.team) : user.team != null);
   }
 
   @Override public int hashCode() {
@@ -125,6 +125,7 @@ public class User extends AbstractEntity {
     result = 31 * result + getUsername().hashCode();
     result = 31 * result + getFirstname().hashCode();
     result = 31 * result + getLastname().hashCode();
+    result = 31 * result + (team != null ? team.hashCode() : 0);
     return result;
   }
 }

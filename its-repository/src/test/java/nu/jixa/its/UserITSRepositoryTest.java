@@ -1,12 +1,12 @@
 package nu.jixa.its;
 
 import com.sun.istack.internal.NotNull;
-import nu.jixa.its.config.InfrastructureConfig;
+import java.util.List;
 import nu.jixa.its.config.ITSRepositoryConfig;
+import nu.jixa.its.config.InfrastructureConfig;
 import nu.jixa.its.model.User;
 import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.service.ITSRepositoryException;
-import nu.jixa.its.service.ITSRepositoryImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -21,6 +21,15 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+/* FUNKTIONSKRAV
+✓ Skapa en User
+✓ Uppdatera en User
+✓ Ta bort* en User
+✓ Hämta en User baserat på user id (inte entity id)
+  Söka efter en User baserat på förnamn eller efternamn eller användarnamn
+✓(se UserTeam testet) Hämta alla User som ingår i ett visst team
+*/
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { InfrastructureConfig.class,
     ITSRepositoryConfig.class }, loader = AnnotationConfigContextLoader.class)
@@ -34,6 +43,7 @@ public class UserITSRepositoryTest {
   ITSRepository repository;
 
   final Long testUserId = 10L;
+  final String testUserTeamName = "health";
 
   @Before
   public void before() {
@@ -80,16 +90,6 @@ public class UserITSRepositoryTest {
     User testUserAfterUpdate = repository.getUser(testUserId);
     assertEquals(testUserAfterUpdate.getFirstname(), updatedFirstname);
   }
-
-  /*@Test
-  public void canGetById() {
-    //TODO implement
-  }*/
-
- /* @Test
-  public void canGetByTeam() {
-    //TODO implement
-  }*/
 
   /*@Test
   public void canGetByNameLike() {
