@@ -128,7 +128,8 @@ public class ITSRepositoryImpl implements ITSRepository {
   }
 
   @Override public Team addTeam(Team team) {
-    return null;
+    teamRepository.save(team);
+    return team;
   }
 
   @Override public Team updateTeam(Team team) {
