@@ -21,14 +21,10 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan("nu.jixa.its")
-@EnableJpaRepositories(basePackages = {"nu.jixa.its.repository"})
-@EnableTransactionManagement
 public class Application extends SpringBootServletInitializer {
 
 	@Override

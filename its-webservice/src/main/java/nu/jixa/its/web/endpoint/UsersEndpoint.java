@@ -8,7 +8,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import nu.jixa.its.model.User;
-import nu.jixa.its.repository.UserRepository;
+import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.web.MockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,16 +23,16 @@ public class UsersEndpoint {
   private MockService mockService;
 
   @Autowired
-  private UserRepository userRepository;
+  private ITSRepository itsRepository;
 
   @GET
   @Path("{userNumber}")
   public Response getCustomer(@PathParam("userNumber") final long userNumber)
   {
     User user = mockService.getUserWithId(userNumber);
-    userRepository.save(user);
+    itsRepository.addUser(user);
 
-    User repoUser = userRepository.findByNumber(userNumber);
+    User repoUser = itsRepository.getUser(user.getNumber());
     return Response.ok(repoUser).build();
   }
 }

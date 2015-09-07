@@ -1,7 +1,6 @@
-package nu.jixa.its;
+package nu.jixa.its.web;
 
 import nu.jixa.its.model.User;
-import nu.jixa.its.web.Application;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 @SpringApplicationConfiguration(classes = Application.class)
 @IntegrationTest("server.port=0")
 @WebAppConfiguration
-public class ApplicationTest {
+public class WebserviceTest {
   @Value("${local.server.port}")
   private int port;
   private final String BASE_URL = "http://localhost:";
@@ -29,27 +28,11 @@ public class ApplicationTest {
 
   private RestTemplate restTemplate = new TestRestTemplate();
 
-
   @Test
   public void contextLoads() {
     ResponseEntity<String> entity = this.restTemplate.getForEntity(
         BASE_URL + this.port + "/hello", String.class);
     assertEquals(HttpStatus.OK, entity.getStatusCode());
-  }
-
-  @Test
-  public void reverse() {
-    ResponseEntity<String> entity = this.restTemplate.getForEntity(
-        BASE_URL + this.port + "/reverse?input=olleh", String.class);
-    assertEquals(HttpStatus.OK, entity.getStatusCode());
-    assertEquals("hello", entity.getBody());
-  }
-
-  @Test
-  public void validation() {
-    ResponseEntity<String> entity = this.restTemplate.getForEntity(
-        BASE_URL + this.port + "/reverse", String.class);
-    assertEquals(HttpStatus.BAD_REQUEST, entity.getStatusCode());
   }
 
   @Test

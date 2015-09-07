@@ -17,7 +17,6 @@
 package nu.jixa.its.web.config;
 
 import nu.jixa.its.web.endpoint.Endpoint;
-import nu.jixa.its.web.endpoint.ReverseEndpoint;
 import nu.jixa.its.web.endpoint.UsersEndpoint;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.stereotype.Component;
@@ -27,7 +26,6 @@ public class JerseyConfig extends ResourceConfig {
 
 	public JerseyConfig() {
 		register(Endpoint.class);
-		register(ReverseEndpoint.class);
     register(UsersEndpoint.class);
   }
 
