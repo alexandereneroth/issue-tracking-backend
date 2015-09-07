@@ -31,17 +31,16 @@ public class UserTeamITSRepositoryTest {
     User user = HelperMethods.generateSimpleUser(userNumber);
     Team team = new Team(teamNumber);
 
+    repository.addTeam(team);
+
     user.setTeam(team);
 
-    repository.addTeam(team);
     repository.addUser(user);
 
     User userInRepoAfterAdd = repository.getUser(userNumber);
 
     assertNotNull(user);
     assertEquals(user, userInRepoAfterAdd);
-
-    User userInTeam = repository.getUserByTeam(teamNumber);
 
     repository.deleteUser(userNumber);
   }
