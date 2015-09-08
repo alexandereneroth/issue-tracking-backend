@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
@@ -30,7 +31,7 @@ public class WorkItem extends AbstractEntity {
   @JoinColumn
   private Issue issue;
 
-  @ManyToMany(mappedBy = "workItems")
+  @ManyToMany(mappedBy = "workItems", fetch = FetchType.EAGER)
   Collection<User> users;
 
   protected WorkItem() {

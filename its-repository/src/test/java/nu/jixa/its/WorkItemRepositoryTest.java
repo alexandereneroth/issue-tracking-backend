@@ -4,11 +4,13 @@ import com.sun.istack.internal.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import nu.jixa.its.config.ITSRepositoryConfig;
 import nu.jixa.its.config.InfrastructureConfig;
 import nu.jixa.its.model.Issue;
 import nu.jixa.its.model.Status;
+import nu.jixa.its.model.Team;
 import nu.jixa.its.model.User;
 import nu.jixa.its.model.WorkItem;
 import nu.jixa.its.service.ITSRepository;
@@ -43,7 +45,7 @@ public class WorkItemRepositoryTest {
   @Before
   public void before() {
 
-    WorkItem item = generateSimpleWorkItem(testWorkitemNr);
+    WorkItem item = HelperMethods.generateSimpleWorkItem(testWorkitemNr);
     repository.addWorkItem(item);
     WorkItem workItemInRepoAfterAdd = repository.findByNumber(item.getNumber());
     assertNotNull(item);
@@ -60,7 +62,7 @@ public class WorkItemRepositoryTest {
   @Test
   public void testSaveAndDelete() {
     Long id = 999L;
-    WorkItem item = generateSimpleWorkItem(id);
+    WorkItem item = HelperMethods.generateSimpleWorkItem(id);
     repository.addWorkItem(item);
     WorkItem workItemInRepoAfterAdd = repository.findByNumber(item.getNumber());
 
@@ -88,20 +90,57 @@ public class WorkItemRepositoryTest {
     itemInRepository.setDescription("updated item");
     itemInRepository.setIssue(issue);
     itemInRepository.setUsers(users);
+
     WorkItem updatedItem = repository.updateWorkItem(itemInRepository);
+    Set<User>usersInRepoSet = HelperMethods.toHashSet(itemInRepository.getUsers());
+    Set<User>usersAfterUpdateSet = HelperMethods.toHashSet(updatedItem.getUsers());
 
-
-
-    //WorkItem updatedWorkItem = repository.updateWorkItem(itemInRepository);
-    //assertNotNull(updatedWorkItem);
     assertNotNull(updatedItem);
-    assert HelperMethods.isEqualSet(itemInRepository.getUsers(), updatedItem.getUsers());
+    assert(HelperMethods.isEqualSet(usersInRepoSet, usersAfterUpdateSet));
     assertEquals(itemInRepository, updatedItem);
   }
 
-  private WorkItem generateSimpleWorkItem(@NotNull final Long number) {
-    Status status = Status.ON_BACKLOG;
-    return new WorkItem(number, status);
+  @Test
+  public void testCanFindByStatus(){
+    ArrayList<WorkItem> items = (ArrayList)HelperMethods.generateComplexWorkItems();
+    addWorkItemsToRepository(items);
+
+    ArrayList<WorkItem> itemsFromRepository = (ArrayList)repository.getWorkItemsByStatus(Status.DONE);
+    Set<WorkItem>itemsByStatusSet = HelperMethods.toHashSet(items);
+    Set<WorkItem>itemsFromRepositorySet = HelperMethods.toHashSet(itemsFromRepository);
+
+    assert(HelperMethods.isEqualSet(itemsByStatusSet, itemsFromRepositorySet));
   }
 
+  @Test
+  public void testCanSetWorkItemStatus(){
+    Status status = Status.ON_BACKLOG;
+    repository.setWorkItemStatus(testWorkitemNr, status);
+    WorkItem workItemFromRepository = repository.getWorkItemById(testWorkitemNr);
+
+    assertNotNull(workItemFromRepository);
+    assertEquals(workItemFromRepository.getStatus(), status);
+  }
+  @Test
+  public void testCanFindByUser(){
+
+    ArrayList<WorkItem> items = (ArrayList)HelperMethods.generateComplexWorkItems();
+    addWorkItemsToRepository(items);
+
+    //repository.getWorkItemsByUser();
+  }
+  @Test
+  public void testCanFindByIssue(){
+    //repository.getWorkItemsByTeam();
+  }
+  @Test
+  public void testCanFindByTeam(){
+    //repository.getWorkItemsByTeam();
+  }
+  private void addWorkItemsToRepository(ArrayList<WorkItem> workItems){
+    for(WorkItem item: workItems){
+      repository.addWorkItem(item);
+      assertNotNull(repository.findByNumber(item.getNumber()));
+    }
+  }
 }
