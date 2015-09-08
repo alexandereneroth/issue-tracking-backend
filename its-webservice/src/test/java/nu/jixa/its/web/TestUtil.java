@@ -17,20 +17,11 @@
 package nu.jixa.its.web;
 
 import nu.jixa.its.model.User;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-@Component
-public class MockService {
+public class TestUtil {
 
-	@Value("${message:World}")
-	private String msg;
-
-	public String message() {
-		return this.msg;
-	}
-
-  public User getUserWithId(long userId) {
-    return new User(userId, "UserName" + userId, "firstName" + userId, "lastName" + userId);
+  static public User createUserWithNumber(long userNumber) {
+    return new User(
+        userNumber, "UserName" + userNumber, "firstName" + userNumber, "lastName" + userNumber);
   }
 }

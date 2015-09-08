@@ -15,4 +15,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
   Collection<User> selectByNameLike(@Param("name") String name);
   
   User findByNumber(Long number);
+
+  Iterable<User> findByTeamNumber(Long number);
 }
