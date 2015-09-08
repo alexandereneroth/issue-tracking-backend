@@ -23,9 +23,6 @@ public class ITSRepositoryImpl implements ITSRepository {
   private WorkItemRepository workItemRepository;
 
   @Autowired
-  private IssueRepository issueRepository;
-
-  @Autowired
   private TeamRepository teamRepository;
 
   @Transactional
@@ -41,15 +38,15 @@ public class ITSRepositoryImpl implements ITSRepository {
     return deleteItem;
   }
   @Transactional
-  @Override public WorkItem getWorkItemById(Long workItemId) {
-    WorkItem workItemInDB = workItemRepository.findByNumber(workItemId);
+  @Override public WorkItem getWorkItem(Long workItemNumber) {
+    WorkItem workItemInDB = workItemRepository.findByNumber(workItemNumber);
     RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(workItemInDB,
-        "Could not find workItem: No item with nr " + workItemId);
-    return workItemRepository.findByNumber(workItemId);
+        "Could not find workItem: No item with nr " + workItemNumber);
+    return workItemRepository.findByNumber(workItemNumber);
   }
   @Transactional
-  @Override public void setWorkItemStatus(Long workItemId, Status status) {
-    WorkItem item = workItemRepository.findByNumber(workItemId);
+  @Override public void setWorkItemStatus(Long workItemNumber, Status status) {
+    WorkItem item = workItemRepository.findByNumber(workItemNumber);
     item.setStatus(status);
     workItemRepository.save(item);
   }
@@ -58,19 +55,19 @@ public class ITSRepositoryImpl implements ITSRepository {
     return workItemRepository.findByStatus(status);
   }
 
-  @Override public Collection<WorkItem> getWorkItemsByTeam(Long teamId) {
+  @Override public Collection<WorkItem> getWorkItemsByTeam(Long teamNumber) {
 
     //userRepository.selectUserByTeamId(teamNumber);
     //return workItemRepository.getWorkItemsByTeam(teamNumber);
     return null;
   }
 
-  @Override public Collection<WorkItem> getWorkItemsByUser(Long userId) {
-    return workItemRepository.findByUsersId(userId);
+  @Override public Collection<WorkItem> getWorkItemsByUser(Long userNumber) {
+    return workItemRepository.findByUsersNumber(userNumber);
   }
 
-  @Override public Collection<WorkItem> getWorkItemsByIssue(Long issueId) {
-    return workItemRepository.findByIssueId(issueId);
+  @Override public Collection<WorkItem> getWorkItemsByIssue(Long issueNumber) {
+    return workItemRepository.findByIssueNumber(issueNumber);
   }
 
   @Override public Collection<WorkItem> getWorkItemByDescriptionLike(String descriptionLike) {
@@ -93,17 +90,17 @@ public class ITSRepositoryImpl implements ITSRepository {
     return userRepository.save(user);
   }
 
-  @Override public User deleteUser(Long userId) {
-    User deletedUser = userRepository.findByNumber(userId);
-    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(deletedUser,"Could not delete User: No user with number " + userId );
+  @Override public User deleteUser(Long userNumber) {
+    User deletedUser = userRepository.findByNumber(userNumber);
+    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(deletedUser,"Could not delete User: No user with number " + userNumber );
     userRepository.delete(deletedUser);
     return deletedUser;
   }
 
-  @Override public User getUser(Long userId) {
-    User gotUser = userRepository.findByNumber(userId);
+  @Override public User getUser(Long userNumber) {
+    User gotUser = userRepository.findByNumber(userNumber);
     if (gotUser == null) {
-      throw new ITSRepositoryException("Could not get User: No user with id " + userId);
+      throw new ITSRepositoryException("Could not get User: No user with id " + userNumber);
     }
     return gotUser;
   }
@@ -151,10 +148,6 @@ public class ITSRepositoryImpl implements ITSRepository {
     return team;
   }
 
-  @Override public Team removeTeamWithId(Long teamId) {
-    return null;
-  }
-
   @Override public Iterable<Team> getAllTeams() {
     return teamRepository.findAll();
   }
@@ -167,18 +160,6 @@ public class ITSRepositoryImpl implements ITSRepository {
 
     userRepository.save(user);
     return user;
-  }
-
-  @Override public Issue addIssue(Issue issue) {
-    return null;
-  }
-
-  @Override public Issue removeIssue(Long issueId) {
-    return null;
-  }
-
-  @Override public Issue updateIssue(Issue issue) {
-    return null;
   }
   @Override public WorkItem findByNumber(Long workItemNr) {
     WorkItem item = workItemRepository.findByNumber(workItemNr);

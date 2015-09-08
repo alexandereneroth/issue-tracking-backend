@@ -12,34 +12,34 @@ public interface ITSRepository {
   // WorkItem
   WorkItem addWorkItem(WorkItem workItem);
 
-  WorkItem removeWorkItem(Long workItemId);
+  WorkItem removeWorkItem(Long workItemNumber);
 
-  void setWorkItemStatus(Long workItemId, Status status);
+  void setWorkItemStatus(Long workItemNumber, Status status);
 
   Collection<WorkItem> getWorkItemsByStatus(Status status);
 
-  Collection<WorkItem> getWorkItemsByTeam(Long teamId);
+  Collection<WorkItem> getWorkItemsByTeam(Long teamNumber);
 
-  Collection<WorkItem> getWorkItemsByUser(Long userId);
+  Collection<WorkItem> getWorkItemsByUser(Long userNumber);
 
-  Collection<WorkItem> getWorkItemsByIssue(Long issueId);
+  Collection<WorkItem> getWorkItemsByIssue(Long issueNumber);
 
   Collection<WorkItem> getWorkItemByDescriptionLike(String descriptionLike);
 
-  WorkItem addIssueToWorkItem(Long workItemId, Long IssueId);
+  WorkItem addIssueToWorkItem(Long workItemNumber, Long IssueNumber);
 
-  WorkItem getWorkItemById(Long workItemId);
+  WorkItem getWorkItem(Long workItemNumber);
 
   // User
   User addUser(User user);
 
   User updateUser(User user);
 
-  User deleteUser(Long userId);
+  User deleteUser(Long userNumber);
 
-  User getUser(Long userId);
+  User getUser(Long userNumber);
 
-  Iterable<User> getUsersByTeam(Long teamId);
+  Iterable<User> getUsersByTeam(Long teamNumber);
 
   /**
    * Get all users that has
@@ -48,7 +48,7 @@ public interface ITSRepository {
    */
   Collection<User> getUsersByNameLike(String nameLike);
 
-  void addWorkItemToUser(Long userId, WorkItem workItem);
+  void addWorkItemToUser(Long userNumber, WorkItem workItem);
 
   // Team
   Team addTeam(Team team);
@@ -61,18 +61,10 @@ public interface ITSRepository {
 
   Team getTeam(Long teamNumber);
 
-  Team removeTeamWithId(Long teamId);
-
   Iterable<Team> getAllTeams();
 
   User addUserToTeamWithNumber(Long userNumber, Long teamNumber);
 
   // Issue
-  Issue addIssue(Issue issue);
-
-  Issue removeIssue(Long issueId);
-
-  Issue updateIssue(Issue issue);
-
   WorkItem findByNumber(Long id);
 }

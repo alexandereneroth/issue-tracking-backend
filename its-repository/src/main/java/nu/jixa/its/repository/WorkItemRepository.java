@@ -16,9 +16,9 @@ public interface WorkItemRepository extends CrudRepository<WorkItem, Long> {
 
   //TODO confusing method names?
   WorkItem findByUsers(User user);
-  Collection<WorkItem> findByUsersId(Long userId);
+  Collection<WorkItem> findByUsersNumber(Long userNumber);
 
-  Collection<WorkItem> findByIssueId(Long issueId);
+  Collection<WorkItem> findByIssueNumber(Long issueNumber);
 
   @Query("select w from WorkItem w where w.description like %?1")
   Collection<WorkItem> findWorkItemByDescLike(String descriptionLike);

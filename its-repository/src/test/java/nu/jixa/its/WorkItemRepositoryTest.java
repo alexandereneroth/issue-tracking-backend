@@ -67,7 +67,7 @@ public class WorkItemRepositoryTest {
 
     expectedException.expect(ITSRepositoryException.class);
     expectedException.expectMessage("Could not find workItem");
-    repository.getWorkItemById(workItemInRepoAfterAdd.getId());
+    repository.getWorkItem(workItemInRepoAfterAdd.getId());
   }
 
   private WorkItem generateSimpleWorkItem(@NotNull final Long number) {
