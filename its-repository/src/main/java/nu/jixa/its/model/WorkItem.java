@@ -31,7 +31,7 @@ public class WorkItem extends AbstractEntity {
   @JoinColumn
   private Issue issue;
 
-  @ManyToMany(mappedBy = "workItems", fetch = FetchType.EAGER)
+  @ManyToMany(mappedBy = "workItems", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
   Collection<User> users;
 
   protected WorkItem() {

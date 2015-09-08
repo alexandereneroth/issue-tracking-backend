@@ -28,7 +28,7 @@ public interface ITSRepository {
 
   WorkItem addIssueToWorkItem(Long workItemId, Long IssueId);
 
-  WorkItem getWorkItemById(Long workItemId);
+  WorkItem getWorkItem(Long workItemId);
 
   // User
   User addUser(User user);
@@ -48,7 +48,7 @@ public interface ITSRepository {
    */
   Collection<User> getUsersByNameLike(String nameLike);
 
-  void addWorkItemToUser(Long userId, WorkItem workItem);
+  void addWorkItemToUser(Long userId, Long workItemId);
 
   // Team
   Team addTeam(Team team);

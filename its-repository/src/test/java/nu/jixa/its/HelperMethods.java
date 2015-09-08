@@ -75,7 +75,7 @@ public final class HelperMethods {
   public static List<WorkItem> generateComplexWorkItems() {
     ArrayList<WorkItem> list = new ArrayList<>();
     Collection<User> users = new ArrayList();
-    //users.add();
+    users.add(generateSimpleUser(11L));
     WorkItem workItemStatus1 = generateSimpleWorkItem(12L);
     workItemStatus1.setDescription("item 1");
     workItemStatus1.setIssue(new Issue(20L));
@@ -83,14 +83,16 @@ public final class HelperMethods {
     workItemStatus1.setStatus(Status.DONE);
 
     WorkItem workItemStatus2 = generateSimpleWorkItem(14L);
+    users.add(generateSimpleUser(12L));
     workItemStatus1.setDescription("item 2");
     workItemStatus1.setIssue(new Issue(22L));
     workItemStatus1.setUsers(users);
     workItemStatus1.setStatus(Status.DONE);
 
     WorkItem workItemStatus3 = generateSimpleWorkItem(16L);
+    users.add(generateSimpleUser(14L));
     workItemStatus1.setDescription("item 1");
-    workItemStatus1.setIssue(new Issue(24L));
+    workItemStatus1.setIssue(new Issue(244L));
     workItemStatus1.setUsers(users);
     workItemStatus1.setStatus(Status.DONE);
 

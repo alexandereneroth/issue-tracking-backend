@@ -94,6 +94,9 @@ public class User extends AbstractEntity {
     this.lastname = lastname;
   }
 
+  public void addWorkItem(WorkItem item){
+    workItems.add(item);
+  }
   public Team getTeam() {
     return team;
   }
