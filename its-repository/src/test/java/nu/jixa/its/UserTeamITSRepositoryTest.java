@@ -49,7 +49,26 @@ public class UserTeamITSRepositoryTest {
   }
 
   @Test
-  public void canGetUserByTeam(){
+  public void testAddUserToTeamWithNumber() {
+    User user = HelperMethods.generateSimpleUser(userNumber);
+    Team team = new Team(teamNumber);
+
+    repository.addUser(user);
+    repository.addTeam(team);
+
+    repository.addUserToTeamWithNumber(userNumber,teamNumber);
+
+    User userInRepoAfterAdd = repository.getUser(userNumber);
+
+    assertNotNull(user);
+    assertEquals(team.getNumber(), userInRepoAfterAdd.getTeam().getNumber());
+
+    repository.deleteUser(userNumber);
+    repository.deleteTeam(teamNumber);
+  }
+
+  @Test
+  public void canGetUserByTeam() {
     User user = HelperMethods.generateSimpleUser(userNumber);
     User user2 = HelperMethods.generateSimpleUser(userNumber2);
     Team team = new Team(teamNumber);
@@ -72,7 +91,7 @@ public class UserTeamITSRepositoryTest {
     Set<User> usersInTeamInRepo = HelperMethods.toHashSet(iterableUsersInTeamInRepo);
     Set<User> usersInTeam = HelperMethods.toHashSet(new User[] { user, user2 });
 
-    assert(HelperMethods.isEqualSet(usersInTeam, usersInTeamInRepo));
+    assert (HelperMethods.isEqualSet(usersInTeam, usersInTeamInRepo));
 
     repository.deleteUser(userNumber);
     repository.deleteUser(userNumber2);
