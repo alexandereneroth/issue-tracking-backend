@@ -155,10 +155,6 @@ public class ITSRepositoryImpl implements ITSRepository {
     return team;
   }
 
-  @Override public Team removeTeamWithId(Long teamId) {
-    return null;
-  }
-
   @Override public Iterable<Team> getAllTeams() {
     return teamRepository.findAll();
   }
@@ -171,18 +167,6 @@ public class ITSRepositoryImpl implements ITSRepository {
 
     userRepository.save(user);
     return user;
-  }
-
-  @Override public Issue addIssue(Issue issue) {
-    return null;
-  }
-
-  @Override public Issue removeIssue(Long issueId) {
-    return null;
-  }
-
-  @Override public Issue updateIssue(Issue issue) {
-    return null;
   }
 
   @Override public WorkItem findByNumber(Long workItemNr) {

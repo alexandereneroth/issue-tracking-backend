@@ -61,18 +61,11 @@ public interface ITSRepository {
 
   Team getTeam(Long teamNumber);
 
-  Team removeTeamWithId(Long teamId);
-
   Iterable<Team> getAllTeams();
 
   User addUserToTeamWithNumber(Long userNumber, Long teamNumber);
 
   // Issue
-  Issue addIssue(Issue issue);
-
-  Issue removeIssue(Long issueId);
-
-  Issue updateIssue(Issue issue);
 
   WorkItem findByNumber(Long id);
 
