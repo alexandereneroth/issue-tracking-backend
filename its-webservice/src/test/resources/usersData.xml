@@ -1,0 +1,4 @@
+<dataset>
+  <tblUser id="1" firstname="Firstname1" lastname="Lastname1" username="Username1" number="1"/>
+  <tblUser id="2" firstname="Firstname2" lastname="Lastname2" username="Username2" number="2"/>
+</dataset>
