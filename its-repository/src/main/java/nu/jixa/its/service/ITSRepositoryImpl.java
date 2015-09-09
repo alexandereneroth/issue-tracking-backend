@@ -29,8 +29,10 @@ public class ITSRepositoryImpl implements ITSRepository {
   private TeamRepository teamRepository;
 
   @Override public WorkItem updateWorkItem(WorkItem updatedWorkItem) {
-    workItemRepository.save(updatedWorkItem);
 
+    WorkItem workItemFromRepository = getWorkItem(updatedWorkItem.getNumber());
+    workItemFromRepository
+    workItemRepository.save(updatedWorkItem);
     return getWorkItem(updatedWorkItem.getNumber());
   }
   @Transactional
