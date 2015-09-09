@@ -14,10 +14,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tblUser")
-public class User extends AbstractEntity {
-
-  @Column(name = "number", unique = true, nullable = false)
-  private Long number;
+public class User extends AbstractEntity<User> {
 
   @Column(name = "username", unique = true, nullable = false)
   private String username;
@@ -42,6 +39,14 @@ public class User extends AbstractEntity {
   protected User() {
   }
 
+  @Override public void copyFields(User user) {
+    this.username = user.username;
+    this.firstname = user.firstname;
+    this.lastname = user.lastname;
+    this.team = user.team;
+    this.workItems = user.workItems;
+  }
+
   public User(@NotNull Long number, @NotNull String username, @NotNull String firstname,
       @NotNull String lastname) {
     HashMap<Object, String> argsWithNames = new HashMap<>();
@@ -56,15 +61,6 @@ public class User extends AbstractEntity {
     this.username = username;
     this.firstname = firstname;
     this.lastname = lastname;
-  }
-
-  public Long getNumber() {
-    return number;
-  }
-
-  public void setNumber(@NotNull final Long number) {
-    ModelUtil.throwExceptionIfArgIsNull(number, "number");
-    this.number = number;
   }
 
   public String getUsername() {
@@ -101,9 +97,16 @@ public class User extends AbstractEntity {
     return team;
   }
 
-  public void setTeam(@NotNull final Team team) {
+  public void joinTeam(@NotNull final Team team) {
     ModelUtil.throwExceptionIfArgIsNull(team, "team");
     this.team = team;
+    team.addUser(this);
+  }
+
+  public void leaveTeam()
+  {
+    team.removeUser(this);
+    team = null;
   }
 
   public Collection<WorkItem> getWorkItems() {

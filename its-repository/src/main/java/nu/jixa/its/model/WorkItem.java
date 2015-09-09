@@ -15,10 +15,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tblWorkItem")
-public class WorkItem extends AbstractEntity {
-
-  @Column(name = "number", unique = true, nullable = false)
-  private Long number;
+public class WorkItem extends AbstractEntity<WorkItem> {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false)
@@ -37,20 +34,17 @@ public class WorkItem extends AbstractEntity {
   protected WorkItem() {
   }
 
+  @Override public void copyFields(WorkItem other) {
+    this.status = other.status;
+    this.description = other.description;
+    this.issue = other.issue;
+    this.users = other.users;
+  }
+
   public WorkItem(Long number, Status status) {
     this.number = number;
     this.status = status;
   }
-
-  public Long getNumber() {
-    return number;
-  }
-
-  public void setNumber(@NotNull final Long number) {
-    ModelUtil.throwExceptionIfArgIsNull(number, "number");
-    this.number = number;
-  }
-
   public Status getStatus() {
     return status;
   }

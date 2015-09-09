@@ -4,6 +4,7 @@ import com.sun.istack.internal.NotNull;
 import java.util.Collection;
 import nu.jixa.its.config.ITSRepositoryConfig;
 import nu.jixa.its.config.InfrastructureConfig;
+import nu.jixa.its.model.Team;
 import nu.jixa.its.model.User;
 import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.service.ITSRepositoryException;
@@ -40,10 +41,15 @@ public class UserITSRepositoryTest {
   final String testUserFirstname = "John";
   final String testUserLastname = "Doe";
   User testUser;
+  final Long testTeamId = 256L;
+  Team testTeam;
+
 
   @Before
   public void before() {
-  testUser = new User(testUserId,testUserUsername, testUserFirstname,testUserLastname);
+    testUser = new User(testUserId,testUserUsername, testUserFirstname,testUserLastname);
+    testTeam = new Team(testTeamId);
+
 
     repository.addUser(testUser);
     User userInRepoAfterAdd = repository.getUser(testUserId);
@@ -77,14 +83,15 @@ public class UserITSRepositoryTest {
   @Test
   public void canUpdate() {
 
-    User userToUpdate = repository.getUser(testUserId);
-    final String updatedFirstname = "UPDATED_FIRSTNAME";
-    userToUpdate.setFirstname(updatedFirstname);
-
+    User userToUpdate = new User(testUserId,"wa","ta","shi");
     repository.updateUser(userToUpdate);
 
     User testUserAfterUpdate = repository.getUser(testUserId);
-    assertEquals(testUserAfterUpdate.getFirstname(), updatedFirstname);
+    assertEquals(testUserAfterUpdate.getUsername(), "wa");
+    assertEquals(testUserAfterUpdate.getFirstname(), "ta");
+    assertEquals(testUserAfterUpdate.getLastname(), "shi");
+
+
   }
 
   @Test
@@ -113,11 +120,15 @@ public class UserITSRepositoryTest {
       assertEquals(user, testUser);
     }
   }
+  @Test
+  public void addShouldThrowExceptionOnExistingNumber()
+  {
+    User userWithExistingNumber = new User(testUserId,"hej","pa","dig");
 
-  /*@Test
-  public void canAddWorkItemTo() {
-    //TODO implement
-  }*/
+    expectedException.expect(ITSRepositoryException.class);
+    expectedException.expectMessage("Could not add user");
+    repository.addUser(userWithExistingNumber);
+  }
 
   private User generateSimpleUser(@NotNull final Long number) {
     return new User(number, "account" + number, "firstname" + number, "lastname" + number);

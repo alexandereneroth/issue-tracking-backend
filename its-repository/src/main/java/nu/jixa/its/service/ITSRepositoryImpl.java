@@ -1,17 +1,17 @@
 package nu.jixa.its.service;
 
 import java.util.Collection;
-import nu.jixa.its.model.Issue;
+import java.util.Iterator;
 import nu.jixa.its.model.Status;
 import nu.jixa.its.model.Team;
 import nu.jixa.its.model.User;
 import nu.jixa.its.model.WorkItem;
-import nu.jixa.its.repository.IssueRepository;
 import nu.jixa.its.repository.RepositoryUtil;
 import nu.jixa.its.repository.TeamRepository;
 import nu.jixa.its.repository.UserRepository;
 import nu.jixa.its.repository.WorkItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 public class ITSRepositoryImpl implements ITSRepository {
@@ -51,6 +51,7 @@ public class ITSRepositoryImpl implements ITSRepository {
         "Could not find workItem: No item with nr " + workItemNumber);
     return workItemRepository.findByNumber(workItemNumber);
   }
+
   @Transactional
   @Override public void setWorkItemStatus(Long workItemNumber, Status status) {
     WorkItem item = workItemRepository.findByNumber(workItemNumber);
@@ -87,20 +88,43 @@ public class ITSRepositoryImpl implements ITSRepository {
 
   @Transactional
   @Override public User addUser(User user) {
-    return userRepository.save(user);
+    try {
+      workItemRepository.save(user.getWorkItems());
+      userRepository.save(user);
+    } catch (DataIntegrityViolationException e) {
+      throw new ITSRepositoryException("Could not add user", e);
+    }
+    return user;
   }
 
   @Transactional
   @Override public User updateUser(User user) {
-    workItemRepository.save(user.getWorkItems());
-    return userRepository.save(user);
+    User userInRepo = getUser(user.getNumber());
+    /*TODO cant just use this to replace team, and workItem.
+     Need to change them (if they have changed) and save.*/
+    userInRepo.copyFields(user);
+
+    return userRepository.save(userInRepo);
   }
 
   @Override public User deleteUser(Long userNumber) {
     User deletedUser = userRepository.findByNumber(userNumber);
-    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(deletedUser,"Could not delete User: No user with number " + userNumber );
+    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(deletedUser,
+        "Could not delete User: No user with number " + userNumber);
+    if (deletedUser.getTeam() != null) {
+      // Gotcha: References from other objects need to be cleared and saved to the database
+      // before removal
+      removeUserFromItsTeam(deletedUser);
+    }
     userRepository.delete(deletedUser);
     return deletedUser;
+  }
+
+  private void removeUserFromItsTeam(User leavingUser) {
+    Team leavingUsersTeam = leavingUser.getTeam();
+    leavingUser.leaveTeam();
+    teamRepository.save(leavingUsersTeam);
+    userRepository.save(leavingUser);
   }
 
   @Override public User getUser(Long userNumber) {
@@ -137,23 +161,29 @@ public class ITSRepositoryImpl implements ITSRepository {
   }
 
   @Override public Team updateTeam(Team team) {
-    return teamRepository.save(team);
-  }
-
-  @Override public Team deleteTeam(Long teamNumber) {
-    Team deletedTeam = teamRepository.findByNumber(teamNumber);
-    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(deletedTeam,"Could not delete Team: No team with number " + teamNumber );
-    teamRepository.delete(deletedTeam);
-    return deletedTeam;
+    Team teamInRepo = getTeam(team.getNumber());
+    teamInRepo.copyFields(team);
+    return teamRepository.save(teamInRepo);
   }
 
   @Override public Team deleteTeam(Team team) {
-    Team deletedTeam = teamRepository.findOne(team.getId());
-    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(deletedTeam,
-        "Could not delete Team: Team not in repository");
+    return deleteTeam(team.getNumber());
+  }
 
-    teamRepository.delete(deletedTeam);
-    return team;
+  @Override public Team deleteTeam(Long teamNumber) {
+    Team teamToDelete = teamRepository.findByNumber(teamNumber);
+    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(teamToDelete,
+        "Could not delete Team: No team with number " + teamNumber);
+
+    Iterator<User> usersIterator = teamToDelete.getUsers().iterator();
+    while (usersIterator.hasNext()) {
+      User userToRemoveFromTeam = usersIterator.next();
+      usersIterator.remove();
+      userToRemoveFromTeam.leaveTeam();
+      userRepository.save(userToRemoveFromTeam);
+    }
+    teamRepository.delete(teamToDelete);
+    return teamToDelete;
   }
 
   @Override public Team getTeam(Long teamNumber) {
@@ -171,14 +201,16 @@ public class ITSRepositoryImpl implements ITSRepository {
 
     User user = getUser(userNumber);
     Team team = getTeam(teamNumber);
-    user.setTeam(team);
+    user.joinTeam(team);
 
     userRepository.save(user);
     return user;
   }
+
   @Override public WorkItem findByNumber(Long workItemNr) {
     WorkItem item = workItemRepository.findByNumber(workItemNr);
-    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(item,"Could not find User: No user with id" + workItemNr );
+    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(item,
+        "Could not find User: No user with id" + workItemNr);
     return item;
   }
 }

@@ -7,13 +7,15 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tblIssue")
-public class Issue extends AbstractEntity {
-  @Column(name = "number", unique = true, nullable = false)
-  private Long number;
+public class Issue extends AbstractEntity<Issue> {
   @Column(name = "string")
   private String string;
 
   protected Issue() {
+  }
+
+  @Override public void copyFields(Issue other) {
+    this.string = other.string;
   }
 
   public Issue(@NotNull final Long number) {
@@ -25,15 +27,6 @@ public class Issue extends AbstractEntity {
     ModelUtil.throwExceptionIfArgIsNull(number, "number");
     this.number = number;
     this.string = string;
-  }
-
-  public Long getNumber() {
-    return number;
-  }
-
-  public void setNumber(@NotNull final Long number) {
-    ModelUtil.throwExceptionIfArgIsNull(number, "number");
-    this.number = number;
   }
 
   public String getString() {

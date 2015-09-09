@@ -35,7 +35,7 @@ public class UserTeamITSRepositoryTest {
 
     repository.addTeam(team);
 
-    user.setTeam(team);
+    user.joinTeam(team);
 
     repository.addUser(user);
 
@@ -56,7 +56,7 @@ public class UserTeamITSRepositoryTest {
     repository.addUser(user);
     repository.addTeam(team);
 
-    repository.addUserToTeamWithNumber(userNumber,teamNumber);
+    repository.addUserToTeamWithNumber(userNumber, teamNumber);
 
     User userInRepoAfterAdd = repository.getUser(userNumber);
 
@@ -73,13 +73,16 @@ public class UserTeamITSRepositoryTest {
     User user2 = HelperMethods.generateSimpleUser(userNumber2);
     Team team = new Team(teamNumber);
 
-    repository.addTeam(team);
-
-    user.setTeam(team);
-    user2.setTeam(team);
-
     repository.addUser(user);
     repository.addUser(user2);
+
+    repository.addTeam(team);
+
+    user.joinTeam(team);
+    user2.joinTeam(team);
+
+    repository.updateUser(user);
+    repository.updateUser(user2);
 
     User userInRepoAfterAdd = repository.getUser(userNumber);
 
