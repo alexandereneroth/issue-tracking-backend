@@ -22,6 +22,6 @@ public class TestUtil {
 
   static public User createUserWithNumber(long userNumber) {
     return new User(
-        userNumber, "UserName" + userNumber, "firstName" + userNumber, "lastName" + userNumber);
+        userNumber, "username" + userNumber, "firstName" + userNumber, "lastName" + userNumber);
   }
 }

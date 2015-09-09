@@ -1,12 +1,15 @@
-package nu.jixa.its.web;
+package nu.jixa.its.web.integration;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DbUnitConfiguration;
+import com.github.springtestdbunit.annotation.ExpectedDatabase;
+import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.ContentType;
 import com.jayway.restassured.response.Response;
 import nu.jixa.its.model.User;
+import org.apache.http.HttpStatus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,20 +32,20 @@ import static org.hamcrest.Matchers.is;
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class, DbUnitTestExecutionListener.class})
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
+@SpringApplicationConfiguration(classes = ITContextConfig.class)
 @WebAppConfiguration
 @IntegrationTest("server.port=0")
-@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT,
-    value = "/usersData.xml")
-public class UserEndpointTest {
+@DatabaseSetup(value = "/usersData.xml")
+@DbUnitConfiguration(dataSetLoader = ReplacementDataSetLoader.class)
+public class UserEndpointIntegrationTest {
 
   private static final String BASE_URL = "http://localhost:";
   private static final String USERS_ENDPOINT = "/users";
   private static final String LOCATION_HEADER = "location";
+  private String FULL_USERS_ENDPOINT;
 
   @Value("${local.server.port}")
   private int port;
-  private String FULL_USERS_ENDPOINT;
 
   private User peter, tom, kurt;
   private Response peterResponse;
@@ -51,28 +54,26 @@ public class UserEndpointTest {
   public void setUp() {
     RestAssured.port = port;
     FULL_USERS_ENDPOINT = BASE_URL + port + USERS_ENDPOINT + "/";
-    peter = TestUtil.createUserWithNumber(1);
-    tom = TestUtil.createUserWithNumber(2);
-    kurt = TestUtil.createUserWithNumber(3);
   }
 
   @Test
+  @ExpectedDatabase(value = "/usersData.xml", table = "tblUser")
   public void getUserByNumber() {
     //peterResponse = postPeterToServer();
 
     User returnedUser =
         //get(peterResponse.header(LOCATION_HEADER))
     get(FULL_USERS_ENDPOINT +"1")
-        .then().assertThat().statusCode(is(equalTo(200)))
+        .then().assertThat().statusCode(is(equalTo(HttpStatus.SC_OK)))
         .and().extract().body().as(User.class);
 
-    assertThat(returnedUser.getNumber(), is(equalTo(peter.getNumber())));
+    assertThat(returnedUser.getNumber(), is(equalTo(1L)));
   }
 
   private Response postPeterToServer() {
     return given().body(peter).contentType(ContentType.JSON)
         .when().post(USERS_ENDPOINT)
-        .then().assertThat().statusCode(201)
+        .then().assertThat().statusCode(HttpStatus.SC_CREATED)
         .and().assertThat().header(LOCATION_HEADER, equalTo(FULL_USERS_ENDPOINT + peter.getNumber()))
         .extract().response();
   }
