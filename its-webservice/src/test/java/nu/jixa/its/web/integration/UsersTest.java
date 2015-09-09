@@ -41,6 +41,11 @@ import static org.hamcrest.Matchers.isEmptyOrNullString;
 @DbUnitConfiguration(dataSetLoader = ReplacementDataSetLoader.class)
 public class UsersTest {
   // @formatter:off
+  private static final String USERS_DATA = "/usersData.xml";
+  private static final String USERS_DATA_ADD_EXPECTED = "/usersData-add-expected.xml";
+  private static final String USERS_DATA_DELETE_EXPECTED = "/userData-delete-expected";
+  private static final String USER_DB_TABLE = "tblUser";
+
   private static final String BASE_URL = "http://localhost:";
   private static final String USERS_ENDPOINT = "/users/";
   private static final String USER_ENDPOINT = "/users/{userNumber}";
@@ -55,6 +60,7 @@ public class UsersTest {
   private static final String EXISTING_USER_LASTNAME = "lastname1";
 
   private static final Long NEW_USER_NUMBER = 3L;
+  private static final Long REMOVE_USER_NUMBER = 2L;
 
 
   @Value("${local.server.port}")
@@ -69,11 +75,11 @@ public class UsersTest {
     FULL_USERS_ENDPOINT = BASE_URL + serverPort + USERS_ENDPOINT;
 
     // Reset autoIncrement on DB so @ExpectedDatabase gets correct ID's
-    TestUtil.resetAutoIncrementColumns(applicationContext, "tblUser");
+    TestUtil.resetAutoIncrementColumns(applicationContext, USER_DB_TABLE);
   }
 
   @Test
-  @DatabaseSetup("/usersData.xml")
+  @DatabaseSetup(USERS_DATA)
   public void getUserByNumber() {
     when()
         .get(USER_ENDPOINT, EXISTING_USER_NUMBER)
@@ -85,7 +91,7 @@ public class UsersTest {
   }
 
   @Test
-  @DatabaseSetup("/usersData.xml")
+  @DatabaseSetup(USERS_DATA)
   public void createUserShouldReturnLocationURI() {
     given()
         .body(TestUtil.createUserWithNumber(NEW_USER_NUMBER))
@@ -98,13 +104,30 @@ public class UsersTest {
   }
 
   @Test
-  @DatabaseSetup("/usersData.xml")
-  @ExpectedDatabase(value = "/usersData-add-expected.xml", table = "tblUser")
+  @DatabaseSetup(USERS_DATA)
+  @ExpectedDatabase(value = USERS_DATA_ADD_EXPECTED, table = USER_DB_TABLE)
   public void createUserShouldAddUserToDatabase() {
     given()
         .body(TestUtil.createUserWithNumber(NEW_USER_NUMBER))
         .contentType(ContentType.JSON)
     .when()
         .post(USERS_ENDPOINT);
+  }
+
+  @Test
+  @DatabaseSetup(USERS_DATA)
+  @ExpectedDatabase(value = USERS_DATA_DELETE_EXPECTED, table = USER_DB_TABLE)
+  public void deleteUserShouldRemoveUserFromDatabase() {
+    when()
+        .delete(USER_ENDPOINT, REMOVE_USER_NUMBER);
+  }
+
+  @Test
+  @DatabaseSetup(USERS_DATA)
+  public void deleteUserShouldReturnNoContent() {
+    when()
+        .delete(USER_ENDPOINT, REMOVE_USER_NUMBER)
+    .then()
+        .statusCode(HttpStatus.SC_NO_CONTENT);
   }
 }

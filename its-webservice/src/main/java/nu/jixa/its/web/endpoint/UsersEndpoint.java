@@ -2,6 +2,7 @@ package nu.jixa.its.web.endpoint;
 
 import java.net.URI;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -30,7 +31,7 @@ public class UsersEndpoint {
 
   //USER
   //✓User       | Uppdatera en User
-  //✓User       | Ta bort* en User
+
   //✓User       | Söka efter en User baserat på förnamn eller efternamn eller användarnamn
   //✓UserTeam   | Hämta alla User som ingår i ett visst team
 
@@ -52,6 +53,15 @@ public class UsersEndpoint {
     User user = itsRepository.getUser(userNumber);
     return Response.ok(user).build();
   }
+
+  //✓User       | Ta bort* en User
+  @DELETE
+  @Path("{userNumber}")
+  public Response deleteUser(@PathParam("userNumber") final long userNumber) {
+    itsRepository.deleteUser(userNumber);
+    return Response.noContent().build();
+  }
+
 
 
 }
