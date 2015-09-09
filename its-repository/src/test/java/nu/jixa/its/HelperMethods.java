@@ -1,9 +1,17 @@
 package nu.jixa.its;
 
 import com.sun.istack.internal.NotNull;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import nu.jixa.its.model.Issue;
+import nu.jixa.its.model.Status;
 import nu.jixa.its.model.User;
+import nu.jixa.its.model.WorkItem;
+
+import static org.junit.Assert.assertNotNull;
 
 public final class HelperMethods {
 
@@ -57,5 +65,44 @@ public final class HelperMethods {
       }
     }
     return newSet;
+  }
+
+  /**
+   *
+   *  ------- WorkItem methods ------
+   */
+
+  public static List<WorkItem> generateComplexWorkItems() {
+    ArrayList<WorkItem> list = new ArrayList<>();
+    Collection<User> users = new ArrayList();
+    users.add(generateSimpleUser(11L));
+    WorkItem workItemStatus1 = generateSimpleWorkItem(12L);
+    workItemStatus1.setDescription("item 1");
+    workItemStatus1.setIssue(new Issue(20L));
+    workItemStatus1.setUsers(users);
+    workItemStatus1.setStatus(Status.DONE);
+
+    WorkItem workItemStatus2 = generateSimpleWorkItem(14L);
+    users.add(generateSimpleUser(12L));
+    workItemStatus1.setDescription("item 2");
+    workItemStatus1.setIssue(new Issue(22L));
+    workItemStatus1.setUsers(users);
+    workItemStatus1.setStatus(Status.DONE);
+
+    WorkItem workItemStatus3 = generateSimpleWorkItem(16L);
+    users.add(generateSimpleUser(14L));
+    workItemStatus1.setDescription("item 1");
+    workItemStatus1.setIssue(new Issue(244L));
+    workItemStatus1.setUsers(users);
+    workItemStatus1.setStatus(Status.DONE);
+
+    list.add(workItemStatus1);
+    list.add(workItemStatus2);
+    list.add(workItemStatus3);
+    return list;
+  }
+  public static WorkItem generateSimpleWorkItem(@NotNull final Long number) {
+    Status status = Status.ON_BACKLOG;
+    return new WorkItem(number, status);
   }
 }

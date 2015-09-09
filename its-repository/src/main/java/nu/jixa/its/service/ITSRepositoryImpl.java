@@ -25,6 +25,13 @@ public class ITSRepositoryImpl implements ITSRepository {
   @Autowired
   private TeamRepository teamRepository;
 
+  @Override public WorkItem updateWorkItem(WorkItem updatedWorkItem) {
+
+    WorkItem workItemFromRepository = getWorkItem(updatedWorkItem.getNumber());
+    workItemFromRepository
+    workItemRepository.save(updatedWorkItem);
+    return getWorkItem(updatedWorkItem.getNumber());
+  }
   @Transactional
   @Override public WorkItem addWorkItem(WorkItem workItem) {
     //issueRepository.save(workItem.getIssue());
@@ -37,7 +44,7 @@ public class ITSRepositoryImpl implements ITSRepository {
     workItemRepository.delete(deleteItem);
     return deleteItem;
   }
-  @Transactional
+
   @Override public WorkItem getWorkItem(Long workItemNumber) {
     WorkItem workItemInDB = workItemRepository.findByNumber(workItemNumber);
     RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(workItemInDB,
@@ -80,7 +87,6 @@ public class ITSRepositoryImpl implements ITSRepository {
 
   @Transactional
   @Override public User addUser(User user) {
-    workItemRepository.save(user.getWorkItems());
     return userRepository.save(user);
   }
 
@@ -113,8 +119,17 @@ public class ITSRepositoryImpl implements ITSRepository {
     return userRepository.selectByNameLike(nameLike);
   }
 
-  @Override public void addWorkItemToUser(Long userId, WorkItem workItem) {
+  @Override public void addWorkItemToUser(Long userId, Long workItemId) {
 
+    WorkItem item = getWorkItem(workItemId);
+    User user = getUser(userId);
+    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(item,"Could not find workItem: No workItem with number " + workItemId );
+    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(user,"Could not find user: No user with number " + userId );
+
+    item.addUser(getUser(userId));
+    workItemRepository.save(item);
+    user.addWorkItem(item);
+    userRepository.save(user);
   }
 
   @Override public Team addTeam(Team team) {

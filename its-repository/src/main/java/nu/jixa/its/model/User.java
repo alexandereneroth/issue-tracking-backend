@@ -94,6 +94,9 @@ public class User extends AbstractEntity {
     this.lastname = lastname;
   }
 
+  public void addWorkItem(WorkItem item){
+    workItems.add(item);
+  }
   public Team getTeam() {
     return team;
   }
@@ -118,6 +121,7 @@ public class User extends AbstractEntity {
     if (!getFirstname().equals(user.getFirstname())) return false;
     if (!getLastname().equals(user.getLastname())) return false;
     return !(team != null ? !team.equals(user.team) : user.team != null);
+    //return !(team != null ? !team.equals(user.team) : user.team != null);
   }
 
   @Override public int hashCode() {

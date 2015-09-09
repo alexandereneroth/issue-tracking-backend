@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
@@ -26,11 +27,11 @@ public class WorkItem extends AbstractEntity {
   @Column(name = "description", unique = true)
   private String description;
 
-  @OneToOne(cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
+  @OneToOne(cascade = {CascadeType.REMOVE,CascadeType.PERSIST, CascadeType.MERGE})
   @JoinColumn
   private Issue issue;
 
-  @ManyToMany(mappedBy = "workItems")
+  @ManyToMany(mappedBy = "workItems", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
   Collection<User> users;
 
   protected WorkItem() {
@@ -75,6 +76,29 @@ public class WorkItem extends AbstractEntity {
     ModelUtil.throwExceptionIfArgIsNull(description, "description");
     this.description = description;
   }
+  public User addUser(User user){
+
+    if (checkIfUserExist(user)){
+      throw new RepositoryModelException("the user already exist");
+    }
+    return user;
+  }
+
+  private boolean checkIfUserExist(User user) {
+    for(User userInUsers: users){
+      if(user.equals(userInUsers)){
+        return true;
+      }
+    } return false;
+  }
+
+  public void setUsers(Collection<User> users) {
+    this.users = users;
+  }
+
+  public Collection<User> getUsers() {
+    return users;
+  }
 
   @Override public boolean equals(Object o) {
     if (this == o) return true;
@@ -84,7 +108,7 @@ public class WorkItem extends AbstractEntity {
 
     if (!getNumber().equals(workItem.getNumber())) return false;
     if (getStatus() != workItem.getStatus()) return false;
-    return !(getIssue() != null ? !getIssue().equals(workItem.getIssue())
+      return !(getIssue() != null ? !getIssue().equals(workItem.getIssue())
         : workItem.getIssue() != null);
   }
 
