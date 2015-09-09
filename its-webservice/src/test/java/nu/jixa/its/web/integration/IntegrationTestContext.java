@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Import;
 
 @Configuration
 @Import(Application.class)
-public class ITContextConfig {
+public class IntegrationTestContext {
 
   @Autowired
   DataSource dataSource;
