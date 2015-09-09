@@ -61,7 +61,7 @@ public class WorkItemRepositoryTest {
     assertNotNull(workItemInRepoAfterAdd);
     repository.removeWorkItem(testWorkitemNr);
     deleteWorkItemsFromRepository(items);
-    deleteUsersFromRepository((ArrayList)HelperMethods.generate3Users());
+    deleteUsersFromRepository((ArrayList) HelperMethods.generate3Users());
   }
 
   @Test
@@ -124,15 +124,17 @@ public class WorkItemRepositoryTest {
         assertEquals(workItemFromRepository.getStatus(), status);
       }
 
-     /* @Test
-      public void testCanFindByUser(){
+    /*  @Test
+      public void testCanFindByUser(){HelperMethods.generateComplexWorkItems();
 
-
-        ArrayList<User> usersByItemInRepo = (ArrayList)items.get(1).getUsers();
-        User userInRepo = usersByItemInRepo.get(0);
-        ArrayList<WorkItem> itemsByUser = (ArrayList)repository.getWorkItemsByUser(userInRepo.getNumber());
+        ArrayList<WorkItem> workItems = (ArrayList)HelperMethods.generateComplexWorkItems();
+        for(int i =0; i<workItems.size();i++){
+          workItems.get(i).setUsers(HelperMethods.generate3Users());
+          repository.updateWorkItem(workItems.get(i));
+        }
+        ArrayList<WorkItem> itemsByUser = (ArrayList)repository.getWorkItemsByUser(HelperMethods.USER_NUMBER);
         assertNotNull(itemsByUser);
-        //assertEquals(itemsByUser.size(), 1);
+        assertEquals(itemsByUser.size(), workItems.size());
       }*/
       @Test
       public void testCanFindByIssue(){
