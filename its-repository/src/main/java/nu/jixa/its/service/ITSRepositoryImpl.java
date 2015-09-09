@@ -28,9 +28,9 @@ public class ITSRepositoryImpl implements ITSRepository {
   @Override public WorkItem updateWorkItem(WorkItem updatedWorkItem) {
 
     WorkItem workItemFromRepository = getWorkItem(updatedWorkItem.getNumber());
-    workItemFromRepository
-    workItemRepository.save(updatedWorkItem);
-    return getWorkItem(updatedWorkItem.getNumber());
+    workItemFromRepository.copyFields(updatedWorkItem);
+    return workItemRepository.save(workItemFromRepository);
+
   }
   @Transactional
   @Override public WorkItem addWorkItem(WorkItem workItem) {

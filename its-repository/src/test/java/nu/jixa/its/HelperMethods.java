@@ -18,7 +18,7 @@ public final class HelperMethods {
   public static User generateSimpleUser(@NotNull final Long number) {
     return new User(number, "account" + number, "firstname" + number, "lastname" + number);
   }
-
+  public static final Long USER_NUMBER = 100L;
   /**
    * Returns true if all elements in set1 is present in set2 and, vice versa.
    */
@@ -74,26 +74,22 @@ public final class HelperMethods {
 
   public static List<WorkItem> generateComplexWorkItems() {
     ArrayList<WorkItem> list = new ArrayList<>();
-    Collection<User> users = new ArrayList();
-    users.add(generateSimpleUser(11L));
     WorkItem workItemStatus1 = generateSimpleWorkItem(12L);
     workItemStatus1.setDescription("item 1");
     workItemStatus1.setIssue(new Issue(20L));
-    workItemStatus1.setUsers(users);
+    //workItemStatus1.setUsers(generate1Users());
     workItemStatus1.setStatus(Status.DONE);
 
     WorkItem workItemStatus2 = generateSimpleWorkItem(14L);
-    users.add(generateSimpleUser(12L));
     workItemStatus1.setDescription("item 2");
     workItemStatus1.setIssue(new Issue(22L));
-    workItemStatus1.setUsers(users);
+    //workItemStatus1.setUsers(generate2Users());
     workItemStatus1.setStatus(Status.DONE);
 
     WorkItem workItemStatus3 = generateSimpleWorkItem(16L);
-    users.add(generateSimpleUser(14L));
     workItemStatus1.setDescription("item 1");
     workItemStatus1.setIssue(new Issue(244L));
-    workItemStatus1.setUsers(users);
+    //workItemStatus1.setUsers(generate3Users());
     workItemStatus1.setStatus(Status.DONE);
 
     list.add(workItemStatus1);
@@ -105,4 +101,24 @@ public final class HelperMethods {
     Status status = Status.ON_BACKLOG;
     return new WorkItem(number, status);
   }
+
+  public static Collection<User> generate3Users(){
+    Collection<User> users = new ArrayList();
+    users.add(generateSimpleUser(USER_NUMBER));
+    users.add(generateSimpleUser(12L));
+    users.add(generateSimpleUser(14L));
+    return users;
+  }
+  public static Collection<User> generate2Users(){
+    Collection<User> users = new ArrayList();
+    users.add(generateSimpleUser(USER_NUMBER));
+    users.add(generateSimpleUser(12L));
+    return users;
+  }
+  public static Collection<User> generate1Users(){
+    Collection<User> users = new ArrayList();
+    users.add(generateSimpleUser(USER_NUMBER));
+    return users;
+  }
+
 }
