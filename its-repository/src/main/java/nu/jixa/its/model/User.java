@@ -1,6 +1,7 @@
 package nu.jixa.its.model;
 
 import com.sun.istack.internal.NotNull;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import javax.persistence.Column;
@@ -34,7 +35,7 @@ public class User extends AbstractEntity<User> {
       joinColumns = @JoinColumn(name = "userId", referencedColumnName = "id"),
       inverseJoinColumns = @JoinColumn(name = "workItemId", referencedColumnName = "id")
   )
-  private Collection<WorkItem> workItems;
+  private Collection<WorkItem> workItems = new ArrayList<>();
 
   protected User() {
   }
@@ -93,6 +94,10 @@ public class User extends AbstractEntity<User> {
   public void addWorkItem(WorkItem item){
     workItems.add(item);
   }
+  public Collection<WorkItem> getWorkItems() {
+    return workItems;
+  }
+
   public Team getTeam() {
     return team;
   }
@@ -107,10 +112,6 @@ public class User extends AbstractEntity<User> {
   {
     team.removeUser(this);
     team = null;
-  }
-
-  public Collection<WorkItem> getWorkItems() {
-    return workItems;
   }
 
   @Override public boolean equals(Object o) {

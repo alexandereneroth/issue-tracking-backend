@@ -39,10 +39,27 @@ public class ITSRepositoryImpl implements ITSRepository {
   }
 
   @Transactional
-  @Override public WorkItem removeWorkItem(Long workItemNr) {
-    WorkItem deleteItem = findByNumber(workItemNr);
+  @Override public WorkItem removeWorkItem(Long workItemNumber) {
+    WorkItem deleteItem = findByNumber(workItemNumber);
+
+    if(deleteItem.getUsers().size() > 0)
+    {
+      removeWorkItemFromItsUsers(deleteItem);
+    }
     workItemRepository.delete(deleteItem);
     return deleteItem;
+  }
+
+  private void removeWorkItemFromItsUsers(WorkItem workItem) {
+    Iterator<User> userIterator = workItem.getUsers().iterator();
+    while(userIterator.hasNext())
+    {
+      User userToRemoveWorkItemFrom = userIterator.next();
+      userToRemoveWorkItemFrom.getWorkItems().remove(workItem);
+      userRepository.save(userToRemoveWorkItemFrom);
+      userIterator.remove();
+    }
+    workItemRepository.save(workItem);
   }
 
   @Override public WorkItem getWorkItem(Long workItemNumber) {
@@ -100,8 +117,6 @@ public class ITSRepositoryImpl implements ITSRepository {
   @Transactional
   @Override public User updateUser(User user) {
     User userInRepo = getUser(user.getNumber());
-    /*TODO cant just use this to replace team, and workItem.
-     Need to change them (if they have changed) and save.*/
     userInRepo.copyFields(user);
 
     return userRepository.save(userInRepo);
@@ -116,6 +131,10 @@ public class ITSRepositoryImpl implements ITSRepository {
       // before removal
       removeUserFromItsTeam(deletedUser);
     }
+    if(deletedUser.getWorkItems().size() > 0)
+    {
+      removeUserFromItsWorkItems(deletedUser);
+    }
     userRepository.delete(deletedUser);
     return deletedUser;
   }
@@ -125,6 +144,18 @@ public class ITSRepositoryImpl implements ITSRepository {
     leavingUser.leaveTeam();
     teamRepository.save(leavingUsersTeam);
     userRepository.save(leavingUser);
+  }
+
+  private void removeUserFromItsWorkItems(User userToRemove) {
+    Iterator<WorkItem> workItemIterator = userToRemove.getWorkItems().iterator();
+    while(workItemIterator.hasNext())
+    {
+      WorkItem workItemToRemoveUserFrom = workItemIterator.next();
+      workItemToRemoveUserFrom.getUsers().remove(userToRemove);
+      workItemRepository.save(workItemToRemoveUserFrom);
+      workItemIterator.remove();
+    }
+    userRepository.save(userToRemove);
   }
 
   @Override public User getUser(Long userNumber) {

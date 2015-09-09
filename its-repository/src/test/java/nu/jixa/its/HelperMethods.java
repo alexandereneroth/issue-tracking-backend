@@ -23,13 +23,13 @@ public final class HelperMethods {
    * Returns true if all elements in set1 is present in set2 and, vice versa.
    */
   public static <T> boolean isEqualSet(Set<T> set1, Set<T> set2) {
-    int matchesInColl1 = 0;
+    int matchesInSet1 = 0;
     for (T item : set1) {
       if (set2.contains(item)) {
-        matchesInColl1 += 1;
+        matchesInSet1 += 1;
       }
     }
-    if (matchesInColl1 == set2.size()) {
+    if (matchesInSet1 == set2.size() && set2.size() == set1.size()) {
       return true;
     }
     return false;
