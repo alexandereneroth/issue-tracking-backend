@@ -1,5 +1,6 @@
 package nu.jixa.its;
 
+import java.util.Collection;
 import java.util.Set;
 import nu.jixa.its.config.ITSRepositoryConfig;
 import nu.jixa.its.config.InfrastructureConfig;
@@ -18,6 +19,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -107,28 +110,26 @@ public class TeamRepositoryTest {
     repository.getTeam(teamNumber);
   }
 
-  //@Test TODO doesnt make sense to update a team yet, because no fields can be changed through team
-  //TODO (members are set through user)
-  //public void canUpdate() {
-  //
-  //  Collection<User> usersBefore = repository.getTeam(testTeamNumber).getUsers();
-  //
-  //  Team teamToUpdate = new Team(testTeamNumber);
-  //  user1.joinTeam(user1);
-  //
-  //  repository.updateTeam(teamToUpdate);
-  //
-  //  expectedException.expect(ITSRepositoryException.class);
-  //  expectedException.expectMessage("Could not find Team");
-  //
-  //  repository.getTeam(testTeamNumber);
-  //
-  //  // reset, so after() can do its job
-  //  teamToUpdate.setNumber(testTeamNumber);
-  //  repository.updateTeam(teamToUpdate);
-  //}
+  @Test
+  public void canUpdate() {
 
-  //| Hämta alla team
+    Collection<User> usersBefore = repository.getTeam(testTeamNumber).getUsers();
+
+    Team teamToUpdate = new Team(testTeamNumber);
+    user1.joinTeam(teamToUpdate);
+
+    repository.updateTeam(teamToUpdate);
+
+    Team teamInRepoAfterUpdate = repository.getTeam(testTeamNumber);
+
+    assertThat(teamInRepoAfterUpdate.getUsers().size(), is(1));
+    assertTrue(teamInRepoAfterUpdate.getUsers().contains(user1));
+
+    // reset, so after() can do its job
+    teamToUpdate.setNumber(testTeamNumber);
+    repository.updateTeam(teamToUpdate);
+  }
+
   @Test
   public void canGetAllTeams() {
     Team tmpTeam1 = new Team(88L);
@@ -145,6 +146,5 @@ public class TeamRepositoryTest {
 
     assert (HelperMethods.isEqualSet(allTeams, allTeamsInRepo));
   }
-  //| Lägga till en User till ett team
 }
 

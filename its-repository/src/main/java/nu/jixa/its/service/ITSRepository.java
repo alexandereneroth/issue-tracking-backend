@@ -54,7 +54,7 @@ public interface ITSRepository {
   Team addTeam(Team team);
 
   //TODO REMOVE, nothing can be updated through team. membership is updated through user
-  Team updateTeam(Team team);
+  void updateTeam(Team team);
 
   Team deleteTeam(Long teamNumber);
 

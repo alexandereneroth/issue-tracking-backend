@@ -191,10 +191,34 @@ public class ITSRepositoryImpl implements ITSRepository {
     return teamRepository.save(team);
   }
 
-  @Override public Team updateTeam(Team team) {
-    Team teamInRepo = getTeam(team.getNumber());
-    teamInRepo.copyFields(team);
-    return teamRepository.save(teamInRepo);
+  @Override public void updateTeam(Team team) {
+    Team teamInRepo = teamRepository.findByNumber(team.getNumber());
+
+    Collection<User> usersBeforeUpdate = teamInRepo.getUsers();
+    Collection<User> usersAfterUpdate = team.getUsers();
+
+    removeAllUsersThatExistedInTeamBeforeUpdateButNotAfter(team, usersBeforeUpdate,usersAfterUpdate);
+    for(User user : usersAfterUpdate)
+    {
+      user.joinTeam(teamInRepo);
+      updateUser(user);
+    }
+  }
+
+  public void removeAllUsersThatExistedInTeamBeforeUpdateButNotAfter(Team team, Collection<User> usersBeforeUpdate, Collection<User> usersAfterUpdate){
+    Iterator<User> usersBeforeUpdateIterator = usersBeforeUpdate.iterator();
+    while(usersBeforeUpdateIterator.hasNext())
+    {
+      User userBeforeUpdate = usersBeforeUpdateIterator.next();
+      if(!usersAfterUpdate.contains(userBeforeUpdate))
+      {
+        usersBeforeUpdateIterator.remove();
+        if(userBeforeUpdate.getTeam().equals(team)) {
+          userBeforeUpdate.leaveTeam();
+        }
+        updateUser(userBeforeUpdate);
+      }
+    }
   }
 
   @Override public Team deleteTeam(Team team) {

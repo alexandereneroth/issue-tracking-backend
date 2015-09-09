@@ -31,10 +31,10 @@ public class User extends AbstractEntity<User> {
   private Team team;
 
   @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(name = "tblUser_tblWorkItem",
-      joinColumns = @JoinColumn(name = "userId", referencedColumnName = "id"),
-      inverseJoinColumns = @JoinColumn(name = "workItemId", referencedColumnName = "id")
-  )
+  //@JoinTable(name = "tblUser_tblWorkItem",
+  //    joinColumns = @JoinColumn(name = "userId", referencedColumnName = "id"),
+  //    inverseJoinColumns = @JoinColumn(name = "workItemId", referencedColumnName = "id")
+  //)
   private Collection<WorkItem> workItems = new ArrayList<>();
 
   protected User() {
