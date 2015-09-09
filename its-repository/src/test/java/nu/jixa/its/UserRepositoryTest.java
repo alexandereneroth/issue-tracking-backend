@@ -33,7 +33,7 @@ import static org.junit.Assert.assertTrue;
 @ContextConfiguration(classes = { InfrastructureConfig.class,
     ITSRepositoryConfig.class }, loader = AnnotationConfigContextLoader.class)
 //@DatabaseSetup("userData.xml")TODO try to use this when the other stuff works
-public class UserITSRepositoryTest {
+public class UserRepositoryTest {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();

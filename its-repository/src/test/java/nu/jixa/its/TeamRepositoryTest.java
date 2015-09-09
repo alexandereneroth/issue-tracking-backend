@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { InfrastructureConfig.class,
     ITSRepositoryConfig.class }, loader = AnnotationConfigContextLoader.class)
-public class TeamITSRepositoryTest {
+public class TeamRepositoryTest {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();

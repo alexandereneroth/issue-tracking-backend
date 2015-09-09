@@ -44,10 +44,10 @@ Issue
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     ModelUtilTest.class,
-    UserITSRepositoryTest.class,
-    UserTeamITSRepositoryTest.class,
+    UserRepositoryTest.class,
+    UserTeamRepositoryTest.class,
     WorkItemRepositoryTest.class,
-    TeamITSRepositoryTest.class
+    TeamRepositoryTest.class
 })
 public class AllTestsSuite {
 }

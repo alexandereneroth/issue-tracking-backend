@@ -19,7 +19,7 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { InfrastructureConfig.class,
     ITSRepositoryConfig.class }, loader = AnnotationConfigContextLoader.class)
-public class UserTeamITSRepositoryTest {
+public class UserTeamRepositoryTest {
 
   @Autowired
   ITSRepository repository;
