@@ -8,7 +8,6 @@ import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.ContentType;
 import java.sql.SQLException;
-import nu.jixa.its.model.User;
 import nu.jixa.its.web.TestUtil;
 import org.apache.http.HttpStatus;
 import org.junit.Before;
@@ -28,9 +27,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import static com.jayway.restassured.RestAssured.given;
 import static com.jayway.restassured.RestAssured.when;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
 
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
@@ -46,10 +45,17 @@ public class UsersTest {
   private static final String USERS_ENDPOINT = "/users/";
   private static final String USER_ENDPOINT = "/users/{userNumber}";
   private static final String LOCATION_HEADER = "location";
+  private static final String FIRSTNAME_FIELD = "firstname";
+  private static final String LASTNAME_FIELD = "lastname";
+  private static final String TEAM_FIELD = "team";
   private String FULL_USERS_ENDPOINT;
 
   private static final Long EXISTING_USER_NUMBER = 1L;
+  private static final String EXISTING_USER_FIRSTNAME = "firstname1";
+  private static final String EXISTING_USER_LASTNAME = "lastname1";
+
   private static final Long NEW_USER_NUMBER = 3L;
+
 
   @Value("${local.server.port}")
   private int serverPort;
@@ -69,15 +75,13 @@ public class UsersTest {
   @Test
   @DatabaseSetup("/usersData.xml")
   public void getUserByNumber() {
-    User returnedUser =
     when()
         .get(USER_ENDPOINT, EXISTING_USER_NUMBER)
     .then()
         .statusCode(is(equalTo(HttpStatus.SC_OK)))
-    .extract()
-        .body().as(User.class);
-
-    assertThat(returnedUser.getNumber(), is(EXISTING_USER_NUMBER));
+        .body(FIRSTNAME_FIELD, equalTo(EXISTING_USER_FIRSTNAME))
+        .body(LASTNAME_FIELD, equalTo(EXISTING_USER_LASTNAME))
+        .body(TEAM_FIELD, isEmptyOrNullString());
   }
 
   @Test
