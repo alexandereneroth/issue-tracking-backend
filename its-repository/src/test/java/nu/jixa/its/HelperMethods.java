@@ -53,7 +53,7 @@ public final class HelperMethods {
     {
       if (newSet.add(items[i]) == false) {
         throw new IllegalArgumentException(
-            "Cannot convert iterable to set: iterable contains duplicate elements");
+            "Cannot convert array to set: array contains duplicate elements");
       }
     }
     return newSet;

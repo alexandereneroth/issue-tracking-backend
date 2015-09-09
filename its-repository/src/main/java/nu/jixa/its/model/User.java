@@ -94,7 +94,7 @@ public class User extends AbstractEntity {
     this.lastname = lastname;
   }
 
-  public Team getTeam(Team team) {
+  public Team getTeam() {
     return team;
   }
 

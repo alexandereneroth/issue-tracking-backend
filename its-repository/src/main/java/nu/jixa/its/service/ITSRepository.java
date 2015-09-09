@@ -65,7 +65,7 @@ public interface ITSRepository {
 
   Iterable<Team> getAllTeams();
 
-  Team addUserToTeamWithId(Long teamId, Long userId);
+  User addUserToTeamWithNumber(Long userNumber, Long teamNumber);
 
   // Issue
   Issue addIssue(Issue issue);

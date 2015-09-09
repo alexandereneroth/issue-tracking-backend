@@ -150,7 +150,8 @@ public class ITSRepositoryImpl implements ITSRepository {
 
   @Override public Team getTeam(Long teamNumber) {
     Team team = teamRepository.findByNumber(teamNumber);
-    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(team,"Could not find Team: No team with number " + teamNumber );
+    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(team,
+        "Could not find Team: No team with number " + teamNumber);
     return team;
   }
 
@@ -162,8 +163,14 @@ public class ITSRepositoryImpl implements ITSRepository {
     return teamRepository.findAll();
   }
 
-  @Override public Team addUserToTeamWithId(Long teamId, Long userId) {
-    return null;
+  @Override public User addUserToTeamWithNumber(Long userNumber, Long teamNumber) {
+
+    User user = getUser(userNumber);
+    Team team = getTeam(teamNumber);
+    user.setTeam(team);
+
+    userRepository.save(user);
+    return user;
   }
 
   @Override public Issue addIssue(Issue issue) {
