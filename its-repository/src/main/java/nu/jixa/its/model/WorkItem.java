@@ -9,9 +9,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -30,6 +28,7 @@ public class WorkItem extends AbstractEntity<WorkItem> {
   @JoinColumn
   private Issue issue;
 
+  //@JsonSerialize(using = SimpleUserSerializer.class)
   @ManyToMany(fetch = FetchType.EAGER, mappedBy = "workItems")
   Collection<User> users;
 

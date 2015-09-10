@@ -1,10 +1,10 @@
 <dataset>
   <tblUser id="1" firstname="firstname1" lastname="lastname1" username="username1" number="1"
-      team="[null]"/>
+      team_id="[null]"/>
   <tblUser id="2" firstname="firstname2" lastname="lastname2" username="username2" number="2"
-      team="[null]"/>
-  <!--<tblIssue/>-->
-  <!--<tblTeam/>-->
-  <!--<tblUser_tblWorkItem/>-->
-  <!--<tblWorkItem/>-->
+      team_id="[null]"/>
+  <tblTeam/>
+  <tblWorkItem/>
+  <tblIssue/>
+  <tblUser_tblWorkItem/>
 </dataset>

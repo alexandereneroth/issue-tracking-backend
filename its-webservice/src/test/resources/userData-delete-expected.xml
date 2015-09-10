@@ -1,8 +1,8 @@
 <dataset>
   <tblUser id="1" firstname="firstname1" lastname="lastname1" username="username1" number="1"
-      team="[null]"/>
-  <!--<tblIssue/>-->
-  <!--<tblTeam/>-->
-  <!--<tblUser_tblWorkItem/>-->
-  <!--<tblWorkItem/>-->
+      team_id="[null]"/>
+  <tblTeam/>
+  <tblWorkItem/>
+  <tblIssue/>
+  <tblUser_tblWorkItem/>
 </dataset>
