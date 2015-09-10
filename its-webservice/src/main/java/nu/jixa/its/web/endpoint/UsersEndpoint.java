@@ -1,14 +1,17 @@
 package nu.jixa.its.web.endpoint;
 
 import java.net.URI;
+import java.util.Collection;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -41,6 +44,20 @@ public class UsersEndpoint {
   //USER
 
   //✓UserTeam   | Hämta alla User som ingår i ett visst team
+
+  /**
+   * Defaults to empty searchString which will return all Users if no queryParam is entered.
+   */
+  @GET
+  public Response getUsersByName(
+      @QueryParam("filterByName") @DefaultValue("") final String searchString) {
+    Collection<User> usersByName = itsRepository.getUsersByNameLike(searchString);
+    if (usersByName.isEmpty()) {
+      return Response.noContent().build();
+    } else {
+      return Response.ok(usersByName).build();
+    }
+  }
 
   @POST
   public Response createUser(final User user) throws IllegalAccessException {
@@ -108,6 +125,4 @@ public class UsersEndpoint {
           .entity(NO_USER_WITH_USERNUMBER + userNumber).build();
     }
   }
-
-  
 }
