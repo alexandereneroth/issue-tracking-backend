@@ -12,9 +12,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import nu.jixa.its.model.User;
 import nu.jixa.its.service.ITSRepository;
+import nu.jixa.its.service.ITSRepositoryException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +31,11 @@ public class UsersEndpoint {
 
   @Context
   private UriInfo uriInfo;
+
+  private static final String BAD_REQUEST_NULL_OR_INVALID_JSON =
+      "Null or Invalid JSON Data in Request Body";
+  private static final String BAD_REQUEST_MISMATCH_BETWEEN_PATH_AND_USER =
+      "Usernumber mismatch between path and new user info";
 
   //USER
 
@@ -57,18 +64,27 @@ public class UsersEndpoint {
     return Response.noContent().build();
   }
 
-  //✓User       | Uppdatera en User
   @PUT
   @Path("{userNumber}")
   public Response updateUser(@PathParam("userNumber") final long userNumber,
       final User updatedUser) {
 
-    if (userNumber == updatedUser.getNumber()) {
-      itsRepository.updateUser(updatedUser);
-      return Response.status(Response.Status.NO_CONTENT).build();
-    } else {
-      return Response.status(Response.Status.BAD_REQUEST)
-          .entity("Usernumber mismatch between path and new user info").build();
+    if (updatedUser == null || updatedUser.getNumber() == null) {
+      return Response.status(Status.BAD_REQUEST)
+          .entity(BAD_REQUEST_NULL_OR_INVALID_JSON).build();
+    }
+
+    try {
+      if (userNumber == updatedUser.getNumber()) {
+        itsRepository.updateUser(updatedUser);
+        return Response.status(Status.NO_CONTENT).build();
+      } else {
+        return Response.status(Status.BAD_REQUEST)
+            .entity(BAD_REQUEST_MISMATCH_BETWEEN_PATH_AND_USER).build();
+      }
+    } catch (ITSRepositoryException e) {
+      return Response.status(Status.NOT_FOUND)
+          .entity("No user with Usernumber: " + userNumber).build();
     }
   }
 }
