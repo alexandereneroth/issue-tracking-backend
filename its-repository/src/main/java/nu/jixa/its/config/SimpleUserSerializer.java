@@ -1,3 +1,4 @@
+/*
 package nu.jixa.its.config;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -32,4 +33,4 @@ public class SimpleUserSerializer extends JsonSerializer<Set<User>> {
       this.number = number;
     }
   }
-}
+}*/
