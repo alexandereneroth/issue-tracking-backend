@@ -1,5 +1,7 @@
 package nu.jixa.its.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.sun.istack.internal.NotNull;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -7,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="number")
 public abstract class AbstractEntity<T> {
 
   @Id
