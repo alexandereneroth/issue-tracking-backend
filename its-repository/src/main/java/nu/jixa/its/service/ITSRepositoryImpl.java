@@ -181,8 +181,8 @@ public class ITSRepositoryImpl implements ITSRepository {
     RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(item,"Could not find workItem: No workItem with number " + workItemId );
     RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(user,"Could not find user: No user with number " + userId );
 
-    item.addUser(getUser(userId));
-    workItemRepository.save(item);
+    //item.addUser(getUser(userId));
+    //workItemRepository.save(item);
     user.addWorkItem(item);
     userRepository.save(user);
   }

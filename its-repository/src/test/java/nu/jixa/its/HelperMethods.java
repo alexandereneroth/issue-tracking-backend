@@ -19,6 +19,8 @@ public final class HelperMethods {
     return new User(number, "account" + number, "firstname" + number, "lastname" + number);
   }
   public static final Long USER_NUMBER = 100L;
+  public static final Long WORKITEMNUMBER = 2012L;
+  public static ArrayList<WorkItem> workItems3List;
   /**
    * Returns true if all elements in set1 is present in set2 and, vice versa.
    */
@@ -74,7 +76,7 @@ public final class HelperMethods {
 
   public static List<WorkItem> generateComplexWorkItems() {
     ArrayList<WorkItem> list = new ArrayList<>();
-    WorkItem workItem1 = generateSimpleWorkItem(12L);
+    WorkItem workItem1 = generateSimpleWorkItem(WORKITEMNUMBER);
     workItem1.setDescription("item 1");
     workItem1.setIssue(new Issue(20L));
     workItem1.setStatus(Status.DONE);
@@ -92,14 +94,15 @@ public final class HelperMethods {
     list.add(workItem1);
     list.add(workItem2);
     list.add(workItem3);
+    workItems3List = list;
     return list;
   }
   public static WorkItem generateSimpleWorkItem(@NotNull final Long number) {
     Status status = Status.ON_BACKLOG;
     return new WorkItem(number, status);
   }
-
   public static Collection<User> generate3Users(){
+
     Collection<User> users = new ArrayList();
     users.add(generateSimpleUser(USER_NUMBER));
     users.add(generateSimpleUser(12L));
