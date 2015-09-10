@@ -8,6 +8,7 @@ import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.ContentType;
 import java.sql.SQLException;
+import javax.json.Json;
 import nu.jixa.its.model.User;
 import nu.jixa.its.web.TestUtil;
 import org.apache.http.HttpStatus;
@@ -60,14 +61,19 @@ public class UsersTest {
   private static final Long EXISTING_USER_NUMBER = 1L;
   private static final String EXISTING_USER_FIRSTNAME = "firstname1";
   private static final String EXISTING_USER_LASTNAME = "lastname1";
-  private static final String UPDATED_USER_FIRSTNAME = "updatedfirstname";
-  private static final String UPDATED_USER_LASTNAME = "updatedlastname";
+  private static final String UPDATED_USER_FIRSTNAME = "updatedFirstname";
+  private static final String UPDATED_USER_LASTNAME = "updatedLastname";
 
   private static final Long NEW_USER_NUMBER = 3L;
   private static final Long REMOVE_USER_NUMBER = 2L;
-  private static final Long INVALID_USERNUMBER = 9999L;
+  private static final Long INVALID_USER_NUMBER = 9999L;
 
-  private static final String BAD_REQUEST_NULL_OR_INVALID_JSON =
+  private static final String INVALID_USER_JSON = Json.createObjectBuilder()
+      .add("firstname", "invalidUserFirstname")
+      .add("lastname", "invalidUserLastname")
+      .build().toString();
+
+  private static final String BAD_REQUEST_NULL_OR_INVALID =
       "Null or Invalid JSON Data in Request Body";
   private static final String BAD_REQUEST_MISMATCH_BETWEEN_PATH_AND_USER =
       "Usernumber mismatch between path and new user info";
@@ -89,11 +95,20 @@ public class UsersTest {
 
   @Test
   @DatabaseSetup(USERS_DATA)
-  public void getUserByNumber() {
+  public void getUserByNumberShouldReturnStatusOk() {
     when()
         .get(USER_ENDPOINT, EXISTING_USER_NUMBER)
     .then().assertThat()
-        .statusCode(is(equalTo(HttpStatus.SC_OK)))
+        .statusCode(HttpStatus.SC_OK);
+  }
+
+  @Test
+  @DatabaseSetup(USERS_DATA)
+  public void getUserByNumberShouldReturnUser() {
+    when()
+        .get(USER_ENDPOINT, EXISTING_USER_NUMBER)
+    .then().assertThat()
+        .statusCode(HttpStatus.SC_OK)
         .body(FIRSTNAME_FIELD, equalTo(EXISTING_USER_FIRSTNAME))
         .body(LASTNAME_FIELD, equalTo(EXISTING_USER_LASTNAME))
         .body(TEAM_FIELD, isEmptyOrNullString());
@@ -122,6 +137,44 @@ public class UsersTest {
     .when()
         .post(USERS_ENDPOINT);
   }
+
+  @Test
+  @DatabaseSetup(USERS_DATA)
+  public void createUserShouldReturnBadRequestWithoutBody() {
+
+    // With No Body
+    given()
+        .contentType(ContentType.JSON)
+    .when()
+        .post(USERS_ENDPOINT)
+    .then().assertThat()
+        .statusCode(HttpStatus.SC_BAD_REQUEST)
+        .body(equalTo(BAD_REQUEST_NULL_OR_INVALID));
+
+    // And with Invalid Body
+    given()
+        .body(INVALID_USER_JSON)
+        .contentType(ContentType.JSON)
+    .when()
+        .post(USERS_ENDPOINT)
+    .then().assertThat()
+        .statusCode(HttpStatus.SC_BAD_REQUEST)
+        .body(equalTo(BAD_REQUEST_NULL_OR_INVALID));
+  }
+
+  @Test
+  @DatabaseSetup(USERS_DATA)
+  @ExpectedDatabase(value = USERS_DATA, table = USER_DB_TABLE)
+  public void createUserWithInvalidUserDataShouldNotAddUserToDatabase() {
+    given()
+        .contentType(ContentType.JSON)
+    .when()
+        .post(USERS_ENDPOINT)
+    .then().assertThat()
+        .statusCode(HttpStatus.SC_BAD_REQUEST)
+        .body(equalTo(BAD_REQUEST_NULL_OR_INVALID));
+  }
+
 
   @Test
   @DatabaseSetup(USERS_DATA)
@@ -177,13 +230,13 @@ public class UsersTest {
   @DatabaseSetup(USERS_DATA)
   public void updateUserShouldReturnNotFoundtIfNonExistingID() {
     User updatedUser = TestUtil.createUserWithNumber(EXISTING_USER_NUMBER);
-    updatedUser.setNumber(INVALID_USERNUMBER);
+    updatedUser.setNumber(INVALID_USER_NUMBER);
 
     given()
         .body(updatedUser)
         .contentType(ContentType.JSON)
     .when()
-        .put(USER_ENDPOINT, INVALID_USERNUMBER)
+        .put(USER_ENDPOINT, INVALID_USER_NUMBER)
     .then().assertThat()
         .statusCode(HttpStatus.SC_NOT_FOUND);
   }
@@ -192,7 +245,7 @@ public class UsersTest {
   @DatabaseSetup(USERS_DATA)
   public void updateUserShouldReturnBadRequestAndMessageWithPathUsernumberAndBodyUsernumberMismatch() {
     User updatedUser = TestUtil.createUserWithNumber(EXISTING_USER_NUMBER);
-    updatedUser.setNumber(INVALID_USERNUMBER);
+    updatedUser.setNumber(INVALID_USER_NUMBER);
 
     given()
         .body(updatedUser)
@@ -213,7 +266,7 @@ public class UsersTest {
         .put(USER_ENDPOINT, EXISTING_USER_NUMBER)
     .then().assertThat()
         .statusCode(HttpStatus.SC_BAD_REQUEST)
-        .body(equalTo(BAD_REQUEST_NULL_OR_INVALID_JSON));
+        .body(equalTo(BAD_REQUEST_NULL_OR_INVALID));
   }
 
 }

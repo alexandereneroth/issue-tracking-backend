@@ -32,19 +32,30 @@ public class UsersEndpoint {
   @Context
   private UriInfo uriInfo;
 
-  private static final String BAD_REQUEST_NULL_OR_INVALID_JSON =
+  private static final String NO_USER_WITH_USERNUMBER = "No user with Usernumber: ";
+  private static final String BAD_REQUEST_NULL_OR_INVALID =
       "Null or Invalid JSON Data in Request Body";
   private static final String BAD_REQUEST_MISMATCH_BETWEEN_PATH_AND_USER =
       "Usernumber mismatch between path and new user info";
 
   //USER
 
-  //✓User       | Söka efter en User baserat på förnamn eller efternamn eller användarnamn
   //✓UserTeam   | Hämta alla User som ingår i ett visst team
 
   @POST
-  public Response createUser(final User user) {
-    itsRepository.addUser(user);
+  public Response createUser(final User user) throws IllegalAccessException {
+
+    if (user == null) {
+      return Response.status(Status.BAD_REQUEST)
+          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
+    }
+
+    try {
+      itsRepository.addUser(user);
+    } catch (ITSRepositoryException e) {
+      return Response.status(Status.BAD_REQUEST)
+          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
+    }
 
     final URI location = uriInfo.getAbsolutePathBuilder().path(user.getNumber().toString()).build();
     return Response.created(location).build();
@@ -53,14 +64,24 @@ public class UsersEndpoint {
   @GET
   @Path("{userNumber}")
   public Response getUser(@PathParam("userNumber") final long userNumber) {
-    User user = itsRepository.getUser(userNumber);
-    return Response.ok(user).build();
+    try {
+      User user = itsRepository.getUser(userNumber);
+      return Response.ok(user).build();
+    } catch (ITSRepositoryException e) {
+      return Response.status(Status.NOT_FOUND)
+          .entity(NO_USER_WITH_USERNUMBER + userNumber).build();
+    }
   }
 
   @DELETE
   @Path("{userNumber}")
   public Response deleteUser(@PathParam("userNumber") final long userNumber) {
-    itsRepository.deleteUser(userNumber);
+    try {
+      itsRepository.deleteUser(userNumber);
+    } catch (ITSRepositoryException e) {
+      return Response.status(Status.NOT_FOUND)
+          .entity(NO_USER_WITH_USERNUMBER + userNumber).build();
+    }
     return Response.noContent().build();
   }
 
@@ -71,7 +92,7 @@ public class UsersEndpoint {
 
     if (updatedUser == null || updatedUser.getNumber() == null) {
       return Response.status(Status.BAD_REQUEST)
-          .entity(BAD_REQUEST_NULL_OR_INVALID_JSON).build();
+          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
     }
 
     try {
@@ -84,7 +105,9 @@ public class UsersEndpoint {
       }
     } catch (ITSRepositoryException e) {
       return Response.status(Status.NOT_FOUND)
-          .entity("No user with Usernumber: " + userNumber).build();
+          .entity(NO_USER_WITH_USERNUMBER + userNumber).build();
     }
   }
+
+  
 }
