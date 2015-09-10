@@ -25,8 +25,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Path("/users")
-@Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class UsersEndpoint {
 
   @Autowired
@@ -49,8 +49,10 @@ public class UsersEndpoint {
    * Defaults to empty searchString which will return all Users if no queryParam is entered.
    */
   @GET
-  public Response getUsersByName(
-      @QueryParam("filterByName") @DefaultValue("") final String searchString) {
+  public Response getUsersByNameOrTeam(
+      @QueryParam("filterByName") @DefaultValue("") final String searchString,
+      @QueryParam("filterByTeamId") final Long teamId) {
+    //Todo add filterByTeamId logic
     Collection<User> usersByName = itsRepository.getUsersByNameLike(searchString);
     if (usersByName.isEmpty()) {
       return Response.noContent().build();

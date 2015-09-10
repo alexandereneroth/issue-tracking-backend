@@ -116,10 +116,6 @@ public class ITSRepositoryImpl implements ITSRepository {
     return workItemRepository.findWorkItemsWithDescriptionLike(descriptionLike);
   }
 
-  @Override public WorkItem addIssueToWorkItem(Long workItemId, Long IssueId) {
-    return null;
-  }
-
   @Transactional
   @Override public User addUser(User user) {
     try {

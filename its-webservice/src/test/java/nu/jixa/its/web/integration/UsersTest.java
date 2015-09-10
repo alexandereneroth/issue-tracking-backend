@@ -114,6 +114,8 @@ public class UsersTest {
         .body(TEAM_FIELD, isEmptyOrNullString());
   }
 
+  //TODO Add Test for getting user with invalid Number
+
   @Test
   @DatabaseSetup(USERS_DATA)
   public void createUserShouldReturnLocationURI() {
@@ -192,6 +194,8 @@ public class UsersTest {
     .then().assertThat()
         .statusCode(HttpStatus.SC_NO_CONTENT);
   }
+
+  //TODO Add test for trying to delete user with invalid Number
 
   @Test
   @DatabaseSetup(USERS_DATA)

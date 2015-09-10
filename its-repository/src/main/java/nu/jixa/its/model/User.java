@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -26,14 +27,14 @@ public class User extends AbstractEntity<User> {
   private String lastname;
 
   @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "team")
+  @JoinColumn(name = "team_id")
   private Team team;
 
   @ManyToMany(fetch = FetchType.EAGER)
-  //@JoinTable(name = "tblUser_tblWorkItem",
-  //    joinColumns = @JoinColumn(name = "userId", referencedColumnName = "id"),
-  //    inverseJoinColumns = @JoinColumn(name = "workItemId", referencedColumnName = "id")
-  //)
+  @JoinTable(name = "tblUser_tblWorkItem",
+      joinColumns = @JoinColumn(name = "user_Id", referencedColumnName = "id"),
+      inverseJoinColumns = @JoinColumn(name = "workItem_Id", referencedColumnName = "id")
+  )
   private Collection<WorkItem> workItems = new ArrayList<>();
 
   protected User() {
