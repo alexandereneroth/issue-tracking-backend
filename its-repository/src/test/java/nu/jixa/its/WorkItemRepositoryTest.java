@@ -26,6 +26,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -139,10 +141,10 @@ public class WorkItemRepositoryTest {
   }
 
   @Test
-  public void testCanFindByIssue() {
-    WorkItem workItem = repository.getWorkItem(HelperMethods.WORKITEMNUMBER);
-    workItem.getIssue();
-    //WorkItem workItem = repository.getWorkItemsByIssue();
+  public void testCanFindWithIssue() {
+    Collection<WorkItem> workItem = repository.getWorkItemsWithIssue();
+    assertThat(workItem.size(), is(3));
+    //TODO test more
   }
 
   @Test

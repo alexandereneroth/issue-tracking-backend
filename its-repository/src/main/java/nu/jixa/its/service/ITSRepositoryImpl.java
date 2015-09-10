@@ -90,8 +90,8 @@ public class ITSRepositoryImpl implements ITSRepository {
     return workItemRepository.findByUsersNumber(userNumber);
   }
 
-  @Override public Collection<WorkItem> getWorkItemsByIssue(Long issueNumber) {
-    return workItemRepository.findByIssueNumber(issueNumber);
+  @Override public Collection<WorkItem> getWorkItemsWithIssue() {
+    return workItemRepository.findAllWorkItemsWithIssue();
   }
 
   @Override public Collection<WorkItem> getWorkItemByDescriptionLike(String descriptionLike) {

@@ -22,7 +22,7 @@ public interface ITSRepository {
 
   Collection<WorkItem> getWorkItemsByUser(Long userNumber);
 
-  Collection<WorkItem> getWorkItemsByIssue(Long issueNumber);
+  Collection<WorkItem> getWorkItemsWithIssue();
 
   Collection<WorkItem> getWorkItemByDescriptionLike(String descriptionLike);
 

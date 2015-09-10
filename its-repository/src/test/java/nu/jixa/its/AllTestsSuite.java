@@ -37,7 +37,7 @@ Issue
             | Skapa en Issue
             | Uppdatera en Issue
             | Lägga till en Issue till en work item
-            | Hämta alla work item som har en Issue
+✓WorkItem   | Hämta alla work item som har en Issue
 */
 
 @RunWith(Suite.class)
