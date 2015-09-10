@@ -26,6 +26,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
@@ -150,6 +151,30 @@ public class WorkItemRepositoryTest {
   @Test
   public void testCanFindByTeam() {
     //repository.getWorkItemsByTeam();
+  }
+
+  @Test
+  public void canUpdateIssue(){
+    Long workItemNumber = 1005L;
+    WorkItem workItem = new WorkItem(workItemNumber, Status.ON_BACKLOG);
+
+    Long issueNumber = 2005L;
+    String issueStringBeforeUpdate = "BEFORE UPDATE";
+    String issueStringAfterUpdate = "BEFORE UPDATE";
+    Issue issue = new Issue(issueNumber);
+    issue.setString(issueStringBeforeUpdate);
+
+    workItem.setIssue(issue);
+
+    WorkItem workItemBefore = repository.findByNumber(workItemNumber);
+
+    assertNotNull(workItemBefore);
+    assertThat(workItem.getIssue().getString(), is(equalTo(issue.getString())));
+
+    workItem.getIssue().setString(issueStringAfterUpdate);
+
+
+
   }
 
   private void deleteWorkItemsFromRepository(ArrayList<WorkItem> workItems) {
