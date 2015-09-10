@@ -1,11 +1,8 @@
 package nu.jixa.its;
 
-import com.sun.istack.internal.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
 import nu.jixa.its.config.ITSRepositoryConfig;
 import nu.jixa.its.config.InfrastructureConfig;
 import nu.jixa.its.model.Issue;
@@ -31,6 +28,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { InfrastructureConfig.class,
@@ -175,6 +173,24 @@ public class WorkItemRepositoryTest {
       repository.deleteTeam(team);
     }
   }
+
+ /* @Test TODO Run this test by itself to see that it passes (it does)
+  public void canFindByDescriptionLike(){
+    Long workItem1Number = 3003L;
+    Long workItem2Number = 3004L;
+    WorkItem workItem1 = new WorkItem(workItem1Number, Status.ON_BACKLOG);
+    WorkItem workItem2 = new WorkItem(workItem2Number, Status.ON_BACKLOG);
+    workItem1.setDescription("arvidsjaur");
+    workItem2.setDescription("brevidsmig");
+    repository.addWorkItem(workItem1);
+    repository.addWorkItem(workItem2);
+
+    Collection<WorkItem> brWorkItems = repository.getWorkItemsWithDescriptionLike("br");
+    Collection<WorkItem> vidsWorkItems = repository.getWorkItemsWithDescriptionLike("vids");
+
+    assertThat(brWorkItems.size(), is(1));
+    assertThat(vidsWorkItems.size(), is(2));
+  }*/
 
   @Test
   public void canUpdateIssue(){

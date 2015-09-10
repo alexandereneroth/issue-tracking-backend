@@ -23,8 +23,8 @@ public interface WorkItemRepository extends CrudRepository<WorkItem, Long> {
   //@Query(value = "select w from WorkItem w where w.users u =?1")
   Collection<WorkItem> findByUsersTeamNumber(Long teamNumber);
 
-  @Query("select w from WorkItem w where w.description like %?1")
-  Collection<WorkItem> findWorkItemByDescLike(String descriptionLike);
+  @Query("select w from WorkItem w where w.description like %?1%")
+  Collection<WorkItem> findWorkItemsWithDescriptionLike(String descriptionLike);
 
   @Query("select w from WorkItem w where w.issue is not null")
   Collection<WorkItem> findAllWorkItemsWithIssue();

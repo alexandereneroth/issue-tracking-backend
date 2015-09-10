@@ -14,7 +14,6 @@ import nu.jixa.its.repository.UserRepository;
 import nu.jixa.its.repository.WorkItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.transaction.annotation.Transactional;
 
 public class ITSRepositoryImpl implements ITSRepository {
@@ -113,8 +112,8 @@ public class ITSRepositoryImpl implements ITSRepository {
     return workItemRepository.findAllWorkItemsWithIssue();
   }
 
-  @Override public Collection<WorkItem> getWorkItemByDescriptionLike(String descriptionLike) {
-    return workItemRepository.findWorkItemByDescLike(descriptionLike);
+  @Override public Collection<WorkItem> getWorkItemsWithDescriptionLike(String descriptionLike) {
+    return workItemRepository.findWorkItemsWithDescriptionLike(descriptionLike);
   }
 
   @Override public WorkItem addIssueToWorkItem(Long workItemId, Long IssueId) {

@@ -24,9 +24,9 @@ public interface ITSRepository {
 
   Collection<WorkItem> getWorkItemsWithIssue();
 
-  Collection<WorkItem> getWorkItemByDescriptionLike(String descriptionLike);
+  Collection<WorkItem> getWorkItemsWithDescriptionLike(String descriptionLike);
 
-  WorkItem addIssueToWorkItem(Long workItemNumber, Long IssueNumber);
+  //WorkItem addIssueToWorkItem(Long workItemNumber, Long IssueNumber);TODO implement
 
   WorkItem getWorkItem(Long workItemNumber);
 

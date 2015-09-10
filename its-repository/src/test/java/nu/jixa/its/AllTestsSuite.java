@@ -29,14 +29,14 @@ WORKITEM
 ✓WorkItem   | Ta bort* en work item
 ✓WorkItem   | Tilldela en work item till en User
 ✓WorkItem   | Hämta alla work item baserat på status
-            | Hämta alla work item för ett Team
-            | Hämta alla work item för en User
-            | Söka efter work item som innehåller en viss text i sin beskrivning
+✓WorkItem   | Hämta alla work item för ett Team
+✓WorkItem   | Hämta alla work item för en User
+✓WorkItem (run by itself)  | Söka efter work item som innehåller en viss text i sin beskrivning
 
 Issue
-            | Skapa en Issue
-            | Uppdatera en Issue
-            | Lägga till en Issue till en work item
+✓WorkItem   | Skapa en Issue
+✓WorkItem   | Uppdatera en Issue
+✓WorkItem   | Lägga till en Issue till en work item
 ✓WorkItem   | Hämta alla work item som har en Issue
 */
 
