@@ -60,20 +60,22 @@ public class WorkItemEndpoint {
         uriInfo.getAbsolutePathBuilder().path(workItem.getNumber().toString()).build();
     return Response.created(location).build();
   }
+
   @POST
   @Path("{workItemNumber}")
-  public Response addIssueToWorkItem(@PathParam("workItemNumber") final long workItemNumber,final Issue issue){
-   WorkItem workItem;
-    try{
+  public Response addIssueToWorkItem(@PathParam("workItemNumber") final long workItemNumber,
+      final Issue issue) {
+    WorkItem workItem;
+    try {
       workItem = itsRepository.getWorkItem(workItemNumber);
-    }catch (ITSRepositoryException e) {
+    } catch (ITSRepositoryException e) {
       return Response.status(Response.Status.NOT_FOUND)
           .entity(NO_WORKITEM_WITH_NUMBER + workItemNumber).build();
     }
     workItem.setIssue(issue);
-    try{
+    try {
       itsRepository.updateWorkItem(workItem);
-    }catch (ITSRepositoryException e) {
+    } catch (ITSRepositoryException e) {
       return Response.status(Response.Status.BAD_REQUEST)
           .entity(BAD_REQUEST_NULL_OR_INVALID).build();
     }
@@ -117,6 +119,28 @@ public class WorkItemEndpoint {
     }
   }
 
+  @GET
+  public Response getWorkItemsByQuery(@QueryParam("team") @DefaultValue("") final Long teamNumber,
+      @QueryParam("description_contains") @DefaultValue("") final String descriptionSubstring,
+      @QueryParam("user") @DefaultValue("") final Long userNumber,
+      @QueryParam("has_issue") @DefaultValue("") final String hasIssue) {
+
+    if (teamNumber != null) {
+      getByTeamQuery(teamNumber);
+    }
+    if (descriptionSubstring != null) {
+      getByByDescriptionQuery(descriptionSubstring);
+    }
+    if (userNumber != null) {
+      getByUserQuery(userNumber);
+    }
+    if (hasIssue != null) {
+      getByIssueQuery(hasIssue);
+    }
+    return Response.noContent().build();
+  }
+
+  /*
   @GET
   public Response getWorkItemsByTeam(@QueryParam("team") @DefaultValue("") final Long teamNumber) {
     try {
@@ -168,10 +192,56 @@ public class WorkItemEndpoint {
           .entity(BAD_REQUEST_NULL_OR_INVALID).build();
     }
   }
-
+*/
   private static final String STATUS_IN_PROGRESS = "in_progress";
   private static final String STATUS_ON_BACKLOG = "on_backlog";
   private static final String STATUS_DONE = "done";
+
+  private Response getByIssueQuery(String hasIssue) {
+    if (hasIssue == "true") {
+      Collection<WorkItem> workItems = itsRepository.getWorkItemsWithIssue();
+      if (workItems != null) {
+        return Response.ok(workItems).build();
+      } else {
+        return Response.status(Response.Status.NOT_FOUND)
+            .entity("No workItems with issue").build();
+      }
+    } else {
+      return Response.status(Response.Status.BAD_REQUEST)
+          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
+    }
+  }
+
+  private Response getByUserQuery(Long userNumber) {
+    try {
+      Collection<WorkItem> workItems = itsRepository.getWorkItemsByUser(userNumber);
+      return Response.ok(workItems).build();
+    } catch (ITSRepositoryException e) {
+      return Response.status(Response.Status.NOT_FOUND)
+          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
+    }
+  }
+
+  private Response getByByDescriptionQuery(final String descriptionSubstring) {
+    try {
+      Collection<WorkItem> workItems =
+          itsRepository.getWorkItemsWithDescriptionLike(descriptionSubstring);
+      return Response.ok(workItems).build();
+    } catch (ITSRepositoryException e) {
+      return Response.status(Response.Status.NOT_FOUND)
+          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
+    }
+  }
+
+  private Response getByTeamQuery(Long teamNumber) {
+    try {
+      Collection<WorkItem> workItems = itsRepository.getWorkItemsByTeam(teamNumber);
+      return Response.ok(workItems).build();
+    } catch (ITSRepositoryException e) {
+      return Response.status(Response.Status.NOT_FOUND)
+          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
+    }
+  }
 
  /* @GET
   public Response getUsers(
