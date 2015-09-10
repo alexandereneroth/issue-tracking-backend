@@ -12,6 +12,7 @@ import nu.jixa.its.repository.UserRepository;
 import nu.jixa.its.repository.WorkItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.transaction.annotation.Transactional;
 
 public class ITSRepositoryImpl implements ITSRepository {
@@ -30,8 +31,8 @@ public class ITSRepositoryImpl implements ITSRepository {
     WorkItem workItemFromRepository = getWorkItem(updatedWorkItem.getNumber());
     workItemFromRepository.copyFields(updatedWorkItem);
     return workItemRepository.save(workItemFromRepository);
-
   }
+
   @Transactional
   @Override public WorkItem addWorkItem(WorkItem workItem) {
     //issueRepository.save(workItem.getIssue());
@@ -42,8 +43,7 @@ public class ITSRepositoryImpl implements ITSRepository {
   @Override public WorkItem removeWorkItem(Long workItemNumber) {
     WorkItem deleteItem = findByNumber(workItemNumber);
 
-    if(deleteItem.getUsers().size() > 0)
-    {
+    if (deleteItem.getUsers().size() > 0) {
       removeWorkItemFromItsUsers(deleteItem);
     }
     workItemRepository.delete(deleteItem);
@@ -52,8 +52,7 @@ public class ITSRepositoryImpl implements ITSRepository {
 
   private void removeWorkItemFromItsUsers(WorkItem workItem) {
     Iterator<User> userIterator = workItem.getUsers().iterator();
-    while(userIterator.hasNext())
-    {
+    while (userIterator.hasNext()) {
       User userToRemoveWorkItemFrom = userIterator.next();
       userToRemoveWorkItemFrom.getWorkItems().remove(workItem);
       userRepository.save(userToRemoveWorkItemFrom);
@@ -118,8 +117,8 @@ public class ITSRepositoryImpl implements ITSRepository {
   @Override public User updateUser(User user) {
     User userInRepo = getUser(user.getNumber());
     userInRepo.copyFields(user);
-
-    return userRepository.save(userInRepo);
+    User savedUser = userRepository.save(userInRepo);
+    return savedUser;
   }
 
   @Override public User deleteUser(Long userNumber) {
@@ -131,8 +130,7 @@ public class ITSRepositoryImpl implements ITSRepository {
       // before removal
       removeUserFromItsTeam(deletedUser);
     }
-    if(deletedUser.getWorkItems().size() > 0)
-    {
+    if (deletedUser.getWorkItems().size() > 0) {
       removeUserFromItsWorkItems(deletedUser);
     }
     userRepository.delete(deletedUser);
@@ -148,8 +146,7 @@ public class ITSRepositoryImpl implements ITSRepository {
 
   private void removeUserFromItsWorkItems(User userToRemove) {
     Iterator<WorkItem> workItemIterator = userToRemove.getWorkItems().iterator();
-    while(workItemIterator.hasNext())
-    {
+    while (workItemIterator.hasNext()) {
       WorkItem workItemToRemoveUserFrom = workItemIterator.next();
       workItemToRemoveUserFrom.getUsers().remove(userToRemove);
       workItemRepository.save(workItemToRemoveUserFrom);
@@ -178,8 +175,10 @@ public class ITSRepositoryImpl implements ITSRepository {
 
     WorkItem item = getWorkItem(workItemId);
     User user = getUser(userId);
-    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(item,"Could not find workItem: No workItem with number " + workItemId );
-    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(user,"Could not find user: No user with number " + userId );
+    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(item,
+        "Could not find workItem: No workItem with number " + workItemId);
+    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(user,
+        "Could not find user: No user with number " + userId);
 
     //item.addUser(getUser(userId));
     //workItemRepository.save(item);
@@ -197,23 +196,22 @@ public class ITSRepositoryImpl implements ITSRepository {
     Collection<User> usersBeforeUpdate = teamInRepo.getUsers();
     Collection<User> usersAfterUpdate = team.getUsers();
 
-    removeAllUsersThatExistedInTeamBeforeUpdateButNotAfter(team, usersBeforeUpdate,usersAfterUpdate);
-    for(User user : usersAfterUpdate)
-    {
+    removeAllUsersThatExistedInTeamBeforeUpdateButNotAfter(team, usersBeforeUpdate,
+        usersAfterUpdate);
+    for (User user : usersAfterUpdate) {
       user.joinTeam(teamInRepo);
       updateUser(user);
     }
   }
 
-  public void removeAllUsersThatExistedInTeamBeforeUpdateButNotAfter(Team team, Collection<User> usersBeforeUpdate, Collection<User> usersAfterUpdate){
+  public void removeAllUsersThatExistedInTeamBeforeUpdateButNotAfter(Team team,
+      Collection<User> usersBeforeUpdate, Collection<User> usersAfterUpdate) {
     Iterator<User> usersBeforeUpdateIterator = usersBeforeUpdate.iterator();
-    while(usersBeforeUpdateIterator.hasNext())
-    {
+    while (usersBeforeUpdateIterator.hasNext()) {
       User userBeforeUpdate = usersBeforeUpdateIterator.next();
-      if(!usersAfterUpdate.contains(userBeforeUpdate))
-      {
+      if (!usersAfterUpdate.contains(userBeforeUpdate)) {
         usersBeforeUpdateIterator.remove();
-        if(userBeforeUpdate.getTeam().equals(team)) {
+        if (userBeforeUpdate.getTeam().equals(team)) {
           userBeforeUpdate.leaveTeam();
         }
         updateUser(userBeforeUpdate);

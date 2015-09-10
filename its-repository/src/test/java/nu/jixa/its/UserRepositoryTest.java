@@ -203,6 +203,19 @@ public class UserRepositoryTest {
     repository.addUser(userWithExistingNumber);
   }
 
+/*  @Test //TODO implement, could not implement first try
+  public void updateShouldThrowExceptionOnTransientWorkItem(){
+    Long userNumber = 1003L;
+    User userWithTransientWorkItem = new User(userNumber,"Y","Y","Y");
+    repository.addUser(userWithTransientWorkItem);
+    WorkItem workItem = new WorkItem(24L,Status.ON_BACKLOG);
+    userWithTransientWorkItem.addWorkItem(workItem);
+
+    expectedException.expect(ITSRepositoryException.class);
+
+    repository.updateUser(userWithTransientWorkItem);
+  }*/
+
   private User generateSimpleUser(@NotNull final Long number) {
     return new User(number, "account" + number, "firstname" + number, "lastname" + number);
   }

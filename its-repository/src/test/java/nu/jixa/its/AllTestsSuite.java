@@ -23,18 +23,17 @@ TEAM
 ✓Team       | Hämta alla team
 ✓UserTeam   | Lägga till en User till ett team
 
-WorkItem
-            | Skapa en work item
-            | Ändra status på en work item
-            | Ta bort* en work item
-            | Tilldela en work item till en User
-            | Hämta alla work item baserat på status
+WORKITEM
+✓WorkItem   | Skapa en work item
+✓WorkItem   | Ändra status på en work item
+✓WorkItem   | Ta bort* en work item
+✓WorkItem   | Tilldela en work item till en User
+✓WorkItem   | Hämta alla work item baserat på status
             | Hämta alla work item för ett Team
             | Hämta alla work item för en User
             | Söka efter work item som innehåller en viss text i sin beskrivning
 
 Issue
-            | Issue
             | Skapa en Issue
             | Uppdatera en Issue
             | Lägga till en Issue till en work item
