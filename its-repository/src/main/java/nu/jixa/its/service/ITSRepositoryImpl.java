@@ -7,6 +7,7 @@ import nu.jixa.its.model.Status;
 import nu.jixa.its.model.Team;
 import nu.jixa.its.model.User;
 import nu.jixa.its.model.WorkItem;
+import nu.jixa.its.repository.IssueRepository;
 import nu.jixa.its.repository.RepositoryUtil;
 import nu.jixa.its.repository.TeamRepository;
 import nu.jixa.its.repository.UserRepository;
@@ -27,12 +28,31 @@ public class ITSRepositoryImpl implements ITSRepository {
   @Autowired
   private TeamRepository teamRepository;
 
+  @Autowired
+  private IssueRepository issueRepository;
+
   @Override public WorkItem updateWorkItem(WorkItem updatedWorkItem) {
     WorkItem workItemFromRepository = getWorkItem(updatedWorkItem.getNumber());
-    workItemFromRepository.setIssue(null);
-    workItemRepository.save(workItemFromRepository);
+    Issue workItemIssue = updatedWorkItem.getIssue();
+    if(workItemIssue != null)
+    {
+      updateIssue(workItemIssue);
+    }
     workItemFromRepository.copyFields(updatedWorkItem);
+
     return workItemRepository.save(workItemFromRepository);
+}
+
+  private void updateIssue(Issue issue){
+    Issue issueInRepository = issueRepository.findByNumber(issue.getNumber());
+    if(issueInRepository == null)
+    {
+      issueRepository.save(issue);
+    }else{
+      issueInRepository.copyFields(issue);
+      issueRepository.save(issueInRepository);
+    }
+
   }
 
   @Transactional

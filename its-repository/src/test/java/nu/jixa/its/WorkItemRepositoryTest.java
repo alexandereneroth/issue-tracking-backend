@@ -154,37 +154,39 @@ public class WorkItemRepositoryTest {
 
     User user = repository.getUser(HelperMethods.USER_NUMBER);
     Team team = new Team(222L);
-
     repository.addTeam(team);
-    user.joinTeam(team);
-    repository.updateUser(user);
-    assertNotNull(repository.getTeam(team.getNumber()));
-    WorkItem workItem = repository.getWorkItem(HelperMethods.WORKITEMNUMBER);
+    try {
+      user.joinTeam(team);
+      repository.updateUser(user);
+      assertNotNull(repository.getTeam(team.getNumber()));
+      WorkItem workItem = repository.getWorkItem(HelperMethods.WORKITEMNUMBER);
 
-    ArrayList<User> users = (ArrayList)repository.getUsersByTeam(222L);
-    assertNotNull(users);
-    assertEquals(users.size(),1);
+      ArrayList<User> users = (ArrayList) repository.getUsersByTeam(222L);
+      assertNotNull(users);
+      assertEquals(users.size(), 1);
 
-    repository.addWorkItemToUser(user.getNumber(), workItem.getNumber());
-    ArrayList<Team> teamsFromRepository = (ArrayList)repository.getWorkItemsByTeam(team.getNumber());
+      repository.addWorkItemToUser(user.getNumber(), workItem.getNumber());
+      ArrayList<Team> teamsFromRepository =
+          (ArrayList) repository.getWorkItemsByTeam(team.getNumber());
 
-    assertNotNull(teamsFromRepository);
-    assertEquals(teamsFromRepository.get(0), workItem);
-
+      assertNotNull(teamsFromRepository);
+      assertEquals(teamsFromRepository.get(0), workItem);
+    }finally {
+      repository.deleteTeam(team);
+    }
   }
 
- /* @Test
+  @Test
   public void canUpdateIssue(){
 
     WorkItem workItemFromRepo = repository.getWorkItem(HelperMethods.WORKITEMNUMBER);
     Long issueNumber = 2005L;
-    Long issueNumberAfter = 23455L;
     String issueStringBeforeUpdate = "BEFORE UPDATE";
     String issueStringAfterUpdate = "AFTER UPDATE";
 
     Issue issue = new Issue(issueNumber);
     issue.setString(issueStringBeforeUpdate);
-    Issue updatedIssue = new Issue(issueNumberAfter);
+    Issue updatedIssue = new Issue(issueNumber);
     updatedIssue.setString(issueStringAfterUpdate);
 
     workItemFromRepo.setIssue(issue);
@@ -200,7 +202,7 @@ public class WorkItemRepositoryTest {
     assertNotNull(workItemWithIssueAfterUpdate);
     assertThat(workItemWithIssueAfterUpdate.getIssue().getString(), is(equalTo(issueStringAfterUpdate)));
 
-  }*/
+  }
 
   private void deleteWorkItemsFromRepository(ArrayList<WorkItem> workItems) {
     for (WorkItem item : workItems) {
