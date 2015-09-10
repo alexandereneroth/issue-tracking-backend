@@ -126,4 +126,19 @@ public class UsersEndpoint {
           .entity(NO_USER_WITH_USERNUMBER + userNumber).build();
     }
   }
+
+  @POST
+  @Path("{userNumber}/work_item")
+  public Response addWorkItemToUser(@PathParam("userNumber") final long userNumber, final long workItemNumber){
+    try {
+      itsRepository.addWorkItemToUser(userNumber, workItemNumber);
+      
+      final URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(userNumber)).build();
+      return Response.created(location).build();
+
+    }catch(ITSRepositoryException e)
+    {
+      return Response.status(Status.NOT_FOUND).entity(e.getMessage()).build();
+    }
+  }
 }
