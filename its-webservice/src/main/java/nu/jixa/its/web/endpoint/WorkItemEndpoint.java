@@ -137,6 +137,33 @@ public class WorkItemEndpoint {
   //✓WorkItem   | Hämta alla work item för ett Team
   //✓WorkItem   | Hämta alla work item för en User
   //✓WorkItem   | Hämta alla work item som har en Issue
+
+  @GET
+  public Response getWorkItemsByQuery(@QueryParam("team") @DefaultValue("") final Long teamNumber,
+      @QueryParam("description_contains") @DefaultValue("") final String descriptionSubstring,
+      @QueryParam("user") @DefaultValue("") final Long userNumber,
+      @QueryParam("has_issue") @DefaultValue("") final String hasIssue,
+      @QueryParam("status") @DefaultValue(STATUS_IN_PROGRESS) final String statusString){
+
+    if (teamNumber != null) {
+      getByTeamQuery(teamNumber);
+    }
+    if (descriptionSubstring != null) {
+      getByByDescriptionQuery(descriptionSubstring);
+    }
+    if (userNumber != null) {
+      getByUserQuery(userNumber);
+    }
+    if (hasIssue != null) {
+      getByIssueQuery(hasIssue);
+    }
+    if (statusString != null) {
+      getStatusByString(statusString);
+    }
+    return Response.noContent().build();
+  }
+
+  /*
   @GET
   public Response getWorkItemsByStatus(
       @QueryParam("status") @DefaultValue(STATUS_IN_PROGRESS) final String statusString) {
@@ -153,28 +180,6 @@ public class WorkItemEndpoint {
     }
   }
 
-  @GET
-  public Response getWorkItemsByQuery(@QueryParam("team") @DefaultValue("") final Long teamNumber,
-      @QueryParam("description_contains") @DefaultValue("") final String descriptionSubstring,
-      @QueryParam("user") @DefaultValue("") final Long userNumber,
-      @QueryParam("has_issue") @DefaultValue("") final String hasIssue) {
-
-    if (teamNumber != null) {
-      getByTeamQuery(teamNumber);
-    }
-    if (descriptionSubstring != null) {
-      getByByDescriptionQuery(descriptionSubstring);
-    }
-    if (userNumber != null) {
-      getByUserQuery(userNumber);
-    }
-    if (hasIssue != null) {
-      getByIssueQuery(hasIssue);
-    }
-    return Response.noContent().build();
-  }
-
-  /*
   @GET
   public Response getWorkItemsByTeam(@QueryParam("team") @DefaultValue("") final Long teamNumber) {
     try {
@@ -230,6 +235,20 @@ public class WorkItemEndpoint {
   private static final String STATUS_IN_PROGRESS = "in_progress";
   private static final String STATUS_ON_BACKLOG = "on_backlog";
   private static final String STATUS_DONE = "done";
+
+    private Response getByStatusQuery(final String statusString) {
+    Status status = getStatusByString(statusString);
+    if (statusString == null) {
+      return Response.status(Response.Status.BAD_REQUEST)
+          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
+    }
+    Collection<WorkItem> workItems = itsRepository.getWorkItemsByStatus(status);
+    if (workItems == null) {
+      return Response.noContent().build();
+    } else {
+      return Response.ok(workItems).build();
+    }
+  }
 
   private Response getByIssueQuery(String hasIssue) {
     if (hasIssue == "true") {
