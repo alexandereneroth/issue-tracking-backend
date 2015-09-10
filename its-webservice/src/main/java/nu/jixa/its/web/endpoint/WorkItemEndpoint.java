@@ -7,6 +7,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -20,10 +21,12 @@ import nu.jixa.its.model.Status;
 import nu.jixa.its.model.WorkItem;
 import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.service.ITSRepositoryException;
+import nu.jixa.its.web.StringNotConvertableToLongException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Path("/work-item")
+@Component
+@Path("/work_tems")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class WorkItemEndpoint {
@@ -60,6 +63,7 @@ public class WorkItemEndpoint {
         uriInfo.getAbsolutePathBuilder().path(workItem.getNumber().toString()).build();
     return Response.created(location).build();
   }
+
   @POST
   @Path("{workItemNumber}")
   public Response addIssueToWorkItem(@PathParam("workItemNumber") final long workItemNumber,final Issue issue){
@@ -82,6 +86,37 @@ public class WorkItemEndpoint {
     return Response.created(location).build();
   }
 
+  //✓WorkItem   | Ändra status på en work item
+  @PUT
+  @Path("{workItemNumber}/status")
+  public Response updateWorkItemStatus(@PathParam("workItemNumber") final String workItemNumber,
+      final String status) {
+
+    if (isInvalidStatus(status)) {
+      return Response.status(Response.Status.BAD_REQUEST)
+          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
+    }
+    try {
+      WorkItem workItem = itsRepository.getWorkItem(requireLongValue(workItemNumber));
+      if (status.equals(STATUS_ON_BACKLOG)) {
+        workItem.setStatus(Status.ON_BACKLOG);
+      } else if (status.equals(STATUS_IN_PROGRESS)) {
+        workItem.setStatus(Status.IN_PROGRESS);
+      } else if (status.equals(STATUS_DONE)) {
+        workItem.setStatus(Status.DONE);
+      } else {
+        return Response.status(Response.Status.BAD_REQUEST)
+            .entity(BAD_REQUEST_NULL_OR_INVALID + status).build();
+      }
+      itsRepository.updateWorkItem(workItem);
+      return Response.status(Response.Status.NO_CONTENT).build();
+    } catch (ITSRepositoryException e) {
+      return Response.status(Response.Status.NOT_FOUND)
+          .entity(e.getMessage()).build();
+    }
+  }
+
+  //✓WorkItem   | Ta bort* en work item
   @DELETE
   @Path("{workItemNumber}")
   public Response deleteWorkItem(@PathParam("workItemNumber") final long workItemNumber) {
@@ -173,8 +208,7 @@ public class WorkItemEndpoint {
   private static final String STATUS_ON_BACKLOG = "on_backlog";
   private static final String STATUS_DONE = "done";
 
- /* @GET
-  public Response getUsers(
+ /* public Response getUsers(
       @QueryParam("team") @DefaultValue("") final String teamNumber,
       @QueryParam("user") @DefaultValue("") final String userNumber,
       @QueryParam("status") @DefaultValue(STATUS_IN_PROGRESS) final String status,
@@ -203,4 +237,26 @@ public class WorkItemEndpoint {
   //✓WorkItem   | Skapa en Issue
   //✓WorkItem   | Uppdatera en Issue
   //✓WorkItem   | Lägga till en Issue till en work item
+
+  private boolean isInvalidStatus(String status) {
+    if (status == null || status.equals("")) {
+      return true;
+    }
+    if (status.equals(STATUS_IN_PROGRESS)
+        || status.equals(STATUS_ON_BACKLOG)
+        || status.equals(STATUS_DONE)) {
+      return false;
+    }
+    return true;
+  }
+
+  private Long requireLongValue(String stringVal) {
+    Long longVal;
+    try {
+      longVal = Long.valueOf(stringVal);
+    } catch (NumberFormatException e) {
+      throw new StringNotConvertableToLongException(stringVal);
+    }
+    return longVal;
+  }
 }
