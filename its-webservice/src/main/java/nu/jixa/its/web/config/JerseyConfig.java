@@ -17,7 +17,9 @@
 package nu.jixa.its.web.config;
 
 import nu.jixa.its.web.endpoint.Endpoint;
+import nu.jixa.its.web.endpoint.TeamsEndpoint;
 import nu.jixa.its.web.endpoint.UsersEndpoint;
+import nu.jixa.its.web.endpoint.WorkItemEndpoint;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +29,8 @@ public class JerseyConfig extends ResourceConfig {
 	public JerseyConfig() {
 		register(Endpoint.class);
     register(UsersEndpoint.class);
+    register(WorkItemEndpoint.class);
+    register(TeamsEndpoint.class);
   }
 
 }
