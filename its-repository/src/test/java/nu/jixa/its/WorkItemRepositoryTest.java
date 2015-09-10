@@ -26,7 +26,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -139,6 +141,13 @@ public class WorkItemRepositoryTest {
     assertEquals(workItemsByUser.size(), workItemList.size());
   }
 
+  @Test
+  public void testCanFindWithIssue() {
+
+    Collection<WorkItem> workItem = repository.getWorkItemsWithIssue();
+    assertThat(workItem.size(), is(3));
+    //TODO test more
+  }
 
   @Test
   public void testCanFindByTeam() {
@@ -163,6 +172,35 @@ public class WorkItemRepositoryTest {
     assertEquals(teamsFromRepository.get(0), workItem);
 
   }
+
+ /* @Test
+  public void canUpdateIssue(){
+
+    WorkItem workItemFromRepo = repository.getWorkItem(HelperMethods.WORKITEMNUMBER);
+    Long issueNumber = 2005L;
+    Long issueNumberAfter = 23455L;
+    String issueStringBeforeUpdate = "BEFORE UPDATE";
+    String issueStringAfterUpdate = "AFTER UPDATE";
+
+    Issue issue = new Issue(issueNumber);
+    issue.setString(issueStringBeforeUpdate);
+    Issue updatedIssue = new Issue(issueNumberAfter);
+    updatedIssue.setString(issueStringAfterUpdate);
+
+    workItemFromRepo.setIssue(issue);
+    WorkItem workItemWithBeforeIssue = repository.updateWorkItem(workItemFromRepo);
+
+    assertNotNull(workItemWithBeforeIssue);
+    assertEquals(workItemWithBeforeIssue.getIssue().getString(), issueStringBeforeUpdate);
+
+    issue.setString(issueStringAfterUpdate);
+    workItemFromRepo.setIssue(issue);
+    WorkItem workItemWithIssueAfterUpdate = repository.updateWorkItem(workItemFromRepo);
+
+    assertNotNull(workItemWithIssueAfterUpdate);
+    assertThat(workItemWithIssueAfterUpdate.getIssue().getString(), is(equalTo(issueStringAfterUpdate)));
+
+  }*/
 
   private void deleteWorkItemsFromRepository(ArrayList<WorkItem> workItems) {
     for (WorkItem item : workItems) {

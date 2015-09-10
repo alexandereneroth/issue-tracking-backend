@@ -2,6 +2,7 @@ package nu.jixa.its.service;
 
 import java.util.Collection;
 import java.util.Iterator;
+import nu.jixa.its.model.Issue;
 import nu.jixa.its.model.Status;
 import nu.jixa.its.model.Team;
 import nu.jixa.its.model.User;
@@ -27,8 +28,9 @@ public class ITSRepositoryImpl implements ITSRepository {
   private TeamRepository teamRepository;
 
   @Override public WorkItem updateWorkItem(WorkItem updatedWorkItem) {
-
     WorkItem workItemFromRepository = getWorkItem(updatedWorkItem.getNumber());
+    workItemFromRepository.setIssue(null);
+    workItemRepository.save(workItemFromRepository);
     workItemFromRepository.copyFields(updatedWorkItem);
     return workItemRepository.save(workItemFromRepository);
   }
@@ -87,8 +89,8 @@ public class ITSRepositoryImpl implements ITSRepository {
     return workItemRepository.findByUsersNumber(userNumber);
   }
 
-  @Override public Collection<WorkItem> getWorkItemsByIssue(Long issueNumber) {
-    return workItemRepository.findByIssueNumber(issueNumber);
+  @Override public Collection<WorkItem> getWorkItemsWithIssue() {
+    return workItemRepository.findAllWorkItemsWithIssue();
   }
 
   @Override public Collection<WorkItem> getWorkItemByDescriptionLike(String descriptionLike) {
