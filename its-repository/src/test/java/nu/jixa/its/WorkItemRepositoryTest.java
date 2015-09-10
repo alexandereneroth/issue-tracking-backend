@@ -43,9 +43,9 @@ public class WorkItemRepositoryTest {
   @Autowired
   ITSRepository repository;
 
-  @Before
+ @Before
   public void before() {
-    addUsersToRepository((ArrayList)HelperMethods.generate3Users());
+    addUsersToRepository((ArrayList) HelperMethods.generate3Users());
     WorkItem item = HelperMethods.generateSimpleWorkItem(testWorkitemNr);
     repository.addWorkItem(item);
     WorkItem workItemInRepoAfterAdd = repository.findByNumber(item.getNumber());
@@ -63,26 +63,25 @@ public class WorkItemRepositoryTest {
     deleteWorkItemsFromRepository(items);
     deleteUsersFromRepository((ArrayList) HelperMethods.generate3Users());
   }
+    @Test
+    public void testSaveAndDelete() {
+      Long id = 999L;
+      WorkItem item = HelperMethods.generateSimpleWorkItem(id);
+      repository.addWorkItem(item);
+      WorkItem workItemInRepoAfterAdd = repository.findByNumber(item.getNumber());
 
-  @Test
-  public void testSaveAndDelete() {
-    Long id = 999L;
-    WorkItem item = HelperMethods.generateSimpleWorkItem(id);
-    repository.addWorkItem(item);
-    WorkItem workItemInRepoAfterAdd = repository.findByNumber(item.getNumber());
+      assertNotNull(item);
+      assertEquals(item, workItemInRepoAfterAdd);
 
-    assertNotNull(item);
-    assertEquals(item, workItemInRepoAfterAdd);
+      repository.removeWorkItem(workItemInRepoAfterAdd.getNumber());
 
-    repository.removeWorkItem(workItemInRepoAfterAdd.getNumber());
-
-    expectedException.expect(ITSRepositoryException.class);
-    expectedException.expectMessage("Could not find workItem");
-    repository.getWorkItem(workItemInRepoAfterAdd.getNumber());
-  }
+      expectedException.expect(ITSRepositoryException.class);
+      expectedException.expectMessage("Could not find workItem");
+      repository.getWorkItem(workItemInRepoAfterAdd.getNumber());
+    }
 
     @Test
-    public void testCanUpdateWorkItem(){
+    public void testCanUpdateWorkItem() {
 
       Issue issue = new Issue(14L);
       Collection<User> users = new ArrayList();
@@ -96,33 +95,33 @@ public class WorkItemRepositoryTest {
       itemInRepository.setIssue(issue);
       itemInRepository.setUsers(users);
       WorkItem updatedItem = repository.updateWorkItem(itemInRepository);
-      Set<User>usersInRepoSet = HelperMethods.toHashSet(itemInRepository.getUsers());
-      Set<User>usersAfterUpdateSet = HelperMethods.toHashSet(updatedItem.getUsers());
+      Set<User> usersInRepoSet = HelperMethods.toHashSet(itemInRepository.getUsers());
+      Set<User> usersAfterUpdateSet = HelperMethods.toHashSet(updatedItem.getUsers());
 
       assertNotNull(updatedItem);
-      assert(HelperMethods.isEqualSet(usersInRepoSet, usersAfterUpdateSet));
+      assert (HelperMethods.isEqualSet(usersInRepoSet, usersAfterUpdateSet));
       assertEquals(itemInRepository, updatedItem);
-
     }
 
-      @Test
-      public void testCanFindByStatus(){
-        ArrayList<WorkItem> itemsFromRepository = (ArrayList)repository.getWorkItemsByStatus(Status.DONE);
-        Set<WorkItem>itemsByStatusSet = HelperMethods.toHashSet(items);
-        Set<WorkItem>itemsFromRepositorySet = HelperMethods.toHashSet(itemsFromRepository);
+    @Test
+    public void testCanFindByStatus() {
+      ArrayList<WorkItem> itemsFromRepository =
+          (ArrayList) repository.getWorkItemsByStatus(Status.DONE);
+      Set<WorkItem> itemsByStatusSet = HelperMethods.toHashSet(items);
+      Set<WorkItem> itemsFromRepositorySet = HelperMethods.toHashSet(itemsFromRepository);
 
-        assert(HelperMethods.isEqualSet(itemsByStatusSet, itemsFromRepositorySet));
-      }
+      assert (HelperMethods.isEqualSet(itemsByStatusSet, itemsFromRepositorySet));
+    }
 
-      @Test
-      public void testCanSetWorkItemStatus(){
-        Status status = Status.ON_BACKLOG;
-        repository.setWorkItemStatus(testWorkitemNr, status);
-        WorkItem workItemFromRepository = repository.getWorkItem(testWorkitemNr);
+    @Test
+    public void testCanSetWorkItemStatus() {
+      Status status = Status.ON_BACKLOG;
+      repository.setWorkItemStatus(testWorkitemNr, status);
+      WorkItem workItemFromRepository = repository.getWorkItem(testWorkitemNr);
 
-        assertNotNull(workItemFromRepository);
-        assertEquals(workItemFromRepository.getStatus(), status);
-      }
+      assertNotNull(workItemFromRepository);
+      assertEquals(workItemFromRepository.getStatus(), status);
+    }
 
     /*  @Test
       public void testCanFindByUser(){HelperMethods.generateComplexWorkItems();
@@ -135,17 +134,17 @@ public class WorkItemRepositoryTest {
         ArrayList<WorkItem> itemsByUser = (ArrayList)repository.getWorkItemsByUser(HelperMethods.USER_NUMBER);
         assertNotNull(itemsByUser);
         assertEquals(itemsByUser.size(), workItems.size());
-      }*/
-      @Test
-      public void testCanFindByIssue(){
-        //repository.getWorkItemsByTeam();
       }
-      @Test
-      public void testCanFindByTeam(){
-        //repository.getWorkItemsByTeam();
-      }
+  @Test
+  public void testCanFindByIssue() {
+    //repository.getWorkItemsByTeam();
+  }
 
-
+  @Test
+  public void testCanFindByTeam() {
+    //repository.getWorkItemsByTeam();
+  }
+*/
   private void deleteWorkItemsFromRepository(ArrayList<WorkItem> workItems) {
     for (WorkItem item : workItems) {
       repository.removeWorkItem(item.getNumber());
@@ -158,12 +157,14 @@ public class WorkItemRepositoryTest {
       assertNotNull(repository.findByNumber(item.getNumber()));
     }
   }
+
   private void addUsersToRepository(ArrayList<User> users) {
     for (User user : users) {
       repository.addUser(user);
       //assertNotNull(userRepository.findByNumber(user.getNumber()));
     }
   }
+
   private void deleteUsersFromRepository(ArrayList<User> users) {
     for (User user : users) {
       repository.deleteUser(user.getNumber());

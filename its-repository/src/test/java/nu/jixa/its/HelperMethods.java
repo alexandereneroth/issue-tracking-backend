@@ -74,27 +74,24 @@ public final class HelperMethods {
 
   public static List<WorkItem> generateComplexWorkItems() {
     ArrayList<WorkItem> list = new ArrayList<>();
-    WorkItem workItemStatus1 = generateSimpleWorkItem(12L);
-    workItemStatus1.setDescription("item 1");
-    workItemStatus1.setIssue(new Issue(20L));
-    //workItemStatus1.setUsers(generate1Users());
-    workItemStatus1.setStatus(Status.DONE);
+    WorkItem workItem1 = generateSimpleWorkItem(12L);
+    workItem1.setDescription("item 1");
+    workItem1.setIssue(new Issue(20L));
+    workItem1.setStatus(Status.DONE);
 
-    WorkItem workItemStatus2 = generateSimpleWorkItem(14L);
-    workItemStatus1.setDescription("item 2");
-    workItemStatus1.setIssue(new Issue(22L));
-    //workItemStatus1.setUsers(generate2Users());
-    workItemStatus1.setStatus(Status.DONE);
+    WorkItem workItem2 = generateSimpleWorkItem(14L);
+    workItem2.setDescription("item 2");
+    workItem2.setIssue(new Issue(22L));
+    workItem2.setStatus(Status.DONE);
 
-    WorkItem workItemStatus3 = generateSimpleWorkItem(16L);
-    workItemStatus1.setDescription("item 1");
-    workItemStatus1.setIssue(new Issue(244L));
-    //workItemStatus1.setUsers(generate3Users());
-    workItemStatus1.setStatus(Status.DONE);
+    WorkItem workItem3 = generateSimpleWorkItem(244L);
+    workItem3.setDescription("item 4");
+    workItem3.setIssue(new Issue(290L));
+    workItem3.setStatus(Status.DONE);
 
-    list.add(workItemStatus1);
-    list.add(workItemStatus2);
-    list.add(workItemStatus3);
+    list.add(workItem1);
+    list.add(workItem2);
+    list.add(workItem3);
     return list;
   }
   public static WorkItem generateSimpleWorkItem(@NotNull final Long number) {

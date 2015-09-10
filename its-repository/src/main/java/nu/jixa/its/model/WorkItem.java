@@ -23,7 +23,7 @@ public class WorkItem extends AbstractEntity<WorkItem> {
   @Column(name = "status", nullable = false)
   private Status status;
 
-  @Column(name = "description", unique = true)
+  @Column(name = "description")
   private String description;
 
   @OneToOne(cascade = {CascadeType.REMOVE,CascadeType.PERSIST, CascadeType.MERGE})
