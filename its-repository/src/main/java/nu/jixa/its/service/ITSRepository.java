@@ -26,8 +26,6 @@ public interface ITSRepository {
 
   Collection<WorkItem> getWorkItemsWithDescriptionLike(String descriptionLike);
 
-  //WorkItem addIssueToWorkItem(Long workItemNumber, Long IssueNumber);TODO implement
-
   WorkItem getWorkItem(Long workItemNumber);
 
   // User
@@ -67,6 +65,19 @@ public interface ITSRepository {
   User addUserToTeamWithNumber(Long userNumber, Long teamNumber);
 
   // Issue
+
+  Issue addIssue(Issue issue);
+
+  Issue getIssue(Long issueNumber);
+
+  WorkItem addIssueToWorkItem(Long workItemNumber, Long IssueNumber);
+
+  void saveIssue(Issue issue);
+
+  Issue updateIssue(Issue issue);
+
+  boolean issueExists(Issue issue);
+
   WorkItem findByNumber(Long id);
 
   WorkItem updateWorkItem(WorkItem updatedWorkItem);

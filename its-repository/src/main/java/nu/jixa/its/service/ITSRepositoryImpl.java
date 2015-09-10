@@ -30,28 +30,62 @@ public class ITSRepositoryImpl implements ITSRepository {
   @Autowired
   private IssueRepository issueRepository;
 
+
+  @Override public void saveIssue(Issue issue) {
+    if (issueExists(issue)) {
+      updateIssue(issue);
+    } else {
+      addIssue(issue);
+    }
+  }
+
+  @Override public Issue updateIssue(Issue issue) {
+    Issue issueInRepository = issueRepository.findByNumber(issue.getNumber());
+    issueInRepository.copyFields(issue);
+
+    return issueRepository.save(issueInRepository);
+  }
+
+  @Override public Issue addIssue(Issue issue) {
+    if (issueExists(issue)) {
+      throw new ITSRepositoryException("Could not add issue: issue already exists");
+    }
+    return issueRepository.save(issue);
+  }
+
+  @Override public Issue getIssue(Long issueNumber) {
+    Issue issueInRepository = issueRepository.findByNumber(issueNumber);
+    if (issueInRepository == null) {
+      throw new ITSRepositoryException("Could not get issue: issue not in repository");
+    }
+    return issueInRepository;
+  }
+
+  @Override public WorkItem addIssueToWorkItem(Long workItemNumber, Long issueNumber) {
+    Issue issue = getIssue(issueNumber);
+    WorkItem workItem = getWorkItem(workItemNumber);
+
+    workItem.setIssue(issue);
+    return updateWorkItem(workItem);
+  }
+
+  @Override public boolean issueExists(Issue issue) {
+    Issue issueInRepository = issueRepository.findByNumber(issue.getNumber());
+    if (issueInRepository == null) {
+      return false;
+    }
+    return true;
+  }
+
   @Override public WorkItem updateWorkItem(WorkItem updatedWorkItem) {
     WorkItem workItemFromRepository = getWorkItem(updatedWorkItem.getNumber());
     Issue workItemIssue = updatedWorkItem.getIssue();
-    if(workItemIssue != null)
-    {
-      updateIssue(workItemIssue);
+    if (workItemIssue != null) {
+      saveIssue(workItemIssue);
     }
     workItemFromRepository.copyFields(updatedWorkItem);
 
     return workItemRepository.save(workItemFromRepository);
-}
-
-  private void updateIssue(Issue issue){
-    Issue issueInRepository = issueRepository.findByNumber(issue.getNumber());
-    if(issueInRepository == null)
-    {
-      issueRepository.save(issue);
-    }else{
-      issueInRepository.copyFields(issue);
-      issueRepository.save(issueInRepository);
-    }
-
   }
 
   @Transactional
