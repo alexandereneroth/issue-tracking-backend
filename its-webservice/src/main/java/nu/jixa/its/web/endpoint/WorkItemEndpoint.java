@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-@Path("/users")
+@Path("/workItem")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class WorkItemEndpoint {
@@ -62,8 +62,6 @@ public class WorkItemEndpoint {
     return Response.created(location).build();
   }
 
-  //✓WorkItem   | Ändra status på en work item
-  //✓WorkItem   | Ta bort* en work item
   @DELETE
   @Path("{workItemNumber}")
   public Response deleteWorkItem(@PathParam("workItemNumber") final long workItemNumber) {
@@ -135,7 +133,7 @@ public class WorkItemEndpoint {
   }
 
   @GET
-  public Response getWorkItemsByDescription(
+  public Response getWorkItemsByIssue(
       @QueryParam("has_issue") @DefaultValue("") final String hasIssue) {
     if (hasIssue == "true") {
       Collection<WorkItem> workItems = itsRepository.getWorkItemsWithIssue();

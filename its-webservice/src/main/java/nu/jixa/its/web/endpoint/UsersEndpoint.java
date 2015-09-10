@@ -91,7 +91,6 @@ public class UsersEndpoint {
           .entity(NO_USER_WITH_USERNUMBER + userNumber).build();
     }
   }
-
   @DELETE
   @Path("{userNumber}")
   public Response deleteUser(@PathParam("userNumber") final long userNumber) {
