@@ -5,6 +5,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -30,13 +31,10 @@ public class UsersEndpoint {
   private UriInfo uriInfo;
 
   //USER
-  //✓User       | Uppdatera en User
 
   //✓User       | Söka efter en User baserat på förnamn eller efternamn eller användarnamn
   //✓UserTeam   | Hämta alla User som ingår i ett visst team
 
-
-  //✓User       | Skapa en User
   @POST
   public Response createUser(final User user) {
     itsRepository.addUser(user);
@@ -45,16 +43,13 @@ public class UsersEndpoint {
     return Response.created(location).build();
   }
 
-  //✓User       | Hämta en User baserat på user number (inte entity id)
   @GET
   @Path("{userNumber}")
-  public Response getUser(@PathParam("userNumber") final long userNumber)
-  {
+  public Response getUser(@PathParam("userNumber") final long userNumber) {
     User user = itsRepository.getUser(userNumber);
     return Response.ok(user).build();
   }
 
-  //✓User       | Ta bort* en User
   @DELETE
   @Path("{userNumber}")
   public Response deleteUser(@PathParam("userNumber") final long userNumber) {
@@ -62,6 +57,18 @@ public class UsersEndpoint {
     return Response.noContent().build();
   }
 
+  //✓User       | Uppdatera en User
+  @PUT
+  @Path("{userNumber}")
+  public Response updateUser(@PathParam("userNumber") final long userNumber,
+      final User updatedUser) {
 
-
+    if (userNumber == updatedUser.getNumber()) {
+      itsRepository.updateUser(updatedUser);
+      return Response.status(Response.Status.NO_CONTENT).build();
+    } else {
+      return Response.status(Response.Status.BAD_REQUEST)
+          .entity("Usernumber mismatch between path and new user info").build();
+    }
+  }
 }

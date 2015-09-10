@@ -8,6 +8,7 @@ import com.github.springtestdbunit.dataset.ReplacementDataSetLoader;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.ContentType;
 import java.sql.SQLException;
+import nu.jixa.its.model.User;
 import nu.jixa.its.web.TestUtil;
 import org.apache.http.HttpStatus;
 import org.junit.Before;
@@ -43,7 +44,8 @@ public class UsersTest {
   // @formatter:off
   private static final String USERS_DATA = "/usersData.xml";
   private static final String USERS_DATA_ADD_EXPECTED = "/usersData-add-expected.xml";
-  private static final String USERS_DATA_DELETE_EXPECTED = "/userData-delete-expected";
+  private static final String USERS_DATA_DELETE_EXPECTED = "/userData-delete-expected.xml";
+  private static final String USERS_DATA_UPDATE_EXPECTED = "/userData-update-expected.xml";
   private static final String USER_DB_TABLE = "tblUser";
 
   private static final String BASE_URL = "http://localhost:";
@@ -58,6 +60,8 @@ public class UsersTest {
   private static final Long EXISTING_USER_NUMBER = 1L;
   private static final String EXISTING_USER_FIRSTNAME = "firstname1";
   private static final String EXISTING_USER_LASTNAME = "lastname1";
+  private static final String UPDATED_USER_FIRSTNAME = "updatedfirstname";
+  private static final String UPDATED_USER_LASTNAME = "updatedlastname";
 
   private static final Long NEW_USER_NUMBER = 3L;
   private static final Long REMOVE_USER_NUMBER = 2L;
@@ -130,4 +134,39 @@ public class UsersTest {
     .then()
         .statusCode(HttpStatus.SC_NO_CONTENT);
   }
+
+  @Test
+  @DatabaseSetup(USERS_DATA)
+  public void updateUserShouldReturnNoContent() {
+    User updatedUser = TestUtil.createUserWithNumber(EXISTING_USER_NUMBER);
+    updatedUser.setFirstname(UPDATED_USER_FIRSTNAME);
+    updatedUser.setLastname(UPDATED_USER_LASTNAME);
+
+    given()
+        .body(updatedUser)
+        .contentType(ContentType.JSON)
+    .when()
+        .put(USER_ENDPOINT, EXISTING_USER_NUMBER)
+    .then()
+        .statusCode(HttpStatus.SC_NO_CONTENT);
+  }
+
+  @Test
+  @DatabaseSetup(USERS_DATA)
+  @ExpectedDatabase(value = USERS_DATA_UPDATE_EXPECTED, table = USER_DB_TABLE)
+  public void updateUserShouldUpdateUserInDatabase() {
+    User updatedUser = TestUtil.createUserWithNumber(EXISTING_USER_NUMBER);
+    updatedUser.setFirstname(UPDATED_USER_FIRSTNAME);
+    updatedUser.setLastname(UPDATED_USER_LASTNAME);
+
+    given()
+        .body(updatedUser)
+        .contentType(ContentType.JSON)
+    .when()
+        .put(USER_ENDPOINT, EXISTING_USER_NUMBER)
+    .then()
+        .statusCode(HttpStatus.SC_NO_CONTENT);
+  }
+
+
 }
