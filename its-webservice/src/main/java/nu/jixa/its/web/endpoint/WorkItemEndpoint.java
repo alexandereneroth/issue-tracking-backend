@@ -15,6 +15,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import nu.jixa.its.model.Issue;
 import nu.jixa.its.model.Status;
 import nu.jixa.its.model.User;
 import nu.jixa.its.model.WorkItem;
@@ -24,7 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-@Path("/workItem")
+@Path("/workitem")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class WorkItemEndpoint {
@@ -60,6 +61,21 @@ public class WorkItemEndpoint {
     final URI location =
         uriInfo.getAbsolutePathBuilder().path(workItem.getNumber().toString()).build();
     return Response.created(location).build();
+  }
+  @POST
+  @Path("{workItemNumber}")
+  public Response addIssueToWorkItem(@PathParam("workItemNumber") final long workItemNumber,final Issue issue){
+    try{
+      WorkItem workItem = itsRepository.getWorkItem(workItemNumber);
+    }catch (ITSRepositoryException e) {
+      return Response.status(Response.Status.NOT_FOUND)
+          .entity(NO_WORKITEM_WITH_NUMBER + workItemNumber).build();
+    }
+    itsRepository.
+    try{
+      itsRepository.
+    }
+    return Response.noContent().build();
   }
 
   @DELETE
