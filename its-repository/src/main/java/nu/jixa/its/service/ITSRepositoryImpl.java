@@ -80,10 +80,7 @@ public class ITSRepositoryImpl implements ITSRepository {
   }
 
   @Override public Collection<WorkItem> getWorkItemsByTeam(Long teamNumber) {
-
-    //userRepository.selectUserByTeamId(teamNumber);
-    //return workItemRepository.getWorkItemsByTeam(teamNumber);
-    return null;
+    return workItemRepository.findByUsersTeamNumber(teamNumber);
   }
 
   @Override public Collection<WorkItem> getWorkItemsByUser(Long userNumber) {

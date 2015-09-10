@@ -26,6 +26,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -138,16 +139,29 @@ public class WorkItemRepositoryTest {
     assertEquals(workItemsByUser.size(), workItemList.size());
   }
 
-  @Test
-  public void testCanFindByIssue() {
-    WorkItem workItem = repository.getWorkItem(HelperMethods.WORKITEMNUMBER);
-    workItem.getIssue();
-    //WorkItem workItem = repository.getWorkItemsByIssue();
-  }
 
   @Test
   public void testCanFindByTeam() {
-    //repository.getWorkItemsByTeam();
+
+    User user = repository.getUser(HelperMethods.USER_NUMBER);
+    Team team = new Team(222L);
+
+    repository.addTeam(team);
+    user.joinTeam(team);
+    repository.updateUser(user);
+    assertNotNull(repository.getTeam(team.getNumber()));
+    WorkItem workItem = repository.getWorkItem(HelperMethods.WORKITEMNUMBER);
+
+    ArrayList<User> users = (ArrayList)repository.getUsersByTeam(222L);
+    assertNotNull(users);
+    assertEquals(users.size(),1);
+
+    repository.addWorkItemToUser(user.getNumber(), workItem.getNumber());
+    ArrayList<Team> teamsFromRepository = (ArrayList)repository.getWorkItemsByTeam(team.getNumber());
+
+    assertNotNull(teamsFromRepository);
+    assertEquals(teamsFromRepository.get(0), workItem);
+
   }
 
   private void deleteWorkItemsFromRepository(ArrayList<WorkItem> workItems) {
