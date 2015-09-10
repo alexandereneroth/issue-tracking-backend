@@ -115,6 +115,7 @@ public class ITSRepositoryImpl implements ITSRepository {
   @Override public Collection<WorkItem> getWorkItemsWithDescriptionLike(String descriptionLike) {
     return workItemRepository.findWorkItemsWithDescriptionLike(descriptionLike);
   }
+
   @Transactional
   @Override public User addUser(User user) {
     try {
