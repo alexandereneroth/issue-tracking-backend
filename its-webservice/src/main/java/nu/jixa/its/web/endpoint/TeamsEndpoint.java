@@ -1,6 +1,8 @@
 package nu.jixa.its.web.endpoint;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -13,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import nu.jixa.its.model.Team;
+import nu.jixa.its.model.User;
 import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.service.ITSRepositoryException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +33,6 @@ public class TeamsEndpoint {
   private static final String BAD_REQUEST_MISMATCH_BETWEEN_PATH_AND_TEAM =
       "Usernumber mismatch between path and new user info";
 
-
   @Autowired
   private ITSRepository itsRepository;
 
@@ -43,6 +45,21 @@ public class TeamsEndpoint {
   //✓Team       | Ta bort* ett team
   //✓Team       | Hämta alla team
   //✓UserTeam   | Lägga till en User till ett team
+
+  @GET
+  public Response getTeams() {
+    Iterable<Team> teams = itsRepository.getAllTeams();
+    Collection<Team> teamsCollection = new ArrayList<>();
+    for (Team team : teams) {
+      teamsCollection.add(team);
+    }
+
+    if (teamsCollection.isEmpty()) {
+      return Response.noContent().build();
+    } else {
+      return Response.ok(teamsCollection).build();
+    }
+  }
 
   @GET
   @Path("{teamNumber}")
@@ -74,11 +91,11 @@ public class TeamsEndpoint {
     final URI location = uriInfo.getAbsolutePathBuilder().path(team.getNumber().toString()).build();
     return Response.created(location).build();
   }
-  
+
   @PUT
   @Path("{teamNumber}")
-  public Response updateTeam(@PathParam("teamNumber") final long teamNumber, final Team updatedTeam)
-  {
+  public Response updateTeam(@PathParam("teamNumber") final long teamNumber,
+      final Team updatedTeam) {
 
     if (updatedTeam == null || updatedTeam.getNumber() == null) {
       return Response.status(Response.Status.BAD_REQUEST)
