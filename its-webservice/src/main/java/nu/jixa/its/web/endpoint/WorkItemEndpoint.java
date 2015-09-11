@@ -26,10 +26,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-@Path("/work_tems")
+@Path("/work-items")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class WorkItemEndpoint {
+  private static final String NO_WORKITEM_WITH_NUMBER = "No workItem with number: ";
+  private static final String BAD_REQUEST_NULL_OR_INVALID =
+      "Null or Invalid JSON Data in Request Body";
+  private static final String BAD_REQUEST_MISMATCH_BETWEEN_PATH_AND_USER =
+      "Usernumber mismatch between path and new user info";
+
+  private static final String STATUS_IN_PROGRESS = "in_progress";
+  private static final String STATUS_ON_BACKLOG = "on_backlog";
+  private static final String STATUS_DONE = "done";
 
   @Autowired
   private ITSRepository itsRepository;
@@ -37,13 +46,35 @@ public class WorkItemEndpoint {
   @Context
   private UriInfo uriInfo;
 
-  private static final String NO_WORKITEM_WITH_NUMBER = "No workItem with number: ";
-  private static final String BAD_REQUEST_NULL_OR_INVALID =
-      "Null or Invalid JSON Data in Request Body";
-  private static final String BAD_REQUEST_MISMATCH_BETWEEN_PATH_AND_USER =
-      "Usernumber mismatch between path and new user info";
+  @GET
+  public Response getWorkItemsByQuery(@QueryParam("team") @DefaultValue("") final Long teamNumber,
+      @QueryParam("description_contains") @DefaultValue("") final String descriptionSubstring,
+      @QueryParam("user") @DefaultValue("") final Long userNumber,
+      @QueryParam("has_issue") @DefaultValue("") final String hasIssue,
+      @QueryParam("status") @DefaultValue(STATUS_IN_PROGRESS) final String statusString){
 
-  //✓WorkItem   | Skapa en work item
+    if (teamNumber != null) {
+      return getByTeamQuery(teamNumber);
+    }
+    if (!descriptionSubstring.isEmpty()) {
+      return getByByDescriptionQuery(descriptionSubstring);
+    }
+    if (userNumber != null) {
+      return getByUserQuery(userNumber);
+    }
+    if (!hasIssue.isEmpty()) {
+      return getByIssueQuery(hasIssue);
+    }
+    if (!statusString.isEmpty()) {
+      return getByStatusStringQuery(statusString);
+    }
+
+    // If no queryParam is entered return all WorkItems
+    getStatusByString("");
+
+    return Response.ok().build();
+  }
+
   @POST
   public Response createWorkItem(final WorkItem workItem) throws IllegalAccessException {
 
@@ -87,7 +118,6 @@ public class WorkItemEndpoint {
     return Response.created(location).build();
   }
 
-  //✓WorkItem   | Ändra status på en work item
   @PUT
   @Path("{workItemNumber}/status")
   public Response updateWorkItemStatus(@PathParam("workItemNumber") final String workItemNumber,
@@ -117,7 +147,6 @@ public class WorkItemEndpoint {
     }
   }
 
-  //✓WorkItem   | Ta bort* en work item
   @DELETE
   @Path("{workItemNumber}")
   public Response deleteWorkItem(@PathParam("workItemNumber") final long workItemNumber) {
@@ -130,113 +159,7 @@ public class WorkItemEndpoint {
     return Response.noContent().build();
   }
 
-  //✓WorkItem   | Tilldela en work item till en User
-
-  //✓WorkItem (run by itself)  | Söka efter work item som innehåller en viss text i sin beskrivning
-  //✓WorkItem   | Hämta alla work item baserat på status
-  //✓WorkItem   | Hämta alla work item för ett Team
-  //✓WorkItem   | Hämta alla work item för en User
-  //✓WorkItem   | Hämta alla work item som har en Issue
-
-  @GET
-  public Response getWorkItemsByQuery(@QueryParam("team") @DefaultValue("") final Long teamNumber,
-      @QueryParam("description_contains") @DefaultValue("") final String descriptionSubstring,
-      @QueryParam("user") @DefaultValue("") final Long userNumber,
-      @QueryParam("has_issue") @DefaultValue("") final String hasIssue,
-      @QueryParam("status") @DefaultValue(STATUS_IN_PROGRESS) final String statusString){
-
-    if (teamNumber != null) {
-      getByTeamQuery(teamNumber);
-    }
-    if (descriptionSubstring != null) {
-      getByByDescriptionQuery(descriptionSubstring);
-    }
-    if (userNumber != null) {
-      getByUserQuery(userNumber);
-    }
-    if (hasIssue != null) {
-      getByIssueQuery(hasIssue);
-    }
-    if (statusString != null) {
-      getStatusByString(statusString);
-    }
-    return Response.noContent().build();
-  }
-
-  /*
-  @GET
-  public Response getWorkItemsByStatus(
-      @QueryParam("status") @DefaultValue(STATUS_IN_PROGRESS) final String statusString) {
-    Status status = getStatusByString(statusString);
-    if (statusString == null) {
-      return Response.status(Response.Status.BAD_REQUEST)
-          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
-    }
-    Collection<WorkItem> workItems = itsRepository.getWorkItemsByStatus(status);
-    if (workItems == null) {
-      return Response.noContent().build();
-    } else {
-      return Response.ok(workItems).build();
-    }
-  }
-
-  @GET
-  public Response getWorkItemsByTeam(@QueryParam("team") @DefaultValue("") final Long teamNumber) {
-    try {
-      Collection<WorkItem> workItems = itsRepository.getWorkItemsByTeam(teamNumber);
-      return Response.ok(workItems).build();
-    } catch (ITSRepositoryException e) {
-      return Response.status(Response.Status.NOT_FOUND)
-          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
-    }
-  }
-
-  @GET
-  public Response getWorkItemByDescription(
-      @QueryParam("description_contains") @DefaultValue("") final String descriptionSubstring) {
-    try {
-      Collection<WorkItem> workItems =
-          itsRepository.getWorkItemsWithDescriptionLike(descriptionSubstring);
-      return Response.ok(workItems).build();
-    } catch (ITSRepositoryException e) {
-      return Response.status(Response.Status.NOT_FOUND)
-          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
-    }
-  }
-
-  @GET
-  public Response getWorkItemsByUser(@QueryParam("user") @DefaultValue("") final Long userNumber) {
-    try {
-      Collection<WorkItem> workItems = itsRepository.getWorkItemsByUser(userNumber);
-      return Response.ok(workItems).build();
-    } catch (ITSRepositoryException e) {
-      return Response.status(Response.Status.NOT_FOUND)
-          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
-    }
-  }
-
-  @GET
-  public Response getWorkItemsByIssue(
-      @QueryParam("has_issue") @DefaultValue("") final String hasIssue) {
-    if (hasIssue == "true") {
-      Collection<WorkItem> workItems = itsRepository.getWorkItemsWithIssue();
-      if (workItems != null) {
-        return Response.ok(workItems).build();
-      } else {
-        return Response.status(Response.Status.NOT_FOUND)
-            .entity("No workItems with issue").build();
-      }
-    } else {
-      return Response.status(Response.Status.BAD_REQUEST)
-          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
-    }
-  }
-*/
-  private static final String STATUS_IN_PROGRESS = "in_progress";
-  private static final String STATUS_ON_BACKLOG = "on_backlog";
-  private static final String STATUS_DONE = "done";
-
-    private Response getByStatusQuery(final String statusString) {
+  private Response getByStatusStringQuery(final String statusString) {
     Status status = getStatusByString(statusString);
     if (statusString == null) {
       return Response.status(Response.Status.BAD_REQUEST)
@@ -295,26 +218,7 @@ public class WorkItemEndpoint {
           .entity(BAD_REQUEST_NULL_OR_INVALID).build();
     }
   }
-
- /* @GET
-  public Response getUsers(
-=======
- /* public Response getUsers(
->>>>>>> 33b5c0332515cd71d2a2d8d2ffcec22311d53b59
-      @QueryParam("team") @DefaultValue("") final String teamNumber,
-      @QueryParam("user") @DefaultValue("") final String userNumber,
-      @QueryParam("status") @DefaultValue(STATUS_IN_PROGRESS) final String status,
-      @QueryParam("description_contains") @DefaultValue("") final String descriptionSubstring,
-      @QueryParam("has_issue") @DefaultValue("") final String hasIssue) {
-
-    //Collection<User> usersByName = itsRepository.getUsersByNameLike(searchString);
-    //if (usersByName.isEmpty()) {
-    //  return Response.noContent().build();
-    //} else {
-    //  return Response.ok(usersByName).build();
-    //}
-  }*/
-
+  
   private Status getStatusByString(String statusString) {
     switch (statusString) {
       case "in_progress":
@@ -326,9 +230,6 @@ public class WorkItemEndpoint {
     }
     return null;
   }
-  //✓WorkItem   | Skapa en Issue
-  //✓WorkItem   | Uppdatera en Issue
-  //✓WorkItem   | Lägga till en Issue till en work item
 
   private boolean isInvalidStatus(String status) {
     if (status == null || status.equals("")) {
