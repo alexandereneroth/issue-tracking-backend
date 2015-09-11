@@ -24,7 +24,7 @@ public class Team extends AbstractEntity<Team> {
 
   @Override public void copyFields(Team other) {
     this.name = other.name;
-    this.users = other.users;
+//    this.users = other.users;
   }
 
   public Team(@NotNull final Long number) {

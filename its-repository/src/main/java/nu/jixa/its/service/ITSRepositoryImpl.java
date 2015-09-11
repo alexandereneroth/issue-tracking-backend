@@ -241,15 +241,17 @@ public class ITSRepositoryImpl implements ITSRepository {
   @Override public void updateTeam(Team team) {
     Team teamInRepo = teamRepository.findByNumber(team.getNumber());
 
-    Collection<User> usersBeforeUpdate = teamInRepo.getUsers();
-    Collection<User> usersAfterUpdate = team.getUsers();
-
-    removeAllUsersThatExistedInTeamBeforeUpdateButNotAfter(team, usersBeforeUpdate,
-        usersAfterUpdate);
-    for (User user : usersAfterUpdate) {
-      user.joinTeam(teamInRepo);
-      updateUser(user);
-    }
+//    Collection<User> usersBeforeUpdate = teamInRepo.getUsers();
+//    Collection<User> usersAfterUpdate = team.getUsers();
+//
+//    removeAllUsersThatExistedInTeamBeforeUpdateButNotAfter(team, usersBeforeUpdate,
+//        usersAfterUpdate);
+//    for (User user : usersAfterUpdate) {
+//      user.joinTeam(teamInRepo);
+//      updateUser(user);
+//    }
+    teamInRepo.copyFields(team);
+    teamRepository.save(teamInRepo);
   }
 
   public void removeAllUsersThatExistedInTeamBeforeUpdateButNotAfter(Team team,
