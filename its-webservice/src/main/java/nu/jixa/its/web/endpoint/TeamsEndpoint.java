@@ -18,6 +18,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import nu.jixa.its.model.Team;
 import nu.jixa.its.model.User;
+import nu.jixa.its.model.WorkItem;
 import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.service.ITSRepositoryException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -140,6 +141,27 @@ public class TeamsEndpoint {
 
     try {
       Iterable<User> usersByTeam = itsRepository.getUsersByTeam(teamNumber);
+
+      if (usersByTeam.iterator().hasNext()) {
+        return Response.ok(usersByTeam).build();
+      } else {
+        return Response.noContent().build();
+      }
+    } catch (ITSRepositoryException e) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+  }
+
+  @GET
+  @Path("{teamNumber}/work-items")
+  public Response getAllWorkItemsForTeam (
+      @PathParam("teamNumber") final long teamNumber) {
+    if (teamNumber == 0) {
+      return Response.status(Status.BAD_REQUEST).entity(BAD_REQUEST_NULL_OR_INVALID).build();
+    }
+
+    try {
+      Iterable<WorkItem> usersByTeam = itsRepository.getWorkItemsByTeam(teamNumber);
 
       if (usersByTeam.iterator().hasNext()) {
         return Response.ok(usersByTeam).build();

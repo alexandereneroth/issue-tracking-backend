@@ -82,9 +82,7 @@ public class WorkItemEndpoint {
     }
 
     // If no queryParam is entered return all WorkItems
-    getStatusByString("");
-
-    return Response.ok().build();
+    return getByByDescriptionQuery("");
   }
 
   @POST
