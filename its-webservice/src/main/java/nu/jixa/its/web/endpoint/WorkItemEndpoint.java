@@ -36,15 +36,27 @@ public class WorkItemEndpoint {
   private static final String BAD_REQUEST_MISMATCH_BETWEEN_PATH_AND_USER =
       "Usernumber mismatch between path and new user info";
 
-  private static final String STATUS_IN_PROGRESS = "in_progress";
-  private static final String STATUS_ON_BACKLOG = "on_backlog";
-  private static final String STATUS_DONE = "done";
+  private static final String STATUS_IN_PROGRESS = "IN_PROGRESS";
+  private static final String STATUS_ON_BACKLOG = "ON_BACKLOG";
+  private static final String STATUS_DONE = "DONE";
 
   @Autowired
   private ITSRepository itsRepository;
 
   @Context
   private UriInfo uriInfo;
+
+  @GET
+  @Path("{workItemNumber}")
+  public Response getWorkItem(@PathParam("workItemNumber") final long workItemNumber) {
+    try {
+      WorkItem workItem = itsRepository.getWorkItem(workItemNumber);
+      return Response.ok(workItem).build();
+    } catch (ITSRepositoryException e) {
+      return Response.status(Response.Status.NOT_FOUND)
+          .entity(NO_WORKITEM_WITH_NUMBER + workItemNumber).build();
+    }
+  }
 
   @GET
   public Response getWorkItemsByQuery(@QueryParam("team") @DefaultValue("") final Long teamNumber,
@@ -120,30 +132,23 @@ public class WorkItemEndpoint {
 
   @PUT
   @Path("{workItemNumber}/status")
-  public Response updateWorkItemStatus(@PathParam("workItemNumber") final String workItemNumber,
-      final String status) {
+  public Response updateWorkItemStatus(@PathParam("workItemNumber") final long workItemNumber,
+      final WorkItem newWorkItem) {
 
-    if (isInvalidStatus(status)) {
+    if (newWorkItem.getStatus().equals(Status.DONE)
+        || newWorkItem.getStatus().equals(Status.ON_BACKLOG)
+        || newWorkItem.getStatus().equals(Status.IN_PROGRESS)) {
+      try {
+        itsRepository.setWorkItemStatus(workItemNumber, newWorkItem.getStatus());
+        return Response.status(Response.Status.NO_CONTENT).build();
+      } catch (ITSRepositoryException e) {
+        return Response.status(Response.Status.NOT_FOUND)
+            .entity(e.getMessage()).build();
+      }
+
+    } else {
       return Response.status(Response.Status.BAD_REQUEST)
           .entity(BAD_REQUEST_NULL_OR_INVALID).build();
-    }
-    try {
-      WorkItem workItem = itsRepository.getWorkItem(requireLongValue(workItemNumber));
-      if (status.equals(STATUS_ON_BACKLOG)) {
-        workItem.setStatus(Status.ON_BACKLOG);
-      } else if (status.equals(STATUS_IN_PROGRESS)) {
-        workItem.setStatus(Status.IN_PROGRESS);
-      } else if (status.equals(STATUS_DONE)) {
-        workItem.setStatus(Status.DONE);
-      } else {
-        return Response.status(Response.Status.BAD_REQUEST)
-            .entity(BAD_REQUEST_NULL_OR_INVALID + status).build();
-      }
-      itsRepository.updateWorkItem(workItem);
-      return Response.status(Response.Status.NO_CONTENT).build();
-    } catch (ITSRepositoryException e) {
-      return Response.status(Response.Status.NOT_FOUND)
-          .entity(e.getMessage()).build();
     }
   }
 
