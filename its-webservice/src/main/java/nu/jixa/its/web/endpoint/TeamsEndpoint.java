@@ -16,7 +16,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import nu.jixa.its.model.Team;
-import nu.jixa.its.model.User;
 import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.service.ITSRepositoryException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,5 +127,24 @@ public class TeamsEndpoint {
           .entity(e.getMessage()).build();
     }
     return Response.noContent().build();
+  }
+
+  @POST
+  @Path("{teamNumber}/user")
+  public Response addUserToTeam(@PathParam("teamNumber") final Long teamNumber, final Long userNumber) {
+    if (userNumber == null || userNumber == 0) {
+      return Response.status(Response.Status.BAD_REQUEST)
+          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
+    }
+
+    try {
+      itsRepository.addUserToTeamWithNumber(userNumber, teamNumber);
+
+      final URI location =
+          uriInfo.getAbsolutePathBuilder().path(String.valueOf(teamNumber)).build();
+      return Response.created(location).build();
+    } catch (ITSRepositoryException e) {
+      return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+    }
   }
 }
