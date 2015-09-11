@@ -67,9 +67,6 @@ public class WorkItemEndpoint {
     if (!descriptionSubstring.isEmpty()) {
       return getByByDescriptionQuery(descriptionSubstring);
     }
-    if (userNumber != null) {
-      return getByUserQuery(userNumber);
-    }
     if (!hasIssue.isEmpty()) {
       return getByIssueQuery(hasIssue);
     }
@@ -183,16 +180,6 @@ public class WorkItemEndpoint {
       }
     } else {
       return Response.status(Response.Status.BAD_REQUEST)
-          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
-    }
-  }
-
-  private Response getByUserQuery(Long userNumber) {
-    try {
-      Collection<WorkItem> workItems = itsRepository.getWorkItemsByUser(userNumber);
-      return Response.ok(workItems).build();
-    } catch (ITSRepositoryException e) {
-      return Response.status(Response.Status.NOT_FOUND)
           .entity(BAD_REQUEST_NULL_OR_INVALID).build();
     }
   }
