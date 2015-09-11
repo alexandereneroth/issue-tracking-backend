@@ -21,7 +21,6 @@ import nu.jixa.its.model.Status;
 import nu.jixa.its.model.WorkItem;
 import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.service.ITSRepositoryException;
-import nu.jixa.its.web.StringNotConvertableToLongException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -59,15 +58,12 @@ public class WorkItemEndpoint {
   }
 
   @GET
-  public Response getWorkItemsByQuery(@QueryParam("team") @DefaultValue("") final Long teamNumber,
+  public Response getWorkItemsByQuery(
       @QueryParam("description_contains") @DefaultValue("") final String descriptionSubstring,
       @QueryParam("user") @DefaultValue("") final Long userNumber,
       @QueryParam("has_issue") @DefaultValue("") final String hasIssue,
       @QueryParam("status") @DefaultValue(STATUS_IN_PROGRESS) final String statusString){
 
-    if (teamNumber != null) {
-      return getByTeamQuery(teamNumber);
-    }
     if (!descriptionSubstring.isEmpty()) {
       return getByByDescriptionQuery(descriptionSubstring);
     }
@@ -212,16 +208,6 @@ public class WorkItemEndpoint {
     }
   }
 
-  private Response getByTeamQuery(Long teamNumber) {
-    try {
-      Collection<WorkItem> workItems = itsRepository.getWorkItemsByTeam(teamNumber);
-      return Response.ok(workItems).build();
-    } catch (ITSRepositoryException e) {
-      return Response.status(Response.Status.NOT_FOUND)
-          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
-    }
-  }
-
   private Status getStatusByString(String statusString) {
     switch (statusString) {
       case "in_progress":
@@ -232,27 +218,5 @@ public class WorkItemEndpoint {
         return Status.DONE;
     }
     return null;
-  }
-
-  private boolean isInvalidStatus(String status) {
-    if (status == null || status.equals("")) {
-      return true;
-    }
-    if (status.equals(STATUS_IN_PROGRESS)
-        || status.equals(STATUS_ON_BACKLOG)
-        || status.equals(STATUS_DONE)) {
-      return false;
-    }
-    return true;
-  }
-
-  private Long requireLongValue(String stringVal) {
-    Long longVal;
-    try {
-      longVal = Long.valueOf(stringVal);
-    } catch (NumberFormatException e) {
-      throw new StringNotConvertableToLongException(stringVal);
-    }
-    return longVal;
   }
 }
