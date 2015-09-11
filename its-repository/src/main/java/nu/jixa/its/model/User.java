@@ -1,5 +1,6 @@
 package nu.jixa.its.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.sun.istack.internal.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,9 +13,11 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import nu.jixa.its.serializer.UserJsonSerializer;
 
 @Entity
 @Table(name = "tblUser")
+@JsonSerialize(using = UserJsonSerializer.class)
 public class User extends AbstractEntity<User> {
 
   @Column(name = "username", unique = true, nullable = false)
