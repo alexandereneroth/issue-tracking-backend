@@ -92,6 +92,27 @@ public class UsersEndpoint {
     }
   }
 
+  @GET
+  @Path("{userNumber}/work-items")
+  public Response getWorkItemsForUser (
+      @PathParam("userNumber") final long userNumber) {
+    if (userNumber == 0) {
+      return Response.status(Status.BAD_REQUEST).entity(BAD_REQUEST_NULL_OR_INVALID).build();
+    }
+
+    try {
+      Iterable<WorkItem> workItemsByUser = itsRepository.getWorkItemsByUser(userNumber);
+
+      if (workItemsByUser.iterator().hasNext()) {
+        return Response.ok(workItemsByUser).build();
+      } else {
+        return Response.noContent().build();
+      }
+    } catch (ITSRepositoryException e) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+  }
+
   @DELETE
   @Path("{userNumber}")
   public Response deleteUser(@PathParam("userNumber") final long userNumber) {
