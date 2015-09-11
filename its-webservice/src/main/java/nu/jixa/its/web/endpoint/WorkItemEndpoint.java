@@ -60,15 +60,14 @@ public class WorkItemEndpoint {
   @GET
   public Response getWorkItemsByQuery(
       @QueryParam("description_contains") @DefaultValue("") final String descriptionSubstring,
-      @QueryParam("user") @DefaultValue("") final Long userNumber,
       @QueryParam("has_issue") @DefaultValue("") final String hasIssue,
-      @QueryParam("status") @DefaultValue(STATUS_IN_PROGRESS) final String statusString){
+      @QueryParam("status") @DefaultValue("") final String statusString) {
 
     if (!descriptionSubstring.isEmpty()) {
       return getByByDescriptionQuery(descriptionSubstring);
     }
-    if (!hasIssue.isEmpty()) {
-      return getByIssueQuery(hasIssue);
+    if (hasIssue.equals("true")) {
+      return getByIssueQuery();
     }
     if (!statusString.isEmpty()) {
       return getByStatusStringQuery(statusString);
@@ -136,7 +135,6 @@ public class WorkItemEndpoint {
         return Response.status(Response.Status.NOT_FOUND)
             .entity(e.getMessage()).build();
       }
-
     } else {
       return Response.status(Response.Status.BAD_REQUEST)
           .entity(BAD_REQUEST_NULL_OR_INVALID).build();
@@ -157,30 +155,26 @@ public class WorkItemEndpoint {
 
   private Response getByStatusStringQuery(final String statusString) {
     Status status = getStatusByString(statusString);
-    if (statusString == null) {
+
+    if (statusString.isEmpty() || status == null) {
       return Response.status(Response.Status.BAD_REQUEST)
           .entity(BAD_REQUEST_NULL_OR_INVALID).build();
     }
+
     Collection<WorkItem> workItems = itsRepository.getWorkItemsByStatus(status);
-    if (workItems == null) {
+    if (workItems.isEmpty()) {
       return Response.noContent().build();
     } else {
       return Response.ok(workItems).build();
     }
   }
 
-  private Response getByIssueQuery(String hasIssue) {
-    if (hasIssue == "true") {
-      Collection<WorkItem> workItems = itsRepository.getWorkItemsWithIssue();
-      if (workItems != null) {
-        return Response.ok(workItems).build();
-      } else {
-        return Response.status(Response.Status.NOT_FOUND)
-            .entity("No workItems with issue").build();
-      }
+  private Response getByIssueQuery() {
+    Collection<WorkItem> workItems = itsRepository.getWorkItemsWithIssue();
+    if (workItems.isEmpty()) {
+      return Response.noContent().build();
     } else {
-      return Response.status(Response.Status.BAD_REQUEST)
-          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
+      return Response.ok(workItems).build();
     }
   }
 
