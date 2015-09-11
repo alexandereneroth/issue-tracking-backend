@@ -40,9 +40,6 @@ public class TeamsEndpoint {
   //✓UserTeam   | Lägga till en User till ett team
 
   @GET
-  public Response
-
-  @GET
   @Path("{teamNumber}")
   public Response getUser(@PathParam("teamNumber") final long teamNumber) {
     try {
