@@ -3,6 +3,7 @@ package nu.jixa.its.model;
 import com.sun.istack.internal.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -15,16 +16,28 @@ public class Team extends AbstractEntity<Team> {
   @OneToMany(mappedBy = "team", fetch = FetchType.EAGER)
   Collection<User> users = new ArrayList<>();
 
+  @Column(name = "name")
+  String name;
+
   protected Team() {
   }
 
   @Override public void copyFields(Team other) {
+    this.name = other.name;
     this.users = other.users;
   }
 
   public Team(@NotNull final Long number) {
     ModelUtil.throwExceptionIfArgIsNull(number, "number");
     this.number = number;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
   // Users team membership is controlled from methods in the user class.
@@ -49,11 +62,15 @@ public class Team extends AbstractEntity<Team> {
 
     Team team = (Team) o;
 
-    return getNumber().equals(team.getNumber());
+    if (!getNumber().equals(team.getNumber())) return false;
+    
+    return !(getName() != null ? !getName().equals(team.getName())
+        : team.getName() != null);
   }
 
   @Override public int hashCode() {
-    return getNumber().hashCode();
+    int result = getNumber().hashCode();
+    result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+    return result;
   }
-
 }

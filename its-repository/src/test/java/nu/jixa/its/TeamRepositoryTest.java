@@ -115,6 +115,11 @@ public class TeamRepositoryTest {
 
     Collection<User> usersBefore = repository.getTeam(testTeamNumber).getUsers();
 
+    assertThat(usersBefore.size(), is(3));
+    assertTrue(usersBefore.contains(user1));
+    assertTrue(usersBefore.contains(user2));
+    assertTrue(usersBefore.contains(user3));
+
     Team teamToUpdate = new Team(testTeamNumber);
     user1.joinTeam(teamToUpdate);
 
