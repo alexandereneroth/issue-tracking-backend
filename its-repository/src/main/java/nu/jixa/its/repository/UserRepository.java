@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 public interface UserRepository extends CrudRepository<User, Long> {
 
   @Query("select u from User u join fetch u.team t where t.id = ?1")
-  Collection<User> selectByTeamId(Long teamId);
+  Iterable<User> selectByTeamId(Long teamId);
 
   @Query("select u from User u where (u.username like %:name%) or (u.firstname like %:name%) or (u.lastname like %:name%)")
   Collection<User> selectByNameLike(@Param("name") String name);

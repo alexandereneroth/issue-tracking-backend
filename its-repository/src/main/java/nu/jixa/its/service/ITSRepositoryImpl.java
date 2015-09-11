@@ -212,7 +212,7 @@ public class ITSRepositoryImpl implements ITSRepository {
   }
 
   @Override public Iterable<User> getUsersByTeam(Long teamNumber) {
-    return userRepository.findByTeamNumber(teamNumber);
+    return userRepository.selectByTeamId(teamNumber);
   }
 
   @Override public Collection<User> getUsersByNameLike(String nameLike) {
