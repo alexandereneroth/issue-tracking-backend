@@ -128,16 +128,20 @@ public class UsersEndpoint {
   }
 
   @POST
-  @Path("{userNumber}/work_item")
-  public Response addWorkItemToUser(@PathParam("userNumber") final long userNumber, final long workItemNumber){
+  @Path("{userNumber}/work-item")
+  public Response addWorkItemToUser(@PathParam("userNumber") final Long userNumber, final Long workItemNumber) {
+    if (workItemNumber == null || workItemNumber == 0) {
+      return Response.status(Status.BAD_REQUEST)
+          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
+    }
+
     try {
       itsRepository.addWorkItemToUser(userNumber, workItemNumber);
-      
-      final URI location = uriInfo.getAbsolutePathBuilder().path(String.valueOf(userNumber)).build();
-      return Response.created(location).build();
 
-    }catch(ITSRepositoryException e)
-    {
+      final URI location =
+          uriInfo.getAbsolutePathBuilder().path(String.valueOf(userNumber)).build();
+      return Response.created(location).build();
+    } catch (ITSRepositoryException e) {
       return Response.status(Status.NOT_FOUND).entity(e.getMessage()).build();
     }
   }
