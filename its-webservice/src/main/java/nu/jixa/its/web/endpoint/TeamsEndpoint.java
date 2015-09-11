@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -114,5 +115,18 @@ public class TeamsEndpoint {
       return Response.status(Response.Status.NOT_FOUND)
           .entity(e.getMessage()).build();
     }
+  }
+
+
+  @DELETE
+  @Path("{teamNumber}")
+  public Response deleteTeam(@PathParam("teamNumber") final long teamNumber) {
+    try {
+      itsRepository.deleteTeam(teamNumber);
+    } catch (ITSRepositoryException e) {
+      return Response.status(Response.Status.NOT_FOUND)
+          .entity(e.getMessage()).build();
+    }
+    return Response.noContent().build();
   }
 }
