@@ -50,9 +50,8 @@ public class UsersEndpoint {
    * Defaults to empty searchString which will return all Users if no queryParam is entered.
    */
   @GET
-  public Response getUsersByNameOrTeam(
-      @QueryParam("filterByName") @DefaultValue("") final String searchString,
-      @QueryParam("filterByTeamId") final Long teamId) {
+  public Response getUsersByName(
+      @QueryParam("filterByName") @DefaultValue("") final String searchString) {
 
     Collection<User> usersByName = itsRepository.getUsersByNameLike(searchString);
     if (usersByName.isEmpty()) {
