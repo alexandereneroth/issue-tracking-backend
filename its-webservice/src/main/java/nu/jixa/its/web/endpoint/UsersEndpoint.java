@@ -18,6 +18,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import nu.jixa.its.model.User;
+import nu.jixa.its.model.WorkItem;
 import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.service.ITSRepositoryException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,16 +129,16 @@ public class UsersEndpoint {
     }
   }
 
-  @POST
-  @Path("{userNumber}/work-item")
+  @PUT
+  @Path("{userNumber}/work-items")
   public Response addWorkItemToUser(@PathParam("userNumber") final Long userNumber,
-      final Long workItemNumber) {
-    if (workItemNumber == null || workItemNumber == 0) {
+      final WorkItem workItemToAdd) {
+    if (workItemToAdd == null) {
       return Response.status(Status.BAD_REQUEST)
           .entity(BAD_REQUEST_NULL_OR_INVALID).build();
     }
     try {
-      itsRepository.addWorkItemToUser(userNumber, workItemNumber);
+      itsRepository.addWorkItemToUser(userNumber, workItemToAdd.getNumber());
       final URI location =
           uriInfo.getAbsolutePathBuilder().path(String.valueOf(userNumber)).build();
       return Response.created(location).build();
