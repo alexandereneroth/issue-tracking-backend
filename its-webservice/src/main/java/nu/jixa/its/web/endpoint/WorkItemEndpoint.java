@@ -218,7 +218,7 @@ public class WorkItemEndpoint {
           .entity(BAD_REQUEST_NULL_OR_INVALID).build();
     }
   }
-  
+
   private Status getStatusByString(String statusString) {
     switch (statusString) {
       case "in_progress":
