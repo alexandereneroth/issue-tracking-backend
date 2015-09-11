@@ -52,7 +52,6 @@ public class UsersEndpoint {
   @GET
   public Response getUsersByName(
       @QueryParam("filterByName") @DefaultValue("") final String searchString) {
-
     Collection<User> usersByName = itsRepository.getUsersByNameLike(searchString);
     if (usersByName.isEmpty()) {
       return Response.noContent().build();
@@ -63,19 +62,16 @@ public class UsersEndpoint {
 
   @POST
   public Response createUser(final User user) throws IllegalAccessException {
-
     if (user == null) {
       return Response.status(Status.BAD_REQUEST)
           .entity(BAD_REQUEST_NULL_OR_INVALID).build();
     }
-
     try {
       itsRepository.addUser(user);
     } catch (ITSRepositoryException e) {
       return Response.status(Status.BAD_REQUEST)
           .entity(BAD_REQUEST_NULL_OR_INVALID).build();
     }
-
     final URI location = uriInfo.getAbsolutePathBuilder().path(user.getNumber().toString()).build();
     return Response.created(location).build();
   }
@@ -99,7 +95,6 @@ public class UsersEndpoint {
     if (userNumber == 0) {
       return Response.status(Status.BAD_REQUEST).entity(BAD_REQUEST_NULL_OR_INVALID).build();
     }
-
     try {
       Iterable<WorkItem> workItemsByUser = itsRepository.getWorkItemsByUser(userNumber);
 
@@ -129,12 +124,10 @@ public class UsersEndpoint {
   @Path("{userNumber}")
   public Response updateUser(@PathParam("userNumber") final long userNumber,
       final User updatedUser) {
-
     if (updatedUser == null || updatedUser.getNumber() == null) {
       return Response.status(Status.BAD_REQUEST)
           .entity(BAD_REQUEST_NULL_OR_INVALID).build();
     }
-
     try {
       if (userNumber == updatedUser.getNumber()) {
         itsRepository.updateUser(updatedUser);

@@ -174,24 +174,6 @@ public class WorkItemRepositoryTest {
     }
   }
 
- /* @Test TODO Run this test by itself to see that it passes (it does)
-  public void canFindByDescriptionLike(){
-    Long workItem1Number = 3003L;
-    Long workItem2Number = 3004L;
-    WorkItem workItem1 = new WorkItem(workItem1Number, Status.ON_BACKLOG);
-    WorkItem workItem2 = new WorkItem(workItem2Number, Status.ON_BACKLOG);
-    workItem1.setDescription("arvidsjaur");
-    workItem2.setDescription("brevidsmig");
-    repository.addWorkItem(workItem1);
-    repository.addWorkItem(workItem2);
-
-    Collection<WorkItem> brWorkItems = repository.getWorkItemsWithDescriptionLike("br");
-    Collection<WorkItem> vidsWorkItems = repository.getWorkItemsWithDescriptionLike("vids");
-
-    assertThat(brWorkItems.size(), is(1));
-    assertThat(vidsWorkItems.size(), is(2));
-  }*/
-
   @Test
   public void canUpdateIssue() {
 

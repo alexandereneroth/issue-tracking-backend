@@ -29,12 +29,12 @@ import org.springframework.stereotype.Component;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class WorkItemEndpoint {
+
   private static final String NO_WORKITEM_WITH_NUMBER = "No workItem with number: ";
   private static final String BAD_REQUEST_NULL_OR_INVALID =
       "Null or Invalid JSON Data in Request Body";
   private static final String BAD_REQUEST_MISMATCH_BETWEEN_PATH_AND_USER =
       "Usernumber mismatch between path and new user info";
-
   private static final String STATUS_IN_PROGRESS = "IN_PROGRESS";
   private static final String STATUS_ON_BACKLOG = "ON_BACKLOG";
   private static final String STATUS_DONE = "DONE";
@@ -72,14 +72,12 @@ public class WorkItemEndpoint {
     if (!statusString.isEmpty()) {
       return getByStatusStringQuery(statusString);
     }
-
     // If no queryParam is entered return all WorkItems
     return getByByDescriptionQuery("");
   }
 
   @POST
   public Response createWorkItem(final WorkItem workItem) throws IllegalAccessException {
-
     if (workItem == null) {
       return Response.status(Response.Status.BAD_REQUEST)
           .entity(BAD_REQUEST_NULL_OR_INVALID).build();
