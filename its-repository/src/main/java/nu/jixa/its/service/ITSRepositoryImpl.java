@@ -30,7 +30,6 @@ public class ITSRepositoryImpl implements ITSRepository {
   @Autowired
   private IssueRepository issueRepository;
 
-
   @Override public void saveIssue(Issue issue) {
     if (issueExists(issue)) {
       updateIssue(issue);
@@ -40,17 +39,27 @@ public class ITSRepositoryImpl implements ITSRepository {
   }
 
   @Override public Issue updateIssue(Issue issue) {
-    Issue issueInRepository = issueRepository.findByNumber(issue.getNumber());
-    issueInRepository.copyFields(issue);
 
-    return issueRepository.save(issueInRepository);
+    Issue issueInRepository = issueRepository.findByNumber(issue.getNumber());
+    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(issueInRepository,
+        "Could not update issue: issue doesn't exist");
+    issueInRepository.copyFields(issue);
+    try {
+      return issueRepository.save(issueInRepository);
+    } catch (DataIntegrityViolationException e) {
+      throw new ITSRepositoryException("Could not save issue", e);
+    }
   }
 
   @Override public Issue addIssue(Issue issue) {
     if (issueExists(issue)) {
       throw new ITSRepositoryException("Could not add issue: issue already exists");
     }
-    return issueRepository.save(issue);
+    try {
+      return issueRepository.save(issue);
+    } catch (DataIntegrityViolationException e) {
+      throw new ITSRepositoryException("Could not save issue", e);
+    }
   }
 
   @Override public Issue getIssue(Long issueNumber) {
@@ -63,10 +72,17 @@ public class ITSRepositoryImpl implements ITSRepository {
 
   @Override public WorkItem addIssueToWorkItem(Long workItemNumber, Long issueNumber) {
     Issue issue = getIssue(issueNumber);
+    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(issue,
+        "Could not add issue: issue with issueNR" + issueNumber + "doesn't exist");
     WorkItem workItem = getWorkItem(workItemNumber);
-
+    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(workItem,
+        "Could not add workItem: workItem with workNR" + workItemNumber + "doesn't exist");
     workItem.setIssue(issue);
-    return updateWorkItem(workItem);
+    try {
+      return updateWorkItem(workItem);
+    } catch (DataIntegrityViolationException e) {
+      throw new ITSRepositoryException("Could not add update workItem", e);
+    }
   }
 
   @Override public boolean issueExists(Issue issue) {
@@ -79,38 +95,68 @@ public class ITSRepositoryImpl implements ITSRepository {
 
   @Override public WorkItem updateWorkItem(WorkItem updatedWorkItem) {
     WorkItem workItemFromRepository = getWorkItem(updatedWorkItem.getNumber());
+    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(workItemFromRepository,
+        "Could not add workItem: workItem with workNR"
+            + updatedWorkItem.getNumber()
+            + "doesn't exist");
     Issue workItemIssue = updatedWorkItem.getIssue();
     if (workItemIssue != null) {
-      saveIssue(workItemIssue);
+      try {
+        saveIssue(workItemIssue);
+      } catch (DataIntegrityViolationException e) {
+        throw new ITSRepositoryException("Could not update issue", e);
+      }
     }
     workItemFromRepository.copyFields(updatedWorkItem);
-
-    return workItemRepository.save(workItemFromRepository);
+    try {
+      return workItemRepository.save(workItemFromRepository);
+    } catch (DataIntegrityViolationException e) {
+      throw new ITSRepositoryException("Could not save user", e);
+    }
   }
 
   @Transactional
   @Override public WorkItem addWorkItem(WorkItem workItem) {
-    //issueRepository.save(workItem.getIssue());
-    return workItemRepository.save(workItem);
+    try {
+      return workItemRepository.save(workItem);
+    } catch (DataIntegrityViolationException e) {
+      throw new ITSRepositoryException("Could not add workItem", e);
+    }
   }
 
   @Transactional
   @Override public WorkItem removeWorkItem(Long workItemNumber) {
     WorkItem deleteItem = findByNumber(workItemNumber);
-
+    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(deleteItem,
+        "Could notdelete workItem: workItem with workNR"
+            + deleteItem.getNumber()
+            + "doesn't exist");
     if (deleteItem.getUsers().size() > 0) {
       removeWorkItemFromItsUsers(deleteItem);
     }
-    workItemRepository.delete(deleteItem);
+    try {
+      workItemRepository.delete(deleteItem);
+    } catch (DataIntegrityViolationException e) {
+      throw new ITSRepositoryException("Could not delete workItem", e);
+    }
     return deleteItem;
   }
 
   private void removeWorkItemFromItsUsers(WorkItem workItem) {
+    WorkItem workItemFromDB = workItemRepository.findByNumber(workItem.getNumber());
+    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(workItemFromDB,
+        "Could not remove users: workItem with workNR"
+            + workItemFromDB.getNumber()
+            + "doesn't exist");
     Iterator<User> userIterator = workItem.getUsers().iterator();
     while (userIterator.hasNext()) {
       User userToRemoveWorkItemFrom = userIterator.next();
       userToRemoveWorkItemFrom.getWorkItems().remove(workItem);
-      userRepository.save(userToRemoveWorkItemFrom);
+      try {
+        userRepository.save(userToRemoveWorkItemFrom);
+      } catch (DataIntegrityViolationException e) {
+        throw new ITSRepositoryException("Could not save user", e);
+      }
       userIterator.remove();
     }
     workItemRepository.save(workItem);
@@ -126,8 +172,14 @@ public class ITSRepositoryImpl implements ITSRepository {
   @Transactional
   @Override public void setWorkItemStatus(Long workItemNumber, Status status) {
     WorkItem item = workItemRepository.findByNumber(workItemNumber);
+    RepositoryUtil.throwExceptionIfArgIsNullCustomMessage(item,
+        "Could not find workItem: No item with nr " + workItemNumber);
     item.setStatus(status);
-    workItemRepository.save(item);
+    try {
+      workItemRepository.save(item);
+    } catch (DataIntegrityViolationException e) {
+      throw new ITSRepositoryException("Could not save user", e);
+    }
   }
 
   @Override public Collection<WorkItem> getWorkItemsByStatus(Status status) {
@@ -165,8 +217,12 @@ public class ITSRepositoryImpl implements ITSRepository {
   @Override public User updateUser(User user) {
     User userInRepo = getUser(user.getNumber());
     userInRepo.copyFields(user);
-    User savedUser = userRepository.save(userInRepo);
-    return savedUser;
+    try {
+      User savedUser = userRepository.save(userInRepo);
+      return savedUser;
+    } catch (DataIntegrityViolationException e) {
+      throw new ITSRepositoryException("Could not add user", e);
+    }
   }
 
   @Override public User deleteUser(Long userNumber) {
@@ -181,15 +237,27 @@ public class ITSRepositoryImpl implements ITSRepository {
     if (deletedUser.getWorkItems().size() > 0) {
       removeUserFromItsWorkItems(deletedUser);
     }
-    userRepository.delete(deletedUser);
+    try {
+      userRepository.delete(deletedUser);
+    } catch (DataIntegrityViolationException e) {
+      throw new ITSRepositoryException("Could not add user", e);
+    }
     return deletedUser;
   }
 
   private void removeUserFromItsTeam(User leavingUser) {
     Team leavingUsersTeam = leavingUser.getTeam();
     leavingUser.leaveTeam();
-    teamRepository.save(leavingUsersTeam);
-    userRepository.save(leavingUser);
+    try{
+    teamRepository.save(leavingUsersTeam);}
+    catch (DataIntegrityViolationException e) {
+      throw new ITSRepositoryException("Could not update team", e);
+    }
+    try{
+    userRepository.save(leavingUser);}
+    catch (DataIntegrityViolationException e) {
+      throw new ITSRepositoryException("Could not update user", e);
+    }
   }
 
   private void removeUserFromItsWorkItems(User userToRemove) {
@@ -197,10 +265,18 @@ public class ITSRepositoryImpl implements ITSRepository {
     while (workItemIterator.hasNext()) {
       WorkItem workItemToRemoveUserFrom = workItemIterator.next();
       workItemToRemoveUserFrom.getUsers().remove(userToRemove);
-      workItemRepository.save(workItemToRemoveUserFrom);
+      try{
+      workItemRepository.save(workItemToRemoveUserFrom);}
+      catch (DataIntegrityViolationException e) {
+        throw new ITSRepositoryException("Could not update workItem", e);
+      }
       workItemIterator.remove();
     }
-    userRepository.save(userToRemove);
+    try{
+    userRepository.save(userToRemove);}
+    catch (DataIntegrityViolationException e) {
+      throw new ITSRepositoryException("Could not update user", e);
+    }
   }
 
   @Override public User getUser(Long userNumber) {
@@ -231,7 +307,11 @@ public class ITSRepositoryImpl implements ITSRepository {
     //item.addUser(getUser(userId));
     //workItemRepository.save(item);
     user.addWorkItem(item);
-    userRepository.save(user);
+    try{
+    userRepository.save(user);}
+    catch (DataIntegrityViolationException e) {
+      throw new ITSRepositoryException("Could not save user", e);
+    }
   }
 
   @Override public Team addTeam(Team team) {
@@ -281,7 +361,11 @@ public class ITSRepositoryImpl implements ITSRepository {
       User userToRemoveFromTeam = usersIterator.next();
       usersIterator.remove();
       userToRemoveFromTeam.leaveTeam();
-      userRepository.save(userToRemoveFromTeam);
+      try{
+      userRepository.save(userToRemoveFromTeam);}
+      catch (DataIntegrityViolationException e) {
+        throw new ITSRepositoryException("Could not update user", e);
+      }
     }
     teamRepository.delete(teamToDelete);
     return teamToDelete;
@@ -303,8 +387,11 @@ public class ITSRepositoryImpl implements ITSRepository {
     User user = getUser(userNumber);
     Team team = getTeam(teamNumber);
     user.joinTeam(team);
-
-    userRepository.save(user);
+  try{
+    userRepository.save(user);}
+  catch (DataIntegrityViolationException e) {
+    throw new ITSRepositoryException("Could not save user", e);
+  }
     return user;
   }
 
