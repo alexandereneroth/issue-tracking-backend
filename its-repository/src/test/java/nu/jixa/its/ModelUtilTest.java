@@ -1,8 +1,8 @@
 package nu.jixa.its;
 
 import java.util.HashMap;
-import nu.jixa.its.config.InfrastructureConfig;
 import nu.jixa.its.config.ITSRepositoryConfig;
+import nu.jixa.its.config.InfrastructureConfig;
 import nu.jixa.its.model.ModelUtil;
 import nu.jixa.its.model.RepositoryModelException;
 import org.junit.Rule;
@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {InfrastructureConfig.class,
+@ContextConfiguration(classes = { InfrastructureConfig.class,
     ITSRepositoryConfig.class }, loader = AnnotationConfigContextLoader.class)
 public class ModelUtilTest {
   @Rule
@@ -28,7 +28,6 @@ public class ModelUtilTest {
     expectedException.expectMessage("number");
     ModelUtil.throwExceptionIfArgIsNull(null, "number");
 
-
     expectedException.expect(RepositoryModelException.class);
     expectedException.expectMessage("Null value not allowed");
     expectedException.expectMessage("username");
@@ -41,5 +40,4 @@ public class ModelUtilTest {
 
     ModelUtil.throwExceptionIfArgIsNull(argsWithNames);
   }
-
 }

@@ -24,7 +24,7 @@ public class Team extends AbstractEntity<Team> {
 
   @Override public void copyFields(Team other) {
     this.name = other.name;
-//    this.users = other.users;
+    //    this.users = other.users;
   }
 
   public Team(@NotNull final Long number) {
@@ -55,7 +55,6 @@ public class Team extends AbstractEntity<Team> {
     return users;//TODO return copy
   }
 
-
   @Override public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
@@ -63,7 +62,7 @@ public class Team extends AbstractEntity<Team> {
     Team team = (Team) o;
 
     if (!getNumber().equals(team.getNumber())) return false;
-    
+
     return !(getName() != null ? !getName().equals(team.getName())
         : team.getName() != null);
   }

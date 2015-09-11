@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="number")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "number")
 public abstract class AbstractEntity<T> {
 
   @Id

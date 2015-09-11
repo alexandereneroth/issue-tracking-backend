@@ -91,9 +91,10 @@ public class User extends AbstractEntity<User> {
     this.lastname = lastname;
   }
 
-  public void addWorkItem(WorkItem item){
+  public void addWorkItem(WorkItem item) {
     workItems.add(item);
   }
+
   public Collection<WorkItem> getWorkItems() {
     return workItems;
   }
@@ -108,8 +109,7 @@ public class User extends AbstractEntity<User> {
     team.addUser(this);
   }
 
-  public void leaveTeam()
-  {
+  public void leaveTeam() {
     team.removeUser(this);
     team = null;
   }

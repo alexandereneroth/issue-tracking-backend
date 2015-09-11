@@ -11,16 +11,16 @@ import nu.jixa.its.model.Status;
 import nu.jixa.its.model.User;
 import nu.jixa.its.model.WorkItem;
 
-import static org.junit.Assert.assertNotNull;
-
 public final class HelperMethods {
 
   public static User generateSimpleUser(@NotNull final Long number) {
     return new User(number, "account" + number, "firstname" + number, "lastname" + number);
   }
+
   public static final Long USER_NUMBER = 100L;
   public static final Long WORKITEMNUMBER = 2012L;
   public static ArrayList<WorkItem> workItems3List;
+
   /**
    * Returns true if all elements in set1 is present in set2 and, vice versa.
    */
@@ -38,8 +38,8 @@ public final class HelperMethods {
   }
 
   /**
-   * Converts an iterable to a HashSet, if it only contains unique elements.
-   * Otherwise throws IllegalArgumentException.
+   * Converts an iterable to a HashSet, if it only contains unique elements. Otherwise throws
+   * IllegalArgumentException.
    */
   public static <T> HashSet<T> toHashSet(Iterable<T> iterable) {
     HashSet<T> newSet = new HashSet<T>();
@@ -53,14 +53,12 @@ public final class HelperMethods {
   }
 
   /**
-   * Converts an array to a HashSet, if it only contains unique elements.
-   * Otherwise throws IllegalArgumentException.
+   * Converts an array to a HashSet, if it only contains unique elements. Otherwise throws
+   * IllegalArgumentException.
    */
-  public static <T> HashSet<T> toHashSet(T[] items)
-  {
+  public static <T> HashSet<T> toHashSet(T[] items) {
     HashSet<T> newSet = new HashSet<>();
-    for(int i = 0; i < items.length; i++)
-    {
+    for (int i = 0; i < items.length; i++) {
       if (newSet.add(items[i]) == false) {
         throw new IllegalArgumentException(
             "Cannot convert array to set: array contains duplicate elements");
@@ -70,8 +68,7 @@ public final class HelperMethods {
   }
 
   /**
-   *
-   *  ------- WorkItem methods ------
+   * ------- WorkItem methods ------
    */
 
   public static List<WorkItem> generateComplexWorkItems() {
@@ -97,11 +94,13 @@ public final class HelperMethods {
     workItems3List = list;
     return list;
   }
+
   public static WorkItem generateSimpleWorkItem(@NotNull final Long number) {
     Status status = Status.ON_BACKLOG;
     return new WorkItem(number, status);
   }
-  public static Collection<User> generate3Users(){
+
+  public static Collection<User> generate3Users() {
 
     Collection<User> users = new ArrayList();
     users.add(generateSimpleUser(USER_NUMBER));
@@ -109,16 +108,17 @@ public final class HelperMethods {
     users.add(generateSimpleUser(14L));
     return users;
   }
-  public static Collection<User> generate2Users(){
+
+  public static Collection<User> generate2Users() {
     Collection<User> users = new ArrayList();
     users.add(generateSimpleUser(USER_NUMBER));
     users.add(generateSimpleUser(12L));
     return users;
   }
-  public static Collection<User> generate1Users(){
+
+  public static Collection<User> generate1Users() {
     Collection<User> users = new ArrayList();
     users.add(generateSimpleUser(USER_NUMBER));
     return users;
   }
-
 }

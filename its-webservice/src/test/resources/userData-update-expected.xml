@@ -1,5 +1,6 @@
 <dataset>
-  <tblUser id="1" firstname="updatedFirstname" lastname="updatedLastname" username="username1" number="1"
+  <tblUser id="1" firstname="updatedFirstname" lastname="updatedLastname" username="username1"
+      number="1"
       team_id="[null]"/>
   <tblUser id="2" firstname="firstname2" lastname="lastname2" username="username2" number="2"
       team_id="[null]"/>

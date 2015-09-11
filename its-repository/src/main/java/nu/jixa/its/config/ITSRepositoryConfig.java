@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ITSRepositoryConfig {
 
-  @Bean ITSRepository ITSRepository(){
+  @Bean ITSRepository ITSRepository() {
     return new ITSRepositoryImpl();
   }
 }

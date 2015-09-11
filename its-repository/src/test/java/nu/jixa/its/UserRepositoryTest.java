@@ -54,10 +54,9 @@ public class UserRepositoryTest {
   final Status testWorkItemStatus = Status.DONE;
   WorkItem testWorkItem;
 
-
   @Before
   public void before() {
-    testUser = new User(testUserNumber,testUserUsername, testUserFirstname,testUserLastname);
+    testUser = new User(testUserNumber, testUserUsername, testUserFirstname, testUserLastname);
     testTeam = new Team(testTeamNumber);
     testWorkItem = new WorkItem(testWorkItemNumber, testWorkItemStatus);
 
@@ -107,7 +106,7 @@ public class UserRepositoryTest {
   public void canUpdate() {
 
     //update names
-    User userToUpdate = new User(testUserNumber,"wa","ta","shi");
+    User userToUpdate = new User(testUserNumber, "wa", "ta", "shi");
     repository.updateUser(userToUpdate);
 
     User testUserAfterUpdate = repository.getUser(testUserNumber);
@@ -130,7 +129,7 @@ public class UserRepositoryTest {
 
     assertThat(userInRepoWithNewTeam.getTeam(), is(equalTo(newTeam)));
 
-    assertThat(teamInRepoWithNewUser.getUsers().size(),is(1));
+    assertThat(teamInRepoWithNewUser.getUsers().size(), is(1));
     assertTrue(teamInRepoWithNewUser.getUsers().contains(userWithNewTeam));
 
     assertThat(teamInRepoWithRemovedUser.getUsers().size(), is(0));
@@ -171,32 +170,28 @@ public class UserRepositoryTest {
     Collection<User> usersWithName = repository.getUsersByNameLike(testUserUsername);
 
     assertThat(usersWithName.size(), is(1));
-    for(User user : usersWithName)
-    {
+    for (User user : usersWithName) {
       assertEquals(user, testUser);
     }
 
     usersWithName = repository.getUsersByNameLike(testUserFirstname);
 
     assertThat(usersWithName.size(), is(1));
-    for(User user : usersWithName)
-    {
+    for (User user : usersWithName) {
       assertEquals(user, testUser);
     }
 
     usersWithName = repository.getUsersByNameLike(testUserLastname);
 
     assertThat(usersWithName.size(), is(1));
-    for(User user : usersWithName)
-    {
+    for (User user : usersWithName) {
       assertEquals(user, testUser);
     }
   }
 
   @Test
-  public void addShouldThrowExceptionOnExistingNumber()
-  {
-    User userWithExistingNumber = new User(testUserNumber,"hej","pa","dig");
+  public void addShouldThrowExceptionOnExistingNumber() {
+    User userWithExistingNumber = new User(testUserNumber, "hej", "pa", "dig");
 
     expectedException.expect(ITSRepositoryException.class);
     expectedException.expectMessage("Could not add user");

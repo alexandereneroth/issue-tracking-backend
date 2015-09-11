@@ -17,8 +17,8 @@
 package nu.jixa.its.web.config;
 
 import nu.jixa.its.web.endpoint.Endpoint;
-import nu.jixa.its.web.endpoint.TeamsEndpoint;
 import nu.jixa.its.web.endpoint.IssueEndpoint;
+import nu.jixa.its.web.endpoint.TeamsEndpoint;
 import nu.jixa.its.web.endpoint.UsersEndpoint;
 import nu.jixa.its.web.endpoint.WorkItemEndpoint;
 import org.glassfish.jersey.server.ResourceConfig;

@@ -28,7 +28,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { InfrastructureConfig.class,
@@ -130,10 +129,11 @@ public class WorkItemRepositoryTest {
 
     User user = repository.getUser(HelperMethods.USER_NUMBER);
     ArrayList<WorkItem> workItemList = HelperMethods.workItems3List;
-    for(WorkItem workItem: workItemList){
+    for (WorkItem workItem : workItemList) {
       repository.addWorkItemToUser(user.getNumber(), workItem.getNumber());
     }
-    ArrayList<WorkItem> workItemsByUser = (ArrayList)repository.getWorkItemsByUser(HelperMethods.USER_NUMBER);
+    ArrayList<WorkItem> workItemsByUser =
+        (ArrayList) repository.getWorkItemsByUser(HelperMethods.USER_NUMBER);
 
     assertNotNull(workItemsByUser);
     assertEquals(workItemsByUser.size(), workItemList.size());
@@ -169,7 +169,7 @@ public class WorkItemRepositoryTest {
 
       assertNotNull(teamsFromRepository);
       assertEquals(teamsFromRepository.get(0), workItem);
-    }finally {
+    } finally {
       repository.deleteTeam(team);
     }
   }
@@ -193,7 +193,7 @@ public class WorkItemRepositoryTest {
   }*/
 
   @Test
-  public void canUpdateIssue(){
+  public void canUpdateIssue() {
 
     WorkItem workItemFromRepo = repository.getWorkItem(HelperMethods.WORKITEMNUMBER);
     Long issueNumber = 2005L;
@@ -216,8 +216,8 @@ public class WorkItemRepositoryTest {
     WorkItem workItemWithIssueAfterUpdate = repository.updateWorkItem(workItemFromRepo);
 
     assertNotNull(workItemWithIssueAfterUpdate);
-    assertThat(workItemWithIssueAfterUpdate.getIssue().getString(), is(equalTo(issueStringAfterUpdate)));
-
+    assertThat(workItemWithIssueAfterUpdate.getIssue().getString(),
+        is(equalTo(issueStringAfterUpdate)));
   }
 
   private void deleteWorkItemsFromRepository(ArrayList<WorkItem> workItems) {

@@ -31,18 +31,17 @@ import org.springframework.transaction.annotation.Transactional;
 @EnableJpaRepositories(basePackages = "nu.jixa.its.repository")
 public class Application extends SpringBootServletInitializer {
 
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+  @Override
+  protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
     // Customize the application or call application.sources(...) to add sources
     // Since our example is itself a @Configuration class we actually don't
     // need to override this method.
 
     return application.sources(Application.class);
-	}
+  }
 
-	public static void main(String[] args) {
-		new Application().configure(
-				new SpringApplicationBuilder(Application.class)).run(args);
-	}
-
+  public static void main(String[] args) {
+    new Application().configure(
+        new SpringApplicationBuilder(Application.class)).run(args);
+  }
 }

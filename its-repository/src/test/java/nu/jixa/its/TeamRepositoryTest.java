@@ -61,9 +61,9 @@ public class TeamRepositoryTest {
     // Gotcha: Must be created each time, so they contain no id. Otherwise spring thinks they have
     // already been added.
     testTeam = new Team(testTeamNumber);
-    user1 = new User(number1,username1,firstname1,lastname1);
-    user2 = new User(number2,username2,firstname2,lastname2);
-    user3 = new User(number3,username3,firstname3,lastname3);
+    user1 = new User(number1, username1, firstname1, lastname1);
+    user2 = new User(number2, username2, firstname2, lastname2);
+    user3 = new User(number3, username3, firstname3, lastname3);
 
     repository.addTeam(testTeam);
     repository.addUser(user1);
@@ -79,9 +79,9 @@ public class TeamRepositoryTest {
     Team teamInRepoAfterAdd = repository.getTeam(testTeamNumber);
     assertNotNull(teamInRepoAfterAdd);
     assertEquals(testTeam, teamInRepoAfterAdd);
-    assert(teamInRepoAfterAdd.getUsers().contains(user1));
-    assert(teamInRepoAfterAdd.getUsers().contains(user2));
-    assert(teamInRepoAfterAdd.getUsers().contains(user3));
+    assert (teamInRepoAfterAdd.getUsers().contains(user1));
+    assert (teamInRepoAfterAdd.getUsers().contains(user2));
+    assert (teamInRepoAfterAdd.getUsers().contains(user3));
   }
 
   @After

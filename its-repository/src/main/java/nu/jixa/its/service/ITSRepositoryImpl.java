@@ -248,14 +248,14 @@ public class ITSRepositoryImpl implements ITSRepository {
   private void removeUserFromItsTeam(User leavingUser) {
     Team leavingUsersTeam = leavingUser.getTeam();
     leavingUser.leaveTeam();
-    try{
-    teamRepository.save(leavingUsersTeam);}
-    catch (DataIntegrityViolationException e) {
+    try {
+      teamRepository.save(leavingUsersTeam);
+    } catch (DataIntegrityViolationException e) {
       throw new ITSRepositoryException("Could not update team", e);
     }
-    try{
-    userRepository.save(leavingUser);}
-    catch (DataIntegrityViolationException e) {
+    try {
+      userRepository.save(leavingUser);
+    } catch (DataIntegrityViolationException e) {
       throw new ITSRepositoryException("Could not update user", e);
     }
   }
@@ -265,16 +265,16 @@ public class ITSRepositoryImpl implements ITSRepository {
     while (workItemIterator.hasNext()) {
       WorkItem workItemToRemoveUserFrom = workItemIterator.next();
       workItemToRemoveUserFrom.getUsers().remove(userToRemove);
-      try{
-      workItemRepository.save(workItemToRemoveUserFrom);}
-      catch (DataIntegrityViolationException e) {
+      try {
+        workItemRepository.save(workItemToRemoveUserFrom);
+      } catch (DataIntegrityViolationException e) {
         throw new ITSRepositoryException("Could not update workItem", e);
       }
       workItemIterator.remove();
     }
-    try{
-    userRepository.save(userToRemove);}
-    catch (DataIntegrityViolationException e) {
+    try {
+      userRepository.save(userToRemove);
+    } catch (DataIntegrityViolationException e) {
       throw new ITSRepositoryException("Could not update user", e);
     }
   }
@@ -307,9 +307,9 @@ public class ITSRepositoryImpl implements ITSRepository {
     //item.addUser(getUser(userId));
     //workItemRepository.save(item);
     user.addWorkItem(item);
-    try{
-    userRepository.save(user);}
-    catch (DataIntegrityViolationException e) {
+    try {
+      userRepository.save(user);
+    } catch (DataIntegrityViolationException e) {
       throw new ITSRepositoryException("Could not save user", e);
     }
   }
@@ -321,15 +321,15 @@ public class ITSRepositoryImpl implements ITSRepository {
   @Override public void updateTeam(Team team) {
     Team teamInRepo = teamRepository.findByNumber(team.getNumber());
 
-//    Collection<User> usersBeforeUpdate = teamInRepo.getUsers();
-//    Collection<User> usersAfterUpdate = team.getUsers();
-//
-//    removeAllUsersThatExistedInTeamBeforeUpdateButNotAfter(team, usersBeforeUpdate,
-//        usersAfterUpdate);
-//    for (User user : usersAfterUpdate) {
-//      user.joinTeam(teamInRepo);
-//      updateUser(user);
-//    }
+    //    Collection<User> usersBeforeUpdate = teamInRepo.getUsers();
+    //    Collection<User> usersAfterUpdate = team.getUsers();
+    //
+    //    removeAllUsersThatExistedInTeamBeforeUpdateButNotAfter(team, usersBeforeUpdate,
+    //        usersAfterUpdate);
+    //    for (User user : usersAfterUpdate) {
+    //      user.joinTeam(teamInRepo);
+    //      updateUser(user);
+    //    }
     teamInRepo.copyFields(team);
     teamRepository.save(teamInRepo);
   }
@@ -363,9 +363,9 @@ public class ITSRepositoryImpl implements ITSRepository {
       User userToRemoveFromTeam = usersIterator.next();
       usersIterator.remove();
       userToRemoveFromTeam.leaveTeam();
-      try{
-      userRepository.save(userToRemoveFromTeam);}
-      catch (DataIntegrityViolationException e) {
+      try {
+        userRepository.save(userToRemoveFromTeam);
+      } catch (DataIntegrityViolationException e) {
         throw new ITSRepositoryException("Could not update user", e);
       }
     }
@@ -389,11 +389,11 @@ public class ITSRepositoryImpl implements ITSRepository {
     User user = getUser(userNumber);
     Team team = getTeam(teamNumber);
     user.joinTeam(team);
-  try{
-    userRepository.save(user);}
-  catch (DataIntegrityViolationException e) {
-    throw new ITSRepositoryException("Could not save user", e);
-  }
+    try {
+      userRepository.save(user);
+    } catch (DataIntegrityViolationException e) {
+      throw new ITSRepositoryException("Could not save user", e);
+    }
     return user;
   }
 

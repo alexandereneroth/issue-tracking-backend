@@ -12,8 +12,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import nu.jixa.its.model.Issue;
-import nu.jixa.its.model.User;
-import nu.jixa.its.model.WorkItem;
 import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.service.ITSRepositoryException;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -41,8 +41,6 @@ public interface ITSRepository {
 
   /**
    * Get all users that has
-   * @param nameLike
-   * @return
    */
   Collection<User> getUsersByNameLike(String nameLike);
 

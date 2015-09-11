@@ -94,7 +94,7 @@ public class UsersEndpoint {
 
   @GET
   @Path("{userNumber}/work-items")
-  public Response getWorkItemsForUser (
+  public Response getWorkItemsForUser(
       @PathParam("userNumber") final long userNumber) {
     if (userNumber == 0) {
       return Response.status(Status.BAD_REQUEST).entity(BAD_REQUEST_NULL_OR_INVALID).build();

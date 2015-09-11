@@ -24,7 +24,7 @@ public class WorkItem extends AbstractEntity<WorkItem> {
   @Column(name = "description")
   private String description;
 
-  @OneToOne(cascade = {CascadeType.REMOVE,CascadeType.PERSIST, CascadeType.MERGE})
+  @OneToOne(cascade = { CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.MERGE })
   @JoinColumn
   private Issue issue;
 
@@ -46,6 +46,7 @@ public class WorkItem extends AbstractEntity<WorkItem> {
     this.number = number;
     this.status = status;
   }
+
   public Status getStatus() {
     return status;
   }
@@ -71,20 +72,22 @@ public class WorkItem extends AbstractEntity<WorkItem> {
     ModelUtil.throwExceptionIfArgIsNull(description, "description");
     this.description = description;
   }
-  public User addUser(User user){
 
-    if (checkIfUserExist(user)){
+  public User addUser(User user) {
+
+    if (checkIfUserExist(user)) {
       throw new RepositoryModelException("the user already exist");
     }
     return user;
   }
 
   private boolean checkIfUserExist(User user) {
-    for(User userInUsers: users){
-      if(user.equals(userInUsers)){
+    for (User userInUsers : users) {
+      if (user.equals(userInUsers)) {
         return true;
       }
-    } return false;
+    }
+    return false;
   }
 
   public void setUsers(Collection<User> users) {
@@ -103,7 +106,7 @@ public class WorkItem extends AbstractEntity<WorkItem> {
 
     if (!getNumber().equals(workItem.getNumber())) return false;
     if (getStatus() != workItem.getStatus()) return false;
-      return !(getIssue() != null ? !getIssue().equals(workItem.getIssue())
+    return !(getIssue() != null ? !getIssue().equals(workItem.getIssue())
         : workItem.getIssue() != null);
   }
 

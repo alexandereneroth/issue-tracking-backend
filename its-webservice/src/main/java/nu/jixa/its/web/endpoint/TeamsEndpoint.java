@@ -133,7 +133,7 @@ public class TeamsEndpoint {
 
   @GET
   @Path("{teamNumber}/users")
-  public Response getAllUsersInTeam (
+  public Response getAllUsersInTeam(
       @PathParam("teamNumber") final long teamNumber) {
     if (teamNumber == 0) {
       return Response.status(Status.BAD_REQUEST).entity(BAD_REQUEST_NULL_OR_INVALID).build();
@@ -154,7 +154,7 @@ public class TeamsEndpoint {
 
   @GET
   @Path("{teamNumber}/work-items")
-  public Response getAllWorkItemsForTeam (
+  public Response getAllWorkItemsForTeam(
       @PathParam("teamNumber") final long teamNumber) {
     if (teamNumber == 0) {
       return Response.status(Status.BAD_REQUEST).entity(BAD_REQUEST_NULL_OR_INVALID).build();
