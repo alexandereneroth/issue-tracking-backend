@@ -131,7 +131,8 @@ public class TeamsEndpoint {
   }
 
   @GET
-  @Path("{teamNumber}/users") Response getAllUsersInTeam(
+  @Path("{teamNumber}/users")
+  public Response getAllUsersInTeam (
       @PathParam("teamNumber") final long teamNumber) {
     if (teamNumber == 0) {
       return Response.status(Status.BAD_REQUEST).entity(BAD_REQUEST_NULL_OR_INVALID).build();
