@@ -14,8 +14,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import nu.jixa.its.model.Team;
+import nu.jixa.its.model.User;
 import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.service.ITSRepositoryException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +70,7 @@ public class TeamsEndpoint {
       Team team = itsRepository.getTeam(teamNumber);
       return Response.ok(team).build();
     } catch (ITSRepositoryException e) {
-      return Response.status(Response.Status.NOT_FOUND)
+      return Response.status(Status.NOT_FOUND)
           .entity(NO_TEAM_WITH_TEAM_NUMBER + teamNumber).build();
     }
   }
@@ -77,14 +79,14 @@ public class TeamsEndpoint {
   @POST
   public Response createTeam(final Team team) {
     if (team == null) {
-      return Response.status(Response.Status.BAD_REQUEST)
+      return Response.status(Status.BAD_REQUEST)
           .entity(BAD_REQUEST_NULL_OR_INVALID).build();
     }
 
     try {
       itsRepository.addTeam(team);
     } catch (ITSRepositoryException e) {
-      return Response.status(Response.Status.BAD_REQUEST)
+      return Response.status(Status.BAD_REQUEST)
           .entity(BAD_REQUEST_NULL_OR_INVALID).build();
     }
 
@@ -98,24 +100,23 @@ public class TeamsEndpoint {
       final Team updatedTeam) {
 
     if (updatedTeam == null || updatedTeam.getNumber() == null) {
-      return Response.status(Response.Status.BAD_REQUEST)
+      return Response.status(Status.BAD_REQUEST)
           .entity(BAD_REQUEST_NULL_OR_INVALID).build();
     }
 
     try {
       if (teamNumber == updatedTeam.getNumber()) {
         itsRepository.updateTeam(updatedTeam);
-        return Response.status(Response.Status.NO_CONTENT).build();
+        return Response.status(Status.NO_CONTENT).build();
       } else {
-        return Response.status(Response.Status.BAD_REQUEST)
+        return Response.status(Status.BAD_REQUEST)
             .entity(BAD_REQUEST_MISMATCH_BETWEEN_PATH_AND_TEAM).build();
       }
     } catch (ITSRepositoryException e) {
-      return Response.status(Response.Status.NOT_FOUND)
+      return Response.status(Status.NOT_FOUND)
           .entity(e.getMessage()).build();
     }
   }
-
 
   @DELETE
   @Path("{teamNumber}")
@@ -123,28 +124,50 @@ public class TeamsEndpoint {
     try {
       itsRepository.deleteTeam(teamNumber);
     } catch (ITSRepositoryException e) {
-      return Response.status(Response.Status.NOT_FOUND)
+      return Response.status(Status.NOT_FOUND)
           .entity(e.getMessage()).build();
     }
     return Response.noContent().build();
   }
 
-  @POST
-  @Path("{teamNumber}/user")
-  public Response addUserToTeam(@PathParam("teamNumber") final Long teamNumber, final Long userNumber) {
-    if (userNumber == null || userNumber == 0) {
-      return Response.status(Response.Status.BAD_REQUEST)
+  @GET
+  @Path("{teamNumber}/users") Response getAllUsersInTeam(
+      @PathParam("teamNumber") final long teamNumber) {
+    if (teamNumber == 0) {
+      return Response.status(Status.BAD_REQUEST).entity(BAD_REQUEST_NULL_OR_INVALID).build();
+    }
+
+    try {
+      Iterable<User> usersByTeam = itsRepository.getUsersByTeam(teamNumber);
+
+      if (usersByTeam.iterator().hasNext()) {
+        return Response.ok(usersByTeam).build();
+      } else {
+        return Response.noContent().build();
+      }
+    } catch (ITSRepositoryException e) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+  }
+
+  @PUT
+  @Path("{teamNumber}/users")
+  public Response addUserToTeam(@PathParam("teamNumber") final long teamNumber,
+      final User userToAdd) {
+
+    if (userToAdd == null) {
+      return Response.status(Status.BAD_REQUEST)
           .entity(BAD_REQUEST_NULL_OR_INVALID).build();
     }
 
     try {
-      itsRepository.addUserToTeamWithNumber(userNumber, teamNumber);
+      itsRepository.addUserToTeamWithNumber(userToAdd.getNumber(), teamNumber);
 
       final URI location =
           uriInfo.getAbsolutePathBuilder().path(String.valueOf(teamNumber)).build();
       return Response.created(location).build();
     } catch (ITSRepositoryException e) {
-      return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+      return Response.status(Status.NOT_FOUND).entity(e.getMessage()).build();
     }
   }
 }

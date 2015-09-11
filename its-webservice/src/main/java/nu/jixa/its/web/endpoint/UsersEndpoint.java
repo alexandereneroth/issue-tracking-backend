@@ -52,17 +52,7 @@ public class UsersEndpoint {
   public Response getUsersByNameOrTeam(
       @QueryParam("filterByName") @DefaultValue("") final String searchString,
       @QueryParam("filterByTeamId") final Long teamId) {
-    //Todo add filterByTeamId logic
-    if (teamId != null) {
-      Iterable<User> usersByTeam;
-      try {
-        usersByTeam = itsRepository.getUsersByTeam(teamId);
-      } catch (ITSRepositoryException e) {
-        return Response.status(Status.BAD_REQUEST)
-            .entity(BAD_REQUEST_NULL_OR_INVALID).build();
-      }
-      return Response.ok(usersByTeam).build();
-    }
+
     Collection<User> usersByName = itsRepository.getUsersByNameLike(searchString);
     if (usersByName.isEmpty()) {
       return Response.noContent().build();
