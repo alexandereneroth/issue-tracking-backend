@@ -75,19 +75,10 @@ public class WorkItem extends AbstractEntity<WorkItem> {
 
   public User addUser(User user) {
 
-    if (checkIfUserExist(user)) {
+    if (users.contains(user)) {
       throw new RepositoryModelException("the user already exist");
     }
     return user;
-  }
-
-  private boolean checkIfUserExist(User user) {
-    for (User userInUsers : users) {
-      if (user.equals(userInUsers)) {
-        return true;
-      }
-    }
-    return false;
   }
 
   public void setUsers(Collection<User> users) {

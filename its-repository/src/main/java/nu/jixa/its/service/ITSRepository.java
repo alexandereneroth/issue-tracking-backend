@@ -39,9 +39,6 @@ public interface ITSRepository {
 
   Iterable<User> getUsersByTeam(Long teamNumber);
 
-  /**
-   * Get all users that has
-   */
   Collection<User> getUsersByNameLike(String nameLike);
 
   void addWorkItemToUser(Long userNumber, Long workItemNumber);
