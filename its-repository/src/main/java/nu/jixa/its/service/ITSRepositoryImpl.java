@@ -338,10 +338,36 @@ public class ITSRepositoryImpl implements ITSRepository {
   }
 
   @Override
-  public void updateTeam(Team team) {
-    Team teamInRepo = teamRepository.findByNumber(team.getNumber());
-    teamInRepo.copyFields(team);
-    teamRepository.save(teamInRepo);
+  public void updateTeam(Team updatedTeam) {
+    Team outdatedTeam = teamRepository.findByNumber(updatedTeam.getNumber());
+
+    updateUsersTeamMembership(updatedTeam, outdatedTeam);
+
+    outdatedTeam.copyFields(updatedTeam);
+    teamRepository.save(outdatedTeam);
+  }
+
+  private void updateUsersTeamMembership(Team updatedTeam, Team outdatedTeam){
+    for(User userOutdated : outdatedTeam.getUsers())
+    {
+      if(userNotInTeam(userOutdated,updatedTeam))
+      {
+        userOutdated.setTeam(null);
+        updateUser(userOutdated);
+      }
+    }
+    for(User userUpdated : updatedTeam.getUsers())
+    {
+      if(userNotInTeam(userUpdated, outdatedTeam))
+      {
+        userUpdated.setTeam(updatedTeam);
+        updateUser(userUpdated);
+      }
+    }
+  }
+
+  private boolean userNotInTeam(User user, Team team){
+    return !team.getUsers().contains(user);
   }
 
   @Override

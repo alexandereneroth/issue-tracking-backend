@@ -2,6 +2,7 @@ package nu.jixa.its.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -104,6 +105,10 @@ public class User extends AbstractEntity<User> {
 
   public Team getTeam() {
     return team;
+  }
+
+  public void setTeam(@Nullable final Team team) {
+    this.team = team;
   }
 
   public void joinTeam(@NotNull final Team team) {
