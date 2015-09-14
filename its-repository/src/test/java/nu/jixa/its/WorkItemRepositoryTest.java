@@ -77,7 +77,7 @@ public class WorkItemRepositoryTest {
     repository.removeWorkItem(workItemInRepoAfterAdd.getNumber());
 
     expectedException.expect(ITSRepositoryException.class);
-    expectedException.expectMessage("Could not find WorkItem");
+    expectedException.expectMessage("Could not find workItem");
     repository.getWorkItem(workItemInRepoAfterAdd.getNumber());
   }
 
