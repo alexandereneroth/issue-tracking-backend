@@ -307,7 +307,7 @@ public class ITSRepositoryImpl implements ITSRepository {
 
   @Override
   public Iterable<User> getUsersByTeam(Long teamNumber) {
-    return userRepository.selectByTeamId(teamNumber);
+    return userRepository.selectByTeamNumber(teamNumber);
   }
 
   @Override
