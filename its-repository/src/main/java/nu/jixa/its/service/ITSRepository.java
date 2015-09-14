@@ -12,6 +12,8 @@ public interface ITSRepository {
   // WorkItem
   WorkItem addWorkItem(WorkItem workItem);
 
+  WorkItem updateWorkItem(WorkItem updatedWorkItem);
+
   WorkItem removeWorkItem(Long workItemNumber);
 
   void setWorkItemStatus(Long workItemNumber, Status status);
@@ -72,7 +74,4 @@ public interface ITSRepository {
 
   boolean issueExists(Issue issue);
 
-  WorkItem findByNumber(Long id);
-
-  WorkItem updateWorkItem(WorkItem updatedWorkItem);
 }

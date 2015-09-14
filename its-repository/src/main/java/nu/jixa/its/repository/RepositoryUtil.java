@@ -1,6 +1,6 @@
 package nu.jixa.its.repository;
 
-import nu.jixa.its.service.ITSRepositoryException;
+import nu.jixa.its.service.exception.ITSRepositoryException;
 
 public final class RepositoryUtil {
 

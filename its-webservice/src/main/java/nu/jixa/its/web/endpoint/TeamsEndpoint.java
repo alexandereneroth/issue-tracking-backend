@@ -21,7 +21,7 @@ import nu.jixa.its.model.Team;
 import nu.jixa.its.model.User;
 import nu.jixa.its.model.WorkItem;
 import nu.jixa.its.service.ITSRepository;
-import nu.jixa.its.service.ITSRepositoryException;
+import nu.jixa.its.service.exception.ITSRepositoryException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package nu.jixa.its.service;
+package nu.jixa.its.service.exception;
 
 public class ITSRepositoryException extends RuntimeException {
 

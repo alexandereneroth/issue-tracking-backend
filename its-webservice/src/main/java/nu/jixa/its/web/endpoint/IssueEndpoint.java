@@ -14,7 +14,7 @@ import javax.ws.rs.core.UriInfo;
 
 import nu.jixa.its.model.Issue;
 import nu.jixa.its.service.ITSRepository;
-import nu.jixa.its.service.ITSRepositoryException;
+import nu.jixa.its.service.exception.ITSRepositoryException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

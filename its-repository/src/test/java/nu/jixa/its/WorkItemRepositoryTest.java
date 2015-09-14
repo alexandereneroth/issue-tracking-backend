@@ -11,7 +11,7 @@ import nu.jixa.its.model.Team;
 import nu.jixa.its.model.User;
 import nu.jixa.its.model.WorkItem;
 import nu.jixa.its.service.ITSRepository;
-import nu.jixa.its.service.ITSRepositoryException;
+import nu.jixa.its.service.exception.ITSRepositoryException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -48,7 +48,7 @@ public class WorkItemRepositoryTest {
     addUsersToRepository((ArrayList) HelperMethods.generate3Users());
     WorkItem item = HelperMethods.generateSimpleWorkItem(testWorkitemNr);
     repository.addWorkItem(item);
-    WorkItem workItemInRepoAfterAdd = repository.findByNumber(item.getNumber());
+    WorkItem workItemInRepoAfterAdd = repository.getWorkItem(item.getNumber());
     assertNotNull(item);
     assertEquals(item, workItemInRepoAfterAdd);
     items = (ArrayList) HelperMethods.generateComplexWorkItems();
@@ -57,7 +57,7 @@ public class WorkItemRepositoryTest {
 
   @After
   public void after() {
-    WorkItem workItemInRepoAfterAdd = repository.findByNumber(testWorkitemNr);
+    WorkItem workItemInRepoAfterAdd = repository.getWorkItem(testWorkitemNr);
     assertNotNull(workItemInRepoAfterAdd);
     repository.removeWorkItem(testWorkitemNr);
     deleteWorkItemsFromRepository(items);
@@ -69,7 +69,7 @@ public class WorkItemRepositoryTest {
     Long id = 999L;
     WorkItem item = HelperMethods.generateSimpleWorkItem(id);
     repository.addWorkItem(item);
-    WorkItem workItemInRepoAfterAdd = repository.findByNumber(item.getNumber());
+    WorkItem workItemInRepoAfterAdd = repository.getWorkItem(item.getNumber());
 
     assertNotNull(item);
     assertEquals(item, workItemInRepoAfterAdd);
@@ -77,7 +77,7 @@ public class WorkItemRepositoryTest {
     repository.removeWorkItem(workItemInRepoAfterAdd.getNumber());
 
     expectedException.expect(ITSRepositoryException.class);
-    expectedException.expectMessage("Could not find workItem");
+    expectedException.expectMessage("Could not find WorkItem");
     repository.getWorkItem(workItemInRepoAfterAdd.getNumber());
   }
 
@@ -89,7 +89,7 @@ public class WorkItemRepositoryTest {
 
     User userFromRepository = repository.getUser(HelperMethods.USER_NUMBER);
     users.add(userFromRepository);
-    WorkItem itemInRepository = repository.findByNumber(testWorkitemNr);
+    WorkItem itemInRepository = repository.getWorkItem(testWorkitemNr);
 
     itemInRepository.setStatus(Status.IN_PROGRESS);
     itemInRepository.setDescription("updated item");
@@ -211,14 +211,14 @@ public class WorkItemRepositoryTest {
   private void addWorkItemsToRepository(ArrayList<WorkItem> workItems) {
     for (WorkItem item : workItems) {
       repository.addWorkItem(item);
-      assertNotNull(repository.findByNumber(item.getNumber()));
+      assertNotNull(repository.getWorkItem(item.getNumber()));
     }
   }
 
   private void addUsersToRepository(ArrayList<User> users) {
     for (User user : users) {
       repository.addUser(user);
-      //assertNotNull(userRepository.findByNumber(user.getNumber()));
+      //assertNotNull(userRepository.getWorkItem(user.getNumber()));
     }
   }
 

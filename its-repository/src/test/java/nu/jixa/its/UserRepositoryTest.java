@@ -9,7 +9,7 @@ import nu.jixa.its.model.Team;
 import nu.jixa.its.model.User;
 import nu.jixa.its.model.WorkItem;
 import nu.jixa.its.service.ITSRepository;
-import nu.jixa.its.service.ITSRepositoryException;
+import nu.jixa.its.service.exception.ITSRepositoryException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
