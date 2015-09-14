@@ -171,10 +171,10 @@ public class ITSRepositoryImpl implements ITSRepository {
 
   @Override
   public WorkItem getWorkItem(Long workItemNumber) {
-    WorkItem workItemInDB = workItemRepository.findByNumber(workItemNumber);
-    RepositoryUtil.throwExceptionIfNull(workItemInDB,
+    WorkItem workItemInRepository = workItemRepository.findByNumber(workItemNumber);
+    RepositoryUtil.throwExceptionIfNull(workItemInRepository,
         "Could not find workItem: No item with number " + workItemNumber);
-    return workItemRepository.findByNumber(workItemNumber);
+    return workItemInRepository;
   }
 
   @Transactional
