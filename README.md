@@ -7,6 +7,7 @@
 - Beskrivning
 - Generella krav
 - Funktionskrav - Godkänd
+- Funktionskrav - Väl Godkänd
 - Redovisning
 
 <!-- /MarkdownTOC -->
@@ -77,6 +78,19 @@ Exakt vilka datamedlemmar som varje entitet har samt hur dessa hänger ihop är 
 Det är tillåtet att ha fler entiteter än dessa om ni anser att ni behöver det.
 
 _* När ni tar bort en entitet behöver ni fundera på hur detta ska påverka eventuellt relaterade entiteter, dvs, vilken/vilka cascade type(s) ska användas_
+## Funktionskrav - Väl Godkänd
+
+Förutom nivå Godkänd ska även följande funktionalitet finnas:
+
+- Du ska på egen hand ta reda på hur Auditing fungerar och implementera detta i ditt datalager på passande ställen. Du bestämmer själv var. Se: [http://docs.spring.io/spring-data/jpa/docs/current/reference/html/#auditing](http://docs.spring.io/spring-data/jpa/docs/current/reference/html/#auditing) (stycke 4.8 + 4.9).
+
+- Implementera paging för följande funktionalitet i ditt datalager och exponera detta i ditt webb-api:
+  - Hämta alla users
+  - Hämta alla work items
+  - Hämta alla Issues
+
+- Implementera en funktion för att få reda på history över vilka work items som klarades av under en viss period. Det ska exempelvis gå att fråga efter alla work items mellan perioden 2015-08-01 till 2015-08-30 som har status ‘Done’. Detta ska också exponeras i ditt webb-api.
+
 ## Redovisning
 Redovisning sker i grupp fredagen den *11/9 för nivå Godkänd* och enskilt fredagen den *18/9 för nivå Väl Godkänd*. 
 
