@@ -1,6 +1,7 @@
 package nu.jixa.its.model;
 
 import com.sun.istack.internal.NotNull;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -20,6 +21,9 @@ public class WorkItem extends AbstractEntity<WorkItem> {
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false)
   private Status status;
+
+  @Column(name = "completedDate")
+  private LocalDateTime completedDate;
 
   @Column(name = "description")
   private String description;
@@ -54,6 +58,14 @@ public class WorkItem extends AbstractEntity<WorkItem> {
   public void setStatus(@NotNull final Status status) {
     ModelUtil.throwExceptionIfArgIsNull(status, "status");
     this.status = status;
+    if (status == Status.DONE)
+    {
+      completedDate = LocalDateTime.now();
+    }
+  }
+
+  public LocalDateTime getCompletedDate() {
+    return completedDate;
   }
 
   public Issue getIssue() {
