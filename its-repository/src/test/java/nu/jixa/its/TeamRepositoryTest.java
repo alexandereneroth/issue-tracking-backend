@@ -129,10 +129,6 @@ public class TeamRepositoryTest {
 
     assertThat(teamInRepoAfterUpdate.getUsers().size(), is(1));
     assertTrue(teamInRepoAfterUpdate.getUsers().contains(user1));
-
-    // reset, so after() can do its job
-    teamToUpdate.setNumber(testTeamNumber);
-    repository.updateTeam(teamToUpdate);
   }
 
   @Test
