@@ -15,6 +15,8 @@ import nu.jixa.its.service.IssueITSRepository;
 import nu.jixa.its.service.WorkItemITSRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 public class WorkItemITSRepositoryImpl implements WorkItemITSRepository {
@@ -146,6 +148,17 @@ public class WorkItemITSRepositoryImpl implements WorkItemITSRepository {
 
   @Override
   public Collection<WorkItem> getWorkItemsCompletedBetween(LocalDateTime from, LocalDateTime to) {
-    return workItemRepository.findByCompletedDateBetween(from,to);
+    return workItemRepository.findByCompletedDateBetween(from, to);
+  }
+
+  @Override
+  public Collection<WorkItem> getWorkItemsPage(int pageIndex, int pageSize) {
+
+    if(pageIndex < 0 || pageSize < 1)
+    {
+      throw new ITSRepositoryException("Could not get WorkItems: invalid page or pageSize");
+    }
+    Page<WorkItem> workItemPage = workItemRepository.findAll(new PageRequest(pageIndex,pageSize));
+    return RepositoryUtil.iterableToArrayList(workItemPage);
   }
 }

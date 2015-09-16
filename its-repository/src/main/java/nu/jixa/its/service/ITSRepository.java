@@ -31,6 +31,8 @@ public interface ITSRepository {
 
   Collection<WorkItem> getWorkItemsCompletedBetween(LocalDateTime from, LocalDateTime to);
 
+  Collection<WorkItem> getWorkItems(int pageIndex, int pageSize);
+
   WorkItem getWorkItem(Long workItemNumber);
 
   // User
@@ -45,6 +47,8 @@ public interface ITSRepository {
   Iterable<User> getUsersByTeam(Long teamNumber);
 
   Collection<User> getUsersByNameLike(String nameLike);
+
+  Collection<User> getUsers(int pageIndex, int pageSize);
 
   void addWorkItemToUser(Long userNumber, Long workItemNumber);
 
@@ -68,6 +72,8 @@ public interface ITSRepository {
   Issue addIssue(Issue issue);
 
   Issue getIssue(Long issueNumber);
+
+  Collection<Issue> getIssues(int page, int pageSize);
 
   WorkItem addIssueToWorkItem(Long workItemNumber, Long IssueNumber);
 

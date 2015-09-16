@@ -7,8 +7,9 @@ import nu.jixa.its.model.User;
 import nu.jixa.its.model.WorkItem;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface WorkItemRepository extends CrudRepository<WorkItem, Long> {
+public interface WorkItemRepository extends PagingAndSortingRepository<WorkItem, Long> {
 
   WorkItem findByNumber(Long id);
 

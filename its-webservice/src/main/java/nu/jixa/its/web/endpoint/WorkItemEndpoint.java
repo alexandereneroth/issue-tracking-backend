@@ -23,6 +23,7 @@ import nu.jixa.its.model.Status;
 import nu.jixa.its.model.WorkItem;
 import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.service.exception.ITSRepositoryException;
+import nu.jixa.its.web.StringNotConvertableToNumberWebApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -61,49 +62,45 @@ public class WorkItemEndpoint {
   }
 
   @GET
-  public Response getWorkItemsByQuery(
+  public Response getWorkItems(
       @QueryParam("description_contains") @DefaultValue("") final String descriptionContainsQuery,
       @QueryParam("has_issue") @DefaultValue("") final String hasIssueQuery,
       @QueryParam("status") @DefaultValue("") final String statusQuery,
-      @QueryParam("completed_time_from") @DefaultValue("") String completedTimeFromQuery,
-      @QueryParam("completed_time_to") @DefaultValue("") String completedTimeToQuery) {
+      @QueryParam("completed_time_from") @DefaultValue("") final String completedTimeFromQuery,
+      @QueryParam("completed_time_to") @DefaultValue("") final String completedTimeToQuery,
+      @QueryParam("page") @DefaultValue("") final String pageIndexQuery,
+      @QueryParam("page_size") @DefaultValue("") final String pageSizeQuery) {
 
-    if (queryEntered(descriptionContainsQuery)) {
+    if (Util.queryEntered(descriptionContainsQuery)) {
       return getByDescriptionContains(descriptionContainsQuery);
     }
     if (hasIssueQuery.equals("true")) {
       return getByIssue();
     }
-    if (queryEntered(statusQuery)) {
+    if (Util.queryEntered(statusQuery)) {
       return getByStatus(statusQuery);
     }
-    if (queryEntered(completedTimeFromQuery) && queryEntered(completedTimeToQuery)) {
+    if (Util.queryEntered(completedTimeFromQuery)
+        && Util.queryEntered(completedTimeToQuery)) {
       return getByCompletedBetween(completedTimeFromQuery, completedTimeToQuery);
+    }
+    if (Util.queryEntered(pageIndexQuery) && Util.queryEntered(pageSizeQuery)) {
+      return getPage(pageIndexQuery, pageSizeQuery);
     }
     // If no queryParam is entered return all WorkItems
     return getByDescriptionContains("");
   }
 
-  private <T> boolean queryEntered(T query) {
-    if (query == null) {
-      return false;
-    }
-    if (query instanceof String) {
-      return !((String) query).isEmpty();
-    }
-    return true;
-  }
-
   @POST
   public Response createWorkItem(final WorkItem workItem) throws IllegalAccessException {
     if (workItem == null) {
-      return badRequestResponse();
+      return Util.badRequestResponse();
     }
 
     try {
       itsRepository.addWorkItem(workItem);
     } catch (ITSRepositoryException e) {
-      return badRequestResponse();
+      return Util.badRequestResponse();
     }
 
     final URI location =
@@ -126,7 +123,7 @@ public class WorkItemEndpoint {
     try {
       itsRepository.updateWorkItem(workItem);
     } catch (ITSRepositoryException e) {
-      return badRequestResponse();
+      return Util.badRequestResponse();
     }
     final URI location =
         uriInfo.getAbsolutePathBuilder().path(workItem.getNumber().toString()).build();
@@ -150,7 +147,7 @@ public class WorkItemEndpoint {
         status = Status.DONE;
         break;
       default:
-        return badRequestResponse();
+        return Util.badRequestResponse();
     }
 
     try {
@@ -178,7 +175,7 @@ public class WorkItemEndpoint {
     Status status = getStatusByString(statusString);
 
     if (statusString.isEmpty() || status == null) {
-      return badRequestResponse();
+      return Util.badRequestResponse();
     }
 
     Collection<WorkItem> workItems = itsRepository.getWorkItemsByStatus(status);
@@ -204,7 +201,7 @@ public class WorkItemEndpoint {
           itsRepository.getWorkItemsWithDescriptionLike(descriptionSubstring);
       return Response.ok(workItems).build();
     } catch (ITSRepositoryException e) {
-      return badRequestResponse();
+      return Util.badRequestResponse();
     }
   }
 
@@ -218,9 +215,22 @@ public class WorkItemEndpoint {
           itsRepository.getWorkItemsCompletedBetween(completedTimeFrom, completedTimeTo);
 
       return Response.ok(workItems).build();
-
     } catch (ITSRepositoryException | DateTimeParseException e) {
-      return badRequestResponse(e);
+      return Util.badRequestResponse(e);
+    }
+  }
+
+  private Response getPage(String pageIndexQuery, String pageSizeQuery) {
+    try {
+      int pageIndexInt = Integer.parseInt(pageIndexQuery);
+      int pageSizeInt = Integer.parseInt(pageSizeQuery);
+      Collection<WorkItem> workItems = itsRepository.getWorkItems(pageIndexInt, pageSizeInt);
+      return Response.ok(workItems).build();
+    } catch (NumberFormatException e) {
+      throw new StringNotConvertableToNumberWebApplicationException(
+          pageIndexQuery + " or " + pageSizeQuery + " not convertable to number");
+    } catch (ITSRepositoryException e) {
+      return Util.badRequestResponse(e);
     }
   }
 
@@ -234,21 +244,5 @@ public class WorkItemEndpoint {
         return Status.DONE;
     }
     return null;
-  }
-
-  private Response badRequestResponse() {
-    return badRequestResponse(BAD_REQUEST_NULL_OR_INVALID);
-  }
-
-  private Response badRequestResponse(Exception e) {
-    return badRequestResponse(e.getMessage());
-  }
-
-  private Response badRequestResponse(String message) {
-    return response(Response.Status.BAD_REQUEST, message);
-  }
-
-  private Response response(Response.Status status, String message) {
-    return Response.status(status).entity(message).build();
   }
 }

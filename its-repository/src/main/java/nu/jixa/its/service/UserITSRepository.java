@@ -17,5 +17,7 @@ public interface UserITSRepository {
 
   Collection<User> getUsersByNameLike(String nameLike);
 
+  Collection<User> getUsersPage(int pageIndex, int pageSize);
+
   void addWorkItemToUser(Long userNumber, Long workItemNumber);
 }

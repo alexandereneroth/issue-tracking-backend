@@ -27,5 +27,7 @@ public interface WorkItemITSRepository {
 
   Collection<WorkItem> getWorkItemsCompletedBetween(LocalDateTime from, LocalDateTime to);
 
+  Collection<WorkItem> getWorkItemsPage(int pageIndex, int pageSize);
+
   WorkItem getWorkItem(Long workItemNumber);
 }

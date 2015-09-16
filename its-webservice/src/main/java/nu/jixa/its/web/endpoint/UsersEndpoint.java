@@ -21,6 +21,7 @@ import nu.jixa.its.model.User;
 import nu.jixa.its.model.WorkItem;
 import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.service.exception.ITSRepositoryException;
+import nu.jixa.its.web.StringNotConvertableToNumberWebApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -50,14 +51,29 @@ public class UsersEndpoint {
    * Defaults to empty searchString which will return all Users if no queryParam is entered.
    */
   @GET
-  public Response getUsersByName(
-      @QueryParam("filterByName") @DefaultValue("") final String searchString) {
-    Collection<User> usersByName = itsRepository.getUsersByNameLike(searchString);
-    if (usersByName.isEmpty()) {
-      return Response.noContent().build();
-    } else {
+  public Response getUsers(
+      @QueryParam("name_substring") @DefaultValue("") final String nameSubstringQuery,
+      @QueryParam("page") @DefaultValue("") final String pageIndexQuery,
+      @QueryParam("page_size") @DefaultValue("") final String pageSizeQuery) {
+
+    if (Util.queryEntered(nameSubstringQuery)) {
+      Collection<User> usersByName = itsRepository.getUsersByNameLike(nameSubstringQuery);
       return Response.ok(usersByName).build();
     }
+    if (Util.queryEntered(pageIndexQuery) && Util.queryEntered(pageSizeQuery)) {
+      try {
+        int pageIndexInt = Integer.parseInt(pageIndexQuery);
+        int pageSizeInt = Integer.parseInt(pageSizeQuery);
+        Collection<User> users = itsRepository.getUsers(pageIndexInt, pageSizeInt);
+        return Response.ok(users).build();
+      } catch (NumberFormatException e) {
+        throw new StringNotConvertableToNumberWebApplicationException(
+            pageIndexQuery + " or " + pageSizeQuery + " not convertable to number");
+      } catch (ITSRepositoryException e) {
+        return Util.badRequestResponse(e);
+      }
+    }
+    return Response.status(Status.NOT_IMPLEMENTED).build();
   }
 
   @POST

@@ -2,27 +2,18 @@ package nu.jixa.its.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Iterator;
 
 import nu.jixa.its.model.Issue;
 import nu.jixa.its.model.Status;
 import nu.jixa.its.model.Team;
 import nu.jixa.its.model.User;
 import nu.jixa.its.model.WorkItem;
-import nu.jixa.its.repository.IssueRepository;
-import nu.jixa.its.repository.RepositoryUtil;
-import nu.jixa.its.repository.TeamRepository;
-import nu.jixa.its.repository.UserRepository;
-import nu.jixa.its.repository.WorkItemRepository;
 import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.service.IssueITSRepository;
 import nu.jixa.its.service.TeamITSRepository;
 import nu.jixa.its.service.UserITSRepository;
 import nu.jixa.its.service.WorkItemITSRepository;
-import nu.jixa.its.service.exception.ITSRepositoryException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * This class just redirects all method calls to the more specific repository implementations.
@@ -83,7 +74,11 @@ public class ITSRepositoryImpl implements ITSRepository {
 
   @Override
   public Collection<WorkItem> getWorkItemsCompletedBetween(LocalDateTime from, LocalDateTime to) {
-    return workItemITSRepository.getWorkItemsCompletedBetween(from ,to);
+    return workItemITSRepository.getWorkItemsCompletedBetween(from, to);
+  }
+
+  @Override public Collection<WorkItem> getWorkItems(int pageIndex, int pageSize) {
+    return workItemITSRepository.getWorkItemsPage(pageIndex, pageSize);
   }
 
   @Override public WorkItem getWorkItem(Long workItemNumber) {
@@ -116,6 +111,10 @@ public class ITSRepositoryImpl implements ITSRepository {
 
   @Override public Collection<User> getUsersByNameLike(String nameLike) {
     return userITSRepository.getUsersByNameLike(nameLike);
+  }
+
+  @Override public Collection<User> getUsers(int pageIndex, int pageSize) {
+    return userITSRepository.getUsersPage(pageIndex, pageSize);
   }
 
   @Override public void addWorkItemToUser(Long userNumber, Long workItemNumber) {
@@ -164,6 +163,10 @@ public class ITSRepositoryImpl implements ITSRepository {
 
   @Override public Issue getIssue(Long issueNumber) {
     return issueITSRepository.getIssue(issueNumber);
+  }
+
+  @Override public Collection<Issue> getIssues(int page, int pageSize) {
+    return issueITSRepository.getIssuesPage(page, pageSize);
   }
 
   @Override public WorkItem addIssueToWorkItem(Long workItemNumber, Long issueNumber) {

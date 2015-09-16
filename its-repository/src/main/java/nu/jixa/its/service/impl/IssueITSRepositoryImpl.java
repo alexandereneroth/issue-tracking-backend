@@ -1,5 +1,6 @@
 package nu.jixa.its.service.impl;
 
+import java.util.Collection;
 import nu.jixa.its.model.Issue;
 import nu.jixa.its.model.WorkItem;
 import nu.jixa.its.repository.IssueRepository;
@@ -9,6 +10,8 @@ import nu.jixa.its.service.IssueITSRepository;
 import nu.jixa.its.service.WorkItemITSRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 public class IssueITSRepositoryImpl implements IssueITSRepository {
 
@@ -60,6 +63,15 @@ public class IssueITSRepositoryImpl implements IssueITSRepository {
       throw new ITSRepositoryException("Could not get issue: issue not in repository");
     }
     return issueInRepository;
+  }
+
+  @Override public Collection<Issue> getIssuesPage(int pageIndex, int pageSize) {
+    if(pageIndex < 0 || pageSize < 1)
+    {
+      throw new ITSRepositoryException("Could not get issues: invalid pageIndex or pageSize");
+    }
+    Page<Issue> issuesPage = issueRepository.findAll(new PageRequest(pageIndex,pageSize));
+    return RepositoryUtil.iterableToArrayList(issuesPage);
   }
 
   @Override

@@ -14,6 +14,8 @@ import nu.jixa.its.service.WorkItemITSRepository;
 import nu.jixa.its.service.exception.ITSRepositoryException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 public class UserITSRepositoryImpl implements UserITSRepository {
@@ -126,6 +128,16 @@ public class UserITSRepositoryImpl implements UserITSRepository {
   @Override
   public Collection<User> getUsersByNameLike(String nameLike) {
     return userRepository.selectByNameLike(nameLike);
+  }
+
+  @Override public Collection<User> getUsersPage(int pageIndex, int pageSize) {
+
+    if(pageIndex < 0 || pageSize < 1)
+    {
+      throw new ITSRepositoryException("Could not get Users: invalid page or pageSize");
+    }
+    Page<User> userPage = userRepository.findAll(new PageRequest(pageIndex,pageSize));
+    return RepositoryUtil.iterableToArrayList(userPage);
   }
 
   @Override
