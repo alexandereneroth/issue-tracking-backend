@@ -13,7 +13,7 @@ import nu.jixa.its.model.WorkItem;
 
 public final class HelperMethods {
 
-  public static User generateSimpleUser(@NotNull final Long number) {
+  public static User newSimpleUser(@NotNull final Long number) {
     return new User(number, "account" + number, "firstname" + number, "lastname" + number);
   }
 
@@ -31,10 +31,7 @@ public final class HelperMethods {
         matchesInSet1 += 1;
       }
     }
-    if (matchesInSet1 == set2.size() && set2.size() == set1.size()) {
-      return true;
-    }
-    return false;
+    return matchesInSet1 == set2.size() && set2.size() == set1.size();
   }
 
   /**
@@ -76,17 +73,17 @@ public final class HelperMethods {
     WorkItem workItem1 = generateSimpleWorkItem(WORKITEMNUMBER);
     workItem1.setDescription("item 1");
     workItem1.setIssue(new Issue(20L));
-    workItem1.setStatus(Status.DONE);
+    workItem1.setStatus(Status.IN_PROGRESS);
 
     WorkItem workItem2 = generateSimpleWorkItem(14L);
     workItem2.setDescription("item 2");
     workItem2.setIssue(new Issue(22L));
-    workItem2.setStatus(Status.DONE);
+    workItem2.setStatus(Status.IN_PROGRESS);
 
     WorkItem workItem3 = generateSimpleWorkItem(244L);
     workItem3.setDescription("item 4");
     workItem3.setIssue(new Issue(290L));
-    workItem3.setStatus(Status.DONE);
+    workItem3.setStatus(Status.IN_PROGRESS);
 
     list.add(workItem1);
     list.add(workItem2);
@@ -103,22 +100,22 @@ public final class HelperMethods {
   public static Collection<User> generate3Users() {
 
     Collection<User> users = new ArrayList();
-    users.add(generateSimpleUser(USER_NUMBER));
-    users.add(generateSimpleUser(12L));
-    users.add(generateSimpleUser(14L));
+    users.add(newSimpleUser(USER_NUMBER));
+    users.add(newSimpleUser(12L));
+    users.add(newSimpleUser(14L));
     return users;
   }
 
   public static Collection<User> generate2Users() {
     Collection<User> users = new ArrayList();
-    users.add(generateSimpleUser(USER_NUMBER));
-    users.add(generateSimpleUser(12L));
+    users.add(newSimpleUser(USER_NUMBER));
+    users.add(newSimpleUser(12L));
     return users;
   }
 
   public static Collection<User> generate1Users() {
     Collection<User> users = new ArrayList();
-    users.add(generateSimpleUser(USER_NUMBER));
+    users.add(newSimpleUser(USER_NUMBER));
     return users;
   }
 }

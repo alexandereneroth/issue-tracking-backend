@@ -1,5 +1,6 @@
 package nu.jixa.its.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Iterator;
 import nu.jixa.its.model.Issue;
@@ -141,5 +142,10 @@ public class WorkItemITSRepositoryImpl implements WorkItemITSRepository {
   @Override
   public Collection<WorkItem> getWorkItemsWithDescriptionLike(String descriptionLike) {
     return workItemRepository.findWorkItemsWithDescriptionLike(descriptionLike);
+  }
+
+  @Override
+  public Collection<WorkItem> getWorkItemsCompletedBetween(LocalDateTime from, LocalDateTime to) {
+    return workItemRepository.findByCompletedDateBetween(from,to);
   }
 }

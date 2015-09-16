@@ -22,11 +22,19 @@ public abstract class AbstractEntity<T> {
   @Column(name = "number", unique = true, nullable = false)
   protected Long number;
 
+/*  @JsonFormat(pattern = "yyyy-MM-dd HH:mm a")
+  @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)*/
   @CreatedDate
-  LocalDateTime createdDate;
+  //@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
+  @Column(name = "createdDate")
+  private LocalDateTime createdDate;
 
+/*  @JsonFormat(pattern = "yyyy-MM-dd HH:mm a")
+  @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)*/
   @LastModifiedDate
-  LocalDateTime modifiedDate;
+  //@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
+  @Column(name = "modifiedDate")
+  private LocalDateTime modifiedDate;
 
   protected AbstractEntity() {
   }

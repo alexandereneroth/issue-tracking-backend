@@ -1,5 +1,6 @@
 package nu.jixa.its;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
@@ -28,6 +29,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { InfrastructureConfig.class,
@@ -107,7 +109,7 @@ public class WorkItemRepositoryTest {
   @Test
   public void testCanFindByStatus() {
     ArrayList<WorkItem> itemsFromRepository =
-        (ArrayList) repository.getWorkItemsByStatus(Status.DONE);
+        (ArrayList) repository.getWorkItemsByStatus(Status.IN_PROGRESS);
     Set<WorkItem> itemsByStatusSet = HelperMethods.toHashSet(items);
     Set<WorkItem> itemsFromRepositorySet = HelperMethods.toHashSet(itemsFromRepository);
 
@@ -172,6 +174,22 @@ public class WorkItemRepositoryTest {
     } finally {
       repository.deleteTeam(team);
     }
+  }
+
+  @Test
+  public void canFindByCompletedDate(){
+    Long workItemId = 2043L;
+    WorkItem workItem = new WorkItem(workItemId, Status.IN_PROGRESS);
+
+    repository.addWorkItem(workItem);
+    repository.setWorkItemStatus(workItemId, Status.DONE);
+
+    WorkItem inRepository = repository.getWorkItem(workItemId);
+    assertThat(inRepository.getStatus(), is(Status.DONE));
+
+    Collection<WorkItem> workItemsCompletedBetween = repository.getWorkItemsCompletedBetween(
+        LocalDateTime.of(2014,01,01,01,01), LocalDateTime.of(2016,01,01,01,01));
+    assertThat(workItemsCompletedBetween.size(), is(1));
   }
 
   @Test

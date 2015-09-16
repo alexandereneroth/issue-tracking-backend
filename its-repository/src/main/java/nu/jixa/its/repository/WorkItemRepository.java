@@ -1,5 +1,6 @@
 package nu.jixa.its.repository;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import nu.jixa.its.model.Status;
 import nu.jixa.its.model.User;
@@ -23,4 +24,6 @@ public interface WorkItemRepository extends CrudRepository<WorkItem, Long> {
 
   @Query("select w from WorkItem w where w.issue is not null")
   Collection<WorkItem> findAllWorkItemsWithIssue();
+
+  Collection<WorkItem> findByCompletedDateBetween(LocalDateTime from, LocalDateTime to);
 }

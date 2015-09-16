@@ -18,7 +18,7 @@ public class UserJsonSerializer extends JsonSerializer<User> {
   };
 
   @Override public void serialize(User user, JsonGenerator jsonGenerator,
-      SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
+      SerializerProvider serializerProvider) throws IOException {
 
     depth.set(depth.get() + 1);
     try {

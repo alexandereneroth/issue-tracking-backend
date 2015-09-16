@@ -30,7 +30,7 @@ public class UserTeamRepositoryTest {
 
   @Test
   public void canAddUserToTeam() {
-    User user = HelperMethods.generateSimpleUser(userNumber);
+    User user = HelperMethods.newSimpleUser(userNumber);
     Team team = new Team(teamNumber);
 
     repository.addTeam(team);
@@ -50,7 +50,7 @@ public class UserTeamRepositoryTest {
 
   @Test
   public void testAddUserToTeamWithNumber() {
-    User user = HelperMethods.generateSimpleUser(userNumber);
+    User user = HelperMethods.newSimpleUser(userNumber);
     Team team = new Team(teamNumber);
 
     repository.addUser(user);
@@ -69,8 +69,8 @@ public class UserTeamRepositoryTest {
 
   @Test
   public void canGetUserByTeam() {
-    User user = HelperMethods.generateSimpleUser(userNumber);
-    User user2 = HelperMethods.generateSimpleUser(userNumber2);
+    User user = HelperMethods.newSimpleUser(userNumber);
+    User user2 = HelperMethods.newSimpleUser(userNumber2);
     Team team = new Team(teamNumber);
 
     repository.addUser(user);

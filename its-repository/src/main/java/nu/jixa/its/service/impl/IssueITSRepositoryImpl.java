@@ -81,10 +81,7 @@ public class IssueITSRepositoryImpl implements IssueITSRepository {
   @Override
   public boolean issueExists(Issue issue) {
     Issue issueInRepository = issueRepository.findByNumber(issue.getNumber());
-    if (issueInRepository == null) {
-      return false;
-    }
-    return true;
+    return issueInRepository != null;
   }
 
 }

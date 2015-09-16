@@ -1,6 +1,8 @@
 package nu.jixa.its.web.endpoint;
 
 import java.net.URI;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.Collection;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -31,6 +33,7 @@ import org.springframework.stereotype.Component;
 public class WorkItemEndpoint {
 
   private static final String NO_WORKITEM_WITH_NUMBER = "No workItem with number: ";
+  private static final String NO_MATCHES_FOR_QUERY = "The query gave no matches in the repository.";
   private static final String BAD_REQUEST_NULL_OR_INVALID =
       "Null or Invalid JSON Data in Request Body";
   private static final String BAD_REQUEST_MISMATCH_BETWEEN_PATH_AND_USER =
@@ -59,35 +62,48 @@ public class WorkItemEndpoint {
 
   @GET
   public Response getWorkItemsByQuery(
-      @QueryParam("description_contains") @DefaultValue("") final String descriptionSubstring,
-      @QueryParam("has_issue") @DefaultValue("") final String hasIssue,
-      @QueryParam("status") @DefaultValue("") final String statusString) {
+      @QueryParam("description_contains") @DefaultValue("") final String descriptionContainsQuery,
+      @QueryParam("has_issue") @DefaultValue("") final String hasIssueQuery,
+      @QueryParam("status") @DefaultValue("") final String statusQuery,
+      @QueryParam("completed_time_from") @DefaultValue("") String completedTimeFromQuery,
+      @QueryParam("completed_time_to") @DefaultValue("") String completedTimeToQuery) {
 
-    if (!descriptionSubstring.isEmpty()) {
-      return getByByDescriptionQuery(descriptionSubstring);
+    if (queryEntered(descriptionContainsQuery)) {
+      return getByDescriptionContains(descriptionContainsQuery);
     }
-    if (hasIssue.equals("true")) {
-      return getByIssueQuery();
+    if (hasIssueQuery.equals("true")) {
+      return getByIssue();
     }
-    if (!statusString.isEmpty()) {
-      return getByStatusStringQuery(statusString);
+    if (queryEntered(statusQuery)) {
+      return getByStatus(statusQuery);
+    }
+    if (queryEntered(completedTimeFromQuery) && queryEntered(completedTimeToQuery)) {
+      return getByCompletedBetween(completedTimeFromQuery, completedTimeToQuery);
     }
     // If no queryParam is entered return all WorkItems
-    return getByByDescriptionQuery("");
+    return getByDescriptionContains("");
+  }
+
+  private <T> boolean queryEntered(T query) {
+    if (query == null) {
+      return false;
+    }
+    if (query instanceof String) {
+      return !((String) query).isEmpty();
+    }
+    return true;
   }
 
   @POST
   public Response createWorkItem(final WorkItem workItem) throws IllegalAccessException {
     if (workItem == null) {
-      return Response.status(Response.Status.BAD_REQUEST)
-          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
+      return badRequestResponse();
     }
 
     try {
       itsRepository.addWorkItem(workItem);
     } catch (ITSRepositoryException e) {
-      return Response.status(Response.Status.BAD_REQUEST)
-          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
+      return badRequestResponse();
     }
 
     final URI location =
@@ -110,8 +126,7 @@ public class WorkItemEndpoint {
     try {
       itsRepository.updateWorkItem(workItem);
     } catch (ITSRepositoryException e) {
-      return Response.status(Response.Status.BAD_REQUEST)
-          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
+      return badRequestResponse();
     }
     final URI location =
         uriInfo.getAbsolutePathBuilder().path(workItem.getNumber().toString()).build();
@@ -121,21 +136,29 @@ public class WorkItemEndpoint {
   @PUT
   @Path("{workItemNumber}/status")
   public Response updateWorkItemStatus(@PathParam("workItemNumber") final long workItemNumber,
-      final WorkItem newWorkItem) {
+      final String statusString) {
 
-    if (newWorkItem.getStatus().equals(Status.DONE)
-        || newWorkItem.getStatus().equals(Status.ON_BACKLOG)
-        || newWorkItem.getStatus().equals(Status.IN_PROGRESS)) {
-      try {
-        itsRepository.setWorkItemStatus(workItemNumber, newWorkItem.getStatus());
-        return Response.status(Response.Status.NO_CONTENT).build();
-      } catch (ITSRepositoryException e) {
-        return Response.status(Response.Status.NOT_FOUND)
-            .entity(e.getMessage()).build();
-      }
-    } else {
-      return Response.status(Response.Status.BAD_REQUEST)
-          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
+    Status status;
+    switch (statusString.toLowerCase()) {
+      case "on_backlog":
+        status = Status.ON_BACKLOG;
+        break;
+      case "in_progress":
+        status = Status.IN_PROGRESS;
+        break;
+      case "done":
+        status = Status.DONE;
+        break;
+      default:
+        return badRequestResponse();
+    }
+
+    try {
+      itsRepository.setWorkItemStatus(workItemNumber, status);
+      return Response.status(Response.Status.NO_CONTENT).build();
+    } catch (ITSRepositoryException e) {
+      return Response.status(Response.Status.NOT_FOUND)
+          .entity(e.getMessage()).build();
     }
   }
 
@@ -151,12 +174,11 @@ public class WorkItemEndpoint {
     return Response.noContent().build();
   }
 
-  private Response getByStatusStringQuery(final String statusString) {
+  private Response getByStatus(final String statusString) {
     Status status = getStatusByString(statusString);
 
     if (statusString.isEmpty() || status == null) {
-      return Response.status(Response.Status.BAD_REQUEST)
-          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
+      return badRequestResponse();
     }
 
     Collection<WorkItem> workItems = itsRepository.getWorkItemsByStatus(status);
@@ -167,7 +189,7 @@ public class WorkItemEndpoint {
     }
   }
 
-  private Response getByIssueQuery() {
+  private Response getByIssue() {
     Collection<WorkItem> workItems = itsRepository.getWorkItemsWithIssue();
     if (workItems.isEmpty()) {
       return Response.noContent().build();
@@ -176,14 +198,29 @@ public class WorkItemEndpoint {
     }
   }
 
-  private Response getByByDescriptionQuery(final String descriptionSubstring) {
+  private Response getByDescriptionContains(final String descriptionSubstring) {
     try {
       Collection<WorkItem> workItems =
           itsRepository.getWorkItemsWithDescriptionLike(descriptionSubstring);
       return Response.ok(workItems).build();
     } catch (ITSRepositoryException e) {
-      return Response.status(Response.Status.NOT_FOUND)
-          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
+      return badRequestResponse();
+    }
+  }
+
+  private Response getByCompletedBetween(String completedTimeFromString,
+      String completedTimeToString) {
+    try {
+      LocalDateTime completedTimeFrom = LocalDateTime.parse(completedTimeFromString);
+      LocalDateTime completedTimeTo = LocalDateTime.parse(completedTimeToString);
+
+      Collection<WorkItem> workItems =
+          itsRepository.getWorkItemsCompletedBetween(completedTimeFrom, completedTimeTo);
+
+      return Response.ok(workItems).build();
+
+    } catch (ITSRepositoryException | DateTimeParseException e) {
+      return badRequestResponse(e);
     }
   }
 
@@ -197,5 +234,21 @@ public class WorkItemEndpoint {
         return Status.DONE;
     }
     return null;
+  }
+
+  private Response badRequestResponse() {
+    return badRequestResponse(BAD_REQUEST_NULL_OR_INVALID);
+  }
+
+  private Response badRequestResponse(Exception e) {
+    return badRequestResponse(e.getMessage());
+  }
+
+  private Response badRequestResponse(String message) {
+    return response(Response.Status.BAD_REQUEST, message);
+  }
+
+  private Response response(Response.Status status, String message) {
+    return Response.status(status).entity(message).build();
   }
 }

@@ -1,5 +1,6 @@
 package nu.jixa.its.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -78,6 +79,11 @@ public class ITSRepositoryImpl implements ITSRepository {
 
   @Override public Collection<WorkItem> getWorkItemsWithDescriptionLike(String descriptionLike) {
     return workItemITSRepository.getWorkItemsWithDescriptionLike(descriptionLike);
+  }
+
+  @Override
+  public Collection<WorkItem> getWorkItemsCompletedBetween(LocalDateTime from, LocalDateTime to) {
+    return workItemITSRepository.getWorkItemsCompletedBetween(from ,to);
   }
 
   @Override public WorkItem getWorkItem(Long workItemNumber) {

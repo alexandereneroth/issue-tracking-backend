@@ -1,5 +1,6 @@
 package nu.jixa.its.service;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import nu.jixa.its.model.Issue;
 import nu.jixa.its.model.Status;
@@ -27,6 +28,8 @@ public interface ITSRepository {
   Collection<WorkItem> getWorkItemsWithIssue();
 
   Collection<WorkItem> getWorkItemsWithDescriptionLike(String descriptionLike);
+
+  Collection<WorkItem> getWorkItemsCompletedBetween(LocalDateTime from, LocalDateTime to);
 
   WorkItem getWorkItem(Long workItemNumber);
 

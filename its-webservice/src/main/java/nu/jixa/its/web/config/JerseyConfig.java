@@ -34,4 +34,5 @@ public class JerseyConfig extends ResourceConfig {
     register(TeamsEndpoint.class);
     register(IssueEndpoint.class);
   }
+
 }
