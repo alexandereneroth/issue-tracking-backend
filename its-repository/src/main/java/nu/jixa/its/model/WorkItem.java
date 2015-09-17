@@ -2,11 +2,10 @@ package nu.jixa.its.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.internal.NotNull;
-import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -15,7 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-//import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+import nu.jixa.its.model.exception.RepositoryModelException;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
@@ -26,11 +25,10 @@ public class WorkItem extends AbstractEntity<WorkItem> {
   @Column(name = "status", nullable = false)
   private Status status;
 
-  /*@JsonFormat(pattern="yyyy-MM-dd HH:mm a")
-  @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)*/
-  //@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
+  @JsonFormat(pattern="yyyy-MM-dd HH:mm")
+  @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
   @Column(name = "completedDate")
-  private LocalDateTime completedDate;
+  private Date completedDate;
 
   @Column(name = "description")
   private String description;
@@ -39,7 +37,6 @@ public class WorkItem extends AbstractEntity<WorkItem> {
   @JoinColumn
   private Issue issue;
 
-  //@JsonSerialize(using = SimpleUserSerializer.class)
   @ManyToMany(fetch = FetchType.EAGER, mappedBy = "workItems")
   Collection<User> users;
 
@@ -65,14 +62,14 @@ public class WorkItem extends AbstractEntity<WorkItem> {
   }
 
   public void setStatus(@NotNull final Status status) {
-    ModelUtil.throwExceptionIfArgIsNull(status, "status");
+    Util.throwExceptionIfArgIsNull(status, "status");
     this.status = status;
     if (status == Status.DONE) {
-      completedDate = LocalDateTime.now();
+      completedDate = new Date();// it gets initalized with the current date/time
     }
   }
 
-  public LocalDateTime getCompletedDate() {
+  public Date getCompletedDate() {
     return completedDate;
   }
 
@@ -89,7 +86,7 @@ public class WorkItem extends AbstractEntity<WorkItem> {
   }
 
   public void setDescription(String description) {
-    ModelUtil.throwExceptionIfArgIsNull(description, "description");
+    Util.throwExceptionIfArgIsNull(description, "description");
     this.description = description;
   }
 

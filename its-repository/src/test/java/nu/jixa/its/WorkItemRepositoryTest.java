@@ -47,13 +47,13 @@ public class WorkItemRepositoryTest {
 
   @Before
   public void before() {
-    addUsersToRepository((ArrayList) HelperMethods.generate3Users());
-    WorkItem item = HelperMethods.generateSimpleWorkItem(testWorkitemNr);
+    addUsersToRepository((ArrayList) Util.generate3Users());
+    WorkItem item = Util.generateSimpleWorkItem(testWorkitemNr);
     repository.addWorkItem(item);
     WorkItem workItemInRepoAfterAdd = repository.getWorkItem(item.getNumber());
     assertNotNull(item);
     assertEquals(item, workItemInRepoAfterAdd);
-    items = (ArrayList) HelperMethods.generateComplexWorkItems();
+    items = (ArrayList) Util.generateComplexWorkItems();
     addWorkItemsToRepository(items);
   }
 
@@ -63,13 +63,13 @@ public class WorkItemRepositoryTest {
     assertNotNull(workItemInRepoAfterAdd);
     repository.removeWorkItem(testWorkitemNr);
     deleteWorkItemsFromRepository(items);
-    deleteUsersFromRepository((ArrayList) HelperMethods.generate3Users());
+    deleteUsersFromRepository((ArrayList) Util.generate3Users());
   }
 
   @Test
   public void testSaveAndDelete() {
     Long id = 999L;
-    WorkItem item = HelperMethods.generateSimpleWorkItem(id);
+    WorkItem item = Util.generateSimpleWorkItem(id);
     repository.addWorkItem(item);
     WorkItem workItemInRepoAfterAdd = repository.getWorkItem(item.getNumber());
 
@@ -89,7 +89,7 @@ public class WorkItemRepositoryTest {
     Issue issue = new Issue(14L);
     Collection<User> users = new ArrayList();
 
-    User userFromRepository = repository.getUser(HelperMethods.USER_NUMBER);
+    User userFromRepository = repository.getUser(Util.USER_NUMBER);
     users.add(userFromRepository);
     WorkItem itemInRepository = repository.getWorkItem(testWorkitemNr);
 
@@ -98,11 +98,11 @@ public class WorkItemRepositoryTest {
     itemInRepository.setIssue(issue);
     itemInRepository.setUsers(users);
     WorkItem updatedItem = repository.updateWorkItem(itemInRepository);
-    Set<User> usersInRepoSet = HelperMethods.toHashSet(itemInRepository.getUsers());
-    Set<User> usersAfterUpdateSet = HelperMethods.toHashSet(updatedItem.getUsers());
+    Set<User> usersInRepoSet = Util.toHashSet(itemInRepository.getUsers());
+    Set<User> usersAfterUpdateSet = Util.toHashSet(updatedItem.getUsers());
 
     assertNotNull(updatedItem);
-    assert (HelperMethods.isEqualSet(usersInRepoSet, usersAfterUpdateSet));
+    assert (Util.isEqualSet(usersInRepoSet, usersAfterUpdateSet));
     assertEquals(itemInRepository, updatedItem);
   }
 
@@ -110,10 +110,10 @@ public class WorkItemRepositoryTest {
   public void testCanFindByStatus() {
     ArrayList<WorkItem> itemsFromRepository =
         (ArrayList) repository.getWorkItemsByStatus(Status.IN_PROGRESS);
-    Set<WorkItem> itemsByStatusSet = HelperMethods.toHashSet(items);
-    Set<WorkItem> itemsFromRepositorySet = HelperMethods.toHashSet(itemsFromRepository);
+    Set<WorkItem> itemsByStatusSet = Util.toHashSet(items);
+    Set<WorkItem> itemsFromRepositorySet = Util.toHashSet(itemsFromRepository);
 
-    assert (HelperMethods.isEqualSet(itemsByStatusSet, itemsFromRepositorySet));
+    assert (Util.isEqualSet(itemsByStatusSet, itemsFromRepositorySet));
   }
 
   @Test
@@ -129,13 +129,13 @@ public class WorkItemRepositoryTest {
   @Test
   public void testCanFindByUser() {
 
-    User user = repository.getUser(HelperMethods.USER_NUMBER);
-    ArrayList<WorkItem> workItemList = HelperMethods.workItems3List;
+    User user = repository.getUser(Util.USER_NUMBER);
+    ArrayList<WorkItem> workItemList = Util.workItems3List;
     for (WorkItem workItem : workItemList) {
       repository.addWorkItemToUser(user.getNumber(), workItem.getNumber());
     }
     ArrayList<WorkItem> workItemsByUser =
-        (ArrayList) repository.getWorkItemsByUser(HelperMethods.USER_NUMBER);
+        (ArrayList) repository.getWorkItemsByUser(Util.USER_NUMBER);
 
     assertNotNull(workItemsByUser);
     assertEquals(workItemsByUser.size(), workItemList.size());
@@ -152,14 +152,14 @@ public class WorkItemRepositoryTest {
   @Test
   public void testCanFindByTeam() {
 
-    User user = repository.getUser(HelperMethods.USER_NUMBER);
+    User user = repository.getUser(Util.USER_NUMBER);
     Team team = new Team(222L);
     repository.addTeam(team);
     try {
       user.joinTeam(team);
       repository.updateUser(user);
       assertNotNull(repository.getTeam(team.getNumber()));
-      WorkItem workItem = repository.getWorkItem(HelperMethods.WORKITEMNUMBER);
+      WorkItem workItem = repository.getWorkItem(Util.WORKITEMNUMBER);
 
       ArrayList<User> users = (ArrayList) repository.getUsersByTeam(222L);
       assertNotNull(users);
@@ -187,15 +187,16 @@ public class WorkItemRepositoryTest {
     WorkItem inRepository = repository.getWorkItem(workItemId);
     assertThat(inRepository.getStatus(), is(Status.DONE));
 
+
     Collection<WorkItem> workItemsCompletedBetween = repository.getWorkItemsCompletedBetween(
-        LocalDateTime.of(2014,01,01,01,01), LocalDateTime.of(2016,01,01,01,01));
+        Util.newDate(2014,01,01,01,01), Util.newDate(2016,01,01,01,01));
     assertThat(workItemsCompletedBetween.size(), is(1));
   }
 
   @Test
   public void canUpdateIssue() {
 
-    WorkItem workItemFromRepo = repository.getWorkItem(HelperMethods.WORKITEMNUMBER);
+    WorkItem workItemFromRepo = repository.getWorkItem(Util.WORKITEMNUMBER);
     Long issueNumber = 2005L;
     String issueStringBeforeUpdate = "BEFORE UPDATE";
     String issueStringAfterUpdate = "AFTER UPDATE";

@@ -60,7 +60,7 @@ public class User extends AbstractEntity<User> {
     argsWithNames.put(firstname, "firstname");
     argsWithNames.put(lastname, "lastname");
 
-    ModelUtil.throwExceptionIfArgIsNull(argsWithNames);
+    Util.throwExceptionIfArgIsNull(argsWithNames);
 
     this.number = number;
     this.username = username;
@@ -73,7 +73,7 @@ public class User extends AbstractEntity<User> {
   }
 
   public void setUsername(@NotNull final String username) {
-    ModelUtil.throwExceptionIfArgIsNull(username, "username");
+    Util.throwExceptionIfArgIsNull(username, "username");
     this.username = username;
   }
 
@@ -82,7 +82,7 @@ public class User extends AbstractEntity<User> {
   }
 
   public void setFirstname(@NotNull final String firstname) {
-    ModelUtil.throwExceptionIfArgIsNull(firstname, "firstname");
+    Util.throwExceptionIfArgIsNull(firstname, "firstname");
     this.firstname = firstname;
   }
 
@@ -91,7 +91,7 @@ public class User extends AbstractEntity<User> {
   }
 
   public void setLastname(@NotNull final String lastname) {
-    ModelUtil.throwExceptionIfArgIsNull(lastname, "lastname");
+    Util.throwExceptionIfArgIsNull(lastname, "lastname");
     this.lastname = lastname;
   }
 
@@ -112,7 +112,7 @@ public class User extends AbstractEntity<User> {
   }
 
   public void joinTeam(@NotNull final Team team) {
-    ModelUtil.throwExceptionIfArgIsNull(team, "team");
+    Util.throwExceptionIfArgIsNull(team, "team");
     this.team = team;
     team.addUser(this);
   }

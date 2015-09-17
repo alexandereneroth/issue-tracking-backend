@@ -1,7 +1,7 @@
 package nu.jixa.its.service;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Date;
 import nu.jixa.its.model.Status;
 import nu.jixa.its.model.WorkItem;
 
@@ -25,7 +25,7 @@ public interface WorkItemITSRepository {
 
   Collection<WorkItem> getWorkItemsWithDescriptionLike(String descriptionLike);
 
-  Collection<WorkItem> getWorkItemsCompletedBetween(LocalDateTime from, LocalDateTime to);
+  Collection<WorkItem> getWorkItemsCompletedBetween(Date from, Date to);
 
   Collection<WorkItem> getWorkItemsPage(int pageIndex, int pageSize);
 

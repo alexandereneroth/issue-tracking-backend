@@ -3,6 +3,7 @@ package nu.jixa.its.service.impl;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
+import java.util.Date;
 import nu.jixa.its.model.Issue;
 import nu.jixa.its.model.Status;
 import nu.jixa.its.model.Team;
@@ -73,7 +74,7 @@ public class ITSRepositoryImpl implements ITSRepository {
   }
 
   @Override
-  public Collection<WorkItem> getWorkItemsCompletedBetween(LocalDateTime from, LocalDateTime to) {
+  public Collection<WorkItem> getWorkItemsCompletedBetween(Date from, Date to) {
     return workItemITSRepository.getWorkItemsCompletedBetween(from, to);
   }
 

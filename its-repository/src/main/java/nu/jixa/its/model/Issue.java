@@ -19,12 +19,12 @@ public class Issue extends AbstractEntity<Issue> {
   }
 
   public Issue(@NotNull final Long number) {
-    ModelUtil.throwExceptionIfArgIsNull(number, "number");
+    Util.throwExceptionIfArgIsNull(number, "number");
     this.number = number;
   }
 
   public Issue(@NotNull final Long number, final String string) {
-    ModelUtil.throwExceptionIfArgIsNull(number, "number");
+    Util.throwExceptionIfArgIsNull(number, "number");
     this.number = number;
     this.string = string;
   }

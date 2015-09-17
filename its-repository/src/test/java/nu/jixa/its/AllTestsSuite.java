@@ -1,13 +1,14 @@
 package nu.jixa.its;
 
+import nu.jixa.its.model.ModelUtilTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /*
-
-FUNKTIONSKRAV
  ____________________________________________________
-| Location  | Requirement                           |
+| FUNKTIONSKRAV                                      |
+|____________________________________________________|
+| Location  | Requirement                            |
 USER
 ✓User       | Skapa en User
 ✓User       | Uppdatera en User
@@ -31,13 +32,14 @@ WORKITEM
 ✓WorkItem   | Hämta alla work item baserat på status
 ✓WorkItem   | Hämta alla work item för ett Team
 ✓WorkItem   | Hämta alla work item för en User
-✓WorkItem (run by itself)  | Söka efter work item som innehåller en viss text i sin beskrivning
+✓WorkItem   | Söka efter work item som innehåller en viss text i sin beskrivning
 
 Issue
 ✓WorkItem   | Skapa en Issue
 ✓WorkItem   | Uppdatera en Issue
 ✓WorkItem   | Lägga till en Issue till en work item
 ✓WorkItem   | Hämta alla work item som har en Issue
+____________|________________________________________|
 */
 
 @RunWith(Suite.class)

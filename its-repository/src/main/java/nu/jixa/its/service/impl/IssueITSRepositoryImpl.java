@@ -4,7 +4,6 @@ import java.util.Collection;
 import nu.jixa.its.model.Issue;
 import nu.jixa.its.model.WorkItem;
 import nu.jixa.its.repository.IssueRepository;
-import nu.jixa.its.repository.RepositoryUtil;
 import nu.jixa.its.service.exception.ITSRepositoryException;
 import nu.jixa.its.service.IssueITSRepository;
 import nu.jixa.its.service.WorkItemITSRepository;
@@ -34,7 +33,7 @@ public class IssueITSRepositoryImpl implements IssueITSRepository {
   public Issue updateIssue(Issue issue) {
     Issue issueInRepository = issueRepository.findByNumber(issue.getNumber());
 
-    RepositoryUtil.throwExceptionIfNull(issueInRepository,
+    Util.throwExceptionIfNull(issueInRepository,
         "Could not update issue: issue doesn't exist");
     issueInRepository.copyFields(issue);
     try {
@@ -71,17 +70,19 @@ public class IssueITSRepositoryImpl implements IssueITSRepository {
       throw new ITSRepositoryException("Could not get issues: invalid pageIndex or pageSize");
     }
     Page<Issue> issuesPage = issueRepository.findAll(new PageRequest(pageIndex,pageSize));
-    return RepositoryUtil.iterableToArrayList(issuesPage);
+    return Util.iterableToArrayList(issuesPage);
   }
 
   @Override
   public WorkItem addIssueToWorkItem(Long workItemNumber, Long issueNumber) {
     Issue issue = getIssue(issueNumber);
-    RepositoryUtil.throwExceptionIfNull(issue,
+    Util.throwExceptionIfNull(issue,
         "Could not add issue to workitem: issue with number " + issueNumber + " doesn't exist");
     WorkItem workItem = workItemITSRepository.getWorkItem(workItemNumber);
-    RepositoryUtil.throwExceptionIfNull(workItem,
-        "Could not add issue to workitem: workItem with number " + workItemNumber + " doesn't exist");
+    Util.throwExceptionIfNull(workItem,
+        "Could not add issue to workitem: workItem with number "
+            + workItemNumber
+            + " doesn't exist");
     workItem.setIssue(issue);
     try {
       return workItemITSRepository.updateWorkItem(workItem);

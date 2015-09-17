@@ -1,9 +1,11 @@
 package nu.jixa.its.web.endpoint;
 
 import java.net.URI;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -208,14 +210,16 @@ public class WorkItemEndpoint {
   private Response getByCompletedBetween(String completedTimeFromString,
       String completedTimeToString) {
     try {
-      LocalDateTime completedTimeFrom = LocalDateTime.parse(completedTimeFromString);
-      LocalDateTime completedTimeTo = LocalDateTime.parse(completedTimeToString);
+
+      DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH:mm");
+      Date completedTimeFrom = formatter.parse(completedTimeFromString);
+      Date completedTimeTo = formatter.parse(completedTimeToString);
 
       Collection<WorkItem> workItems =
           itsRepository.getWorkItemsCompletedBetween(completedTimeFrom, completedTimeTo);
 
       return Response.ok(workItems).build();
-    } catch (ITSRepositoryException | DateTimeParseException e) {
+    } catch (ITSRepositoryException | ParseException e) {
       return Util.badRequestResponse(e);
     }
   }

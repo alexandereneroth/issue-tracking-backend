@@ -141,11 +141,11 @@ public class TeamRepositoryTest {
     repository.addTeam(tmpTeam2);
     repository.addTeam(tmpTeam3);
 
-    Set<Team> allTeamsInRepo = HelperMethods.toHashSet(repository.getAllTeams());
+    Set<Team> allTeamsInRepo = Util.toHashSet(repository.getAllTeams());
     Set<Team> allTeams =
-        HelperMethods.toHashSet(new Team[] { testTeam, tmpTeam1, tmpTeam2, tmpTeam3 });
+        Util.toHashSet(new Team[] { testTeam, tmpTeam1, tmpTeam2, tmpTeam3 });
 
-    assert (HelperMethods.isEqualSet(allTeams, allTeamsInRepo));
+    assert (Util.isEqualSet(allTeams, allTeamsInRepo));
   }
 }
 

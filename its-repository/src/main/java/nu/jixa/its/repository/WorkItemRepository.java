@@ -1,12 +1,10 @@
 package nu.jixa.its.repository;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Date;
 import nu.jixa.its.model.Status;
-import nu.jixa.its.model.User;
 import nu.jixa.its.model.WorkItem;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface WorkItemRepository extends PagingAndSortingRepository<WorkItem, Long> {
@@ -26,5 +24,5 @@ public interface WorkItemRepository extends PagingAndSortingRepository<WorkItem,
   @Query("select w from WorkItem w where w.issue is not null")
   Collection<WorkItem> findAllWorkItemsWithIssue();
 
-  Collection<WorkItem> findByCompletedDateBetween(LocalDateTime from, LocalDateTime to);
+  Collection<WorkItem> findByCompletedDateBetween(Date from, Date to);
 }

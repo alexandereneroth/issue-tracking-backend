@@ -1,8 +1,9 @@
 package nu.jixa.its.model;
 
 import java.util.Map;
+import nu.jixa.its.model.exception.RepositoryModelException;
 
-public final class ModelUtil {
+final class Util {
 
   public static <T extends Object> void throwExceptionIfArgIsNull(T arg, String name) {
     if (arg == null) {

@@ -1,18 +1,17 @@
 package nu.jixa.its.service.impl;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import nu.jixa.its.model.Issue;
 import nu.jixa.its.model.Status;
 import nu.jixa.its.model.User;
 import nu.jixa.its.model.WorkItem;
-import nu.jixa.its.repository.RepositoryUtil;
 import nu.jixa.its.repository.UserRepository;
 import nu.jixa.its.repository.WorkItemRepository;
-import nu.jixa.its.service.exception.ITSRepositoryException;
 import nu.jixa.its.service.IssueITSRepository;
 import nu.jixa.its.service.WorkItemITSRepository;
+import nu.jixa.its.service.exception.ITSRepositoryException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -33,7 +32,7 @@ public class WorkItemITSRepositoryImpl implements WorkItemITSRepository {
   @Override
   public WorkItem updateWorkItem(WorkItem updatedWorkItem) {
     WorkItem workItemInRepository = getWorkItem(updatedWorkItem.getNumber());
-    RepositoryUtil.throwExceptionIfNull(workItemInRepository,
+    Util.throwExceptionIfNull(workItemInRepository,
         "Could not update workItem: workItem with number "
             + updatedWorkItem.getNumber()
             + " doesn't exist");
@@ -63,7 +62,7 @@ public class WorkItemITSRepositoryImpl implements WorkItemITSRepository {
   @Override
   public WorkItem removeWorkItem(Long workItemNumber) {
     WorkItem deleteItem = getWorkItem(workItemNumber);
-    RepositoryUtil.throwExceptionIfNull(deleteItem,
+    Util.throwExceptionIfNull(deleteItem,
         "Could not remove workItem: workItem with number "
             + deleteItem.getNumber()
             + " doesn't exist");
@@ -81,7 +80,7 @@ public class WorkItemITSRepositoryImpl implements WorkItemITSRepository {
   @Transactional
   private void removeWorkItemFromItsUsers(WorkItem workItem) {
     WorkItem workItemFromDB = workItemRepository.findByNumber(workItem.getNumber());
-    RepositoryUtil.throwExceptionIfNull(workItemFromDB,
+    Util.throwExceptionIfNull(workItemFromDB,
         "Could not remove work item from its users: workItem with number "
             + workItemFromDB.getNumber()
             + " doesn't exist in repository");
@@ -102,7 +101,7 @@ public class WorkItemITSRepositoryImpl implements WorkItemITSRepository {
   @Override
   public WorkItem getWorkItem(Long workItemNumber) {
     WorkItem workItemInRepository = workItemRepository.findByNumber(workItemNumber);
-    RepositoryUtil.throwExceptionIfNull(workItemInRepository,
+    Util.throwExceptionIfNull(workItemInRepository,
         "Could not find workItem: No item with number " + workItemNumber);
     return workItemInRepository;
   }
@@ -111,7 +110,7 @@ public class WorkItemITSRepositoryImpl implements WorkItemITSRepository {
   @Override
   public void setWorkItemStatus(Long workItemNumber, Status status) {
     WorkItem item = workItemRepository.findByNumber(workItemNumber);
-    RepositoryUtil.throwExceptionIfNull(item,
+    Util.throwExceptionIfNull(item,
         "Could not find workItem: No item with number " + workItemNumber);
     item.setStatus(status);
     try {
@@ -147,18 +146,22 @@ public class WorkItemITSRepositoryImpl implements WorkItemITSRepository {
   }
 
   @Override
-  public Collection<WorkItem> getWorkItemsCompletedBetween(LocalDateTime from, LocalDateTime to) {
+  public Collection<WorkItem> getWorkItemsCompletedBetween(Date from, Date to) {
+
+    if(from.compareTo(to) >= 0)
+    {
+      throw new ITSRepositoryException("Could not get all work items completed between the specified dates: The 'from'-date must be before the 'to'-date");
+    }
     return workItemRepository.findByCompletedDateBetween(from, to);
   }
 
   @Override
   public Collection<WorkItem> getWorkItemsPage(int pageIndex, int pageSize) {
 
-    if(pageIndex < 0 || pageSize < 1)
-    {
+    if (pageIndex < 0 || pageSize < 1) {
       throw new ITSRepositoryException("Could not get WorkItems: invalid page or pageSize");
     }
-    Page<WorkItem> workItemPage = workItemRepository.findAll(new PageRequest(pageIndex,pageSize));
-    return RepositoryUtil.iterableToArrayList(workItemPage);
+    Page<WorkItem> workItemPage = workItemRepository.findAll(new PageRequest(pageIndex, pageSize));
+    return Util.iterableToArrayList(workItemPage);
   }
 }

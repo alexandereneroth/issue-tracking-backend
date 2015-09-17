@@ -1,10 +1,10 @@
-package nu.jixa.its.repository;
+package nu.jixa.its.service.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import nu.jixa.its.service.exception.ITSRepositoryException;
 
-public final class RepositoryUtil {
+final class Util {
 
   public static <T extends Object> void throwExceptionIfNull(T arg,
       String message) {

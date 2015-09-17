@@ -24,11 +24,10 @@ public class Team extends AbstractEntity<Team> {
 
   @Override public void copyFields(Team other) {
     this.name = other.name;
-    //    this.users = other.users;
   }
 
   public Team(@NotNull final Long number) {
-    ModelUtil.throwExceptionIfArgIsNull(number, "number");
+    Util.throwExceptionIfArgIsNull(number, "number");
     this.number = number;
   }
 
@@ -42,12 +41,12 @@ public class Team extends AbstractEntity<Team> {
 
   // Users team membership is controlled from methods in the user class.
   protected void addUser(User user) {
-    ModelUtil.throwExceptionIfArgIsNull(user, "user");
+    Util.throwExceptionIfArgIsNull(user, "user");
     users.add(user);
   }
 
   protected void removeUser(User user) {
-    ModelUtil.throwExceptionIfArgIsNull(user, "user");
+    Util.throwExceptionIfArgIsNull(user, "user");
     users.remove(user);
   }
 

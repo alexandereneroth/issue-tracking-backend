@@ -1,7 +1,7 @@
 package nu.jixa.its.service;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Date;
 import nu.jixa.its.model.Issue;
 import nu.jixa.its.model.Status;
 import nu.jixa.its.model.Team;
@@ -11,6 +11,7 @@ import nu.jixa.its.model.WorkItem;
 public interface ITSRepository {
 
   // WorkItem
+
   WorkItem addWorkItem(WorkItem workItem);
 
   WorkItem updateWorkItem(WorkItem updatedWorkItem);
@@ -29,13 +30,14 @@ public interface ITSRepository {
 
   Collection<WorkItem> getWorkItemsWithDescriptionLike(String descriptionLike);
 
-  Collection<WorkItem> getWorkItemsCompletedBetween(LocalDateTime from, LocalDateTime to);
+  Collection<WorkItem> getWorkItemsCompletedBetween(Date from, Date to);
 
   Collection<WorkItem> getWorkItems(int pageIndex, int pageSize);
 
   WorkItem getWorkItem(Long workItemNumber);
 
   // User
+
   User addUser(User user);
 
   User updateUser(User user);
@@ -82,5 +84,4 @@ public interface ITSRepository {
   Issue updateIssue(Issue issue);
 
   boolean issueExists(Issue issue);
-
 }

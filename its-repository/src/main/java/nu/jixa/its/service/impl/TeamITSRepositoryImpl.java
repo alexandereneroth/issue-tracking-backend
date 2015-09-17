@@ -3,7 +3,6 @@ package nu.jixa.its.service.impl;
 import java.util.Iterator;
 import nu.jixa.its.model.Team;
 import nu.jixa.its.model.User;
-import nu.jixa.its.repository.RepositoryUtil;
 import nu.jixa.its.repository.TeamRepository;
 import nu.jixa.its.repository.UserRepository;
 import nu.jixa.its.service.TeamITSRepository;
@@ -69,7 +68,7 @@ public class TeamITSRepositoryImpl implements TeamITSRepository{
   @Override
   public Team deleteTeam(Long teamNumber) {
     Team teamToDelete = teamRepository.findByNumber(teamNumber);
-    RepositoryUtil.throwExceptionIfNull(teamToDelete,
+    Util.throwExceptionIfNull(teamToDelete,
         "Could not delete Team: No team with number " + teamNumber);
 
     Iterator<User> usersIterator = teamToDelete.getUsers().iterator();
@@ -90,7 +89,7 @@ public class TeamITSRepositoryImpl implements TeamITSRepository{
   @Override
   public Team getTeam(Long teamNumber) {
     Team team = teamRepository.findByNumber(teamNumber);
-    RepositoryUtil.throwExceptionIfNull(team,
+    Util.throwExceptionIfNull(team,
         "Could not find Team: No team with number " + teamNumber);
     return team;
   }

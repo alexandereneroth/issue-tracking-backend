@@ -5,7 +5,6 @@ import java.util.Iterator;
 import nu.jixa.its.model.Team;
 import nu.jixa.its.model.User;
 import nu.jixa.its.model.WorkItem;
-import nu.jixa.its.repository.RepositoryUtil;
 import nu.jixa.its.repository.TeamRepository;
 import nu.jixa.its.repository.UserRepository;
 import nu.jixa.its.repository.WorkItemRepository;
@@ -59,7 +58,7 @@ public class UserITSRepositoryImpl implements UserITSRepository {
   @Override
   public User deleteUser(Long userNumber) {
     User deletedUser = userRepository.findByNumber(userNumber);
-    RepositoryUtil.throwExceptionIfNull(deletedUser,
+    Util.throwExceptionIfNull(deletedUser,
         "Could not delete User: No user with number " + userNumber);
     if (deletedUser.getTeam() != null) {
       // Gotcha: References from other objects need to be cleared and saved to the database
@@ -137,7 +136,7 @@ public class UserITSRepositoryImpl implements UserITSRepository {
       throw new ITSRepositoryException("Could not get Users: invalid page or pageSize");
     }
     Page<User> userPage = userRepository.findAll(new PageRequest(pageIndex,pageSize));
-    return RepositoryUtil.iterableToArrayList(userPage);
+    return Util.iterableToArrayList(userPage);
   }
 
   @Override
@@ -145,9 +144,9 @@ public class UserITSRepositoryImpl implements UserITSRepository {
 
     WorkItem item = workItemITSRepository.getWorkItem(workItemId);
     User user = getUser(userId);
-    RepositoryUtil.throwExceptionIfNull(item,
+    Util.throwExceptionIfNull(item,
         "Could not find workItem: No workItem with number " + workItemId);
-    RepositoryUtil.throwExceptionIfNull(user,
+    Util.throwExceptionIfNull(user,
         "Could not find user: No user with number " + userId);
     user.addWorkItem(item);
     try {

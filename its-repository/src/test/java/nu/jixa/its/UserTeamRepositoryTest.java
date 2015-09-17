@@ -30,7 +30,7 @@ public class UserTeamRepositoryTest {
 
   @Test
   public void canAddUserToTeam() {
-    User user = HelperMethods.newSimpleUser(userNumber);
+    User user = Util.newSimpleUser(userNumber);
     Team team = new Team(teamNumber);
 
     repository.addTeam(team);
@@ -50,7 +50,7 @@ public class UserTeamRepositoryTest {
 
   @Test
   public void testAddUserToTeamWithNumber() {
-    User user = HelperMethods.newSimpleUser(userNumber);
+    User user = Util.newSimpleUser(userNumber);
     Team team = new Team(teamNumber);
 
     repository.addUser(user);
@@ -69,8 +69,8 @@ public class UserTeamRepositoryTest {
 
   @Test
   public void canGetUserByTeam() {
-    User user = HelperMethods.newSimpleUser(userNumber);
-    User user2 = HelperMethods.newSimpleUser(userNumber2);
+    User user = Util.newSimpleUser(userNumber);
+    User user2 = Util.newSimpleUser(userNumber2);
     Team team = new Team(teamNumber);
 
     repository.addUser(user);
@@ -91,10 +91,10 @@ public class UserTeamRepositoryTest {
 
     Iterable<User> iterableUsersInTeamInRepo = repository.getUsersByTeam(teamNumber);
 
-    Set<User> usersInTeamInRepo = HelperMethods.toHashSet(iterableUsersInTeamInRepo);
-    Set<User> usersInTeam = HelperMethods.toHashSet(new User[] { user, user2 });
+    Set<User> usersInTeamInRepo = Util.toHashSet(iterableUsersInTeamInRepo);
+    Set<User> usersInTeam = Util.toHashSet(new User[] { user, user2 });
 
-    assert (HelperMethods.isEqualSet(usersInTeam, usersInTeamInRepo));
+    assert (Util.isEqualSet(usersInTeam, usersInTeamInRepo));
 
     repository.deleteUser(userNumber);
     repository.deleteUser(userNumber2);

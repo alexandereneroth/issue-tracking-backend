@@ -1,10 +1,9 @@
-package nu.jixa.its;
+package nu.jixa.its.model;
 
 import java.util.HashMap;
 import nu.jixa.its.config.ITSRepositoryConfig;
 import nu.jixa.its.config.InfrastructureConfig;
-import nu.jixa.its.model.ModelUtil;
-import nu.jixa.its.model.RepositoryModelException;
+import nu.jixa.its.model.exception.RepositoryModelException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -26,7 +25,7 @@ public class ModelUtilTest {
     expectedException.expect(RepositoryModelException.class);
     expectedException.expectMessage("Null value not allowed");
     expectedException.expectMessage("number");
-    ModelUtil.throwExceptionIfArgIsNull(null, "number");
+    Util.throwExceptionIfArgIsNull(null, "number");
 
     expectedException.expect(RepositoryModelException.class);
     expectedException.expectMessage("Null value not allowed");
@@ -38,6 +37,6 @@ public class ModelUtilTest {
     argsWithNames.put("hans", "firstname");
     argsWithNames.put("olov", "lastname");
 
-    ModelUtil.throwExceptionIfArgIsNull(argsWithNames);
+    Util.throwExceptionIfArgIsNull(argsWithNames);
   }
 }

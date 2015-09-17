@@ -2,7 +2,10 @@ package nu.jixa.its;
 
 import com.sun.istack.internal.NotNull;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,7 +14,7 @@ import nu.jixa.its.model.Status;
 import nu.jixa.its.model.User;
 import nu.jixa.its.model.WorkItem;
 
-public final class HelperMethods {
+final class Util {
 
   public static User newSimpleUser(@NotNull final Long number) {
     return new User(number, "account" + number, "firstname" + number, "lastname" + number);
@@ -117,5 +120,11 @@ public final class HelperMethods {
     Collection<User> users = new ArrayList();
     users.add(newSimpleUser(USER_NUMBER));
     return users;
+  }
+
+  public static Date newDate(int year, int month, int day, int hour, int minute){
+    Calendar calendar2014 = new GregorianCalendar();
+    calendar2014.set(year,month,day,hour,minute);
+    return calendar2014.getTime();
   }
 }

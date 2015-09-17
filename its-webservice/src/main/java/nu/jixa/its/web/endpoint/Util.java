@@ -5,7 +5,7 @@ import javax.ws.rs.core.Response;
 /**
  * Common utility class for REST endpoints.
  */
-class Util {
+final class Util {
 
   public static final String BAD_REQUEST_NULL_OR_INVALID =
       "Null or Invalid JSON Data in Request Body";
