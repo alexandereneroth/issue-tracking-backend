@@ -78,8 +78,12 @@ public class ITSRepositoryImpl implements ITSRepository {
     return workItemITSRepository.getWorkItemsCompletedBetween(from, to);
   }
 
-  @Override public Collection<WorkItem> getWorkItems(int pageIndex, int pageSize) {
+  @Override public Collection<WorkItem> getWorkItemsPage(int pageIndex, int pageSize) {
     return workItemITSRepository.getWorkItemsPage(pageIndex, pageSize);
+  }
+
+  @Override public Collection<WorkItem> getWorkItems() {
+    return workItemITSRepository.getWorkItems();
   }
 
   @Override public WorkItem getWorkItem(Long workItemNumber) {

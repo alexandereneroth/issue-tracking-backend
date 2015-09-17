@@ -147,7 +147,6 @@ public class WorkItemITSRepositoryImpl implements WorkItemITSRepository {
 
   @Override
   public Collection<WorkItem> getWorkItemsCompletedBetween(Date from, Date to) {
-
     if(from.compareTo(to) >= 0)
     {
       throw new ITSRepositoryException("Could not get all work items completed between the specified dates: The 'from'-date must be before the 'to'-date");
@@ -157,11 +156,14 @@ public class WorkItemITSRepositoryImpl implements WorkItemITSRepository {
 
   @Override
   public Collection<WorkItem> getWorkItemsPage(int pageIndex, int pageSize) {
-
     if (pageIndex < 0 || pageSize < 1) {
       throw new ITSRepositoryException("Could not get WorkItems: invalid page or pageSize");
     }
     Page<WorkItem> workItemPage = workItemRepository.findAll(new PageRequest(pageIndex, pageSize));
     return Util.iterableToArrayList(workItemPage);
+  }
+
+  @Override public Collection<WorkItem> getWorkItems() {
+    return Util.iterableToArrayList(workItemRepository.findAll());
   }
 }

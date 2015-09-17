@@ -1,6 +1,5 @@
 package nu.jixa.its;
 
-import com.sun.istack.internal.NotNull;
 import java.util.Collection;
 import nu.jixa.its.config.ITSRepositoryConfig;
 import nu.jixa.its.config.InfrastructureConfig;
@@ -32,27 +31,26 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { InfrastructureConfig.class,
     ITSRepositoryConfig.class }, loader = AnnotationConfigContextLoader.class)
-//@DatabaseSetup("userData.xml")TODO try to use this when the other stuff works
 public class UserRepositoryTest {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
 
   @Autowired
-  ITSRepository repository;
+  private ITSRepository repository;
 
-  final Long testUserNumber = 10L;
-  final String testUserUsername = "Username";
-  final String testUserFirstname = "John";
-  final String testUserLastname = "Doe";
-  User testUser;
+  private final Long testUserNumber = 10L;
+  private final String testUserUsername = "Username";
+  private final String testUserFirstname = "John";
+  private final String testUserLastname = "Doe";
+  private User testUser;
 
-  final Long testTeamNumber = 256L;
-  Team testTeam;
+  private final Long testTeamNumber = 256L;
+  private Team testTeam;
 
-  final Long testWorkItemNumber = 1024L;
-  final Status testWorkItemStatus = Status.DONE;
-  WorkItem testWorkItem;
+  private final Long testWorkItemNumber = 1024L;
+  private final Status testWorkItemStatus = Status.DONE;
+  private WorkItem testWorkItem;
 
   @Before
   public void before() {
@@ -104,7 +102,6 @@ public class UserRepositoryTest {
 
   @Test
   public void canUpdate() {
-
     //update names
     User userToUpdate = new User(testUserNumber, "wa", "ta", "shi");
     repository.updateUser(userToUpdate);
@@ -196,22 +193,5 @@ public class UserRepositoryTest {
     expectedException.expect(ITSRepositoryException.class);
     expectedException.expectMessage("Could not add user");
     repository.addUser(userWithExistingNumber);
-  }
-
-/*  @Test //TODO implement, could not implement first try
-  public void updateShouldThrowExceptionOnTransientWorkItem(){
-    Long userNumber = 1003L;
-    User userWithTransientWorkItem = new User(userNumber,"Y","Y","Y");
-    repository.addUser(userWithTransientWorkItem);
-    WorkItem workItem = new WorkItem(24L,Status.ON_BACKLOG);
-    userWithTransientWorkItem.addWorkItem(workItem);
-
-    expectedException.expect(ITSRepositoryException.class);
-
-    repository.updateUser(userWithTransientWorkItem);
-  }*/
-
-  private User generateSimpleUser(@NotNull final Long number) {
-    return new User(number, "account" + number, "firstname" + number, "lastname" + number);
   }
 }

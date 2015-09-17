@@ -41,10 +41,8 @@ public class IssueEndpoint {
   private static final String BAD_REQUEST_MISMATCH_BETWEEN_PATH_AND_ISSUE =
       "Usernumber mismatch between path and new issue info";
 
-  //ADD
   @POST
   public Response createIssue(final Issue issue) throws IllegalAccessException {
-
     if (issue == null) {
       return Response.status(Response.Status.BAD_REQUEST)
           .entity(BAD_REQUEST_NULL_OR_INVALID).build();
@@ -60,7 +58,6 @@ public class IssueEndpoint {
     return Response.created(location).build();
   }
 
-  //UPDATE
   @PUT
   @Path("{issueNumber}")
   public Response updateIssue(@PathParam("issueNumber") final long issueNumber,

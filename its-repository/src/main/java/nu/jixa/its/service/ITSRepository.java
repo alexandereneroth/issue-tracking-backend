@@ -32,7 +32,9 @@ public interface ITSRepository {
 
   Collection<WorkItem> getWorkItemsCompletedBetween(Date from, Date to);
 
-  Collection<WorkItem> getWorkItems(int pageIndex, int pageSize);
+  Collection<WorkItem> getWorkItemsPage(int pageIndex, int pageSize);
+
+  Collection<WorkItem> getWorkItems();
 
   WorkItem getWorkItem(Long workItemNumber);
 

@@ -42,7 +42,7 @@ final class Util {
    * IllegalArgumentException.
    */
   public static <T> HashSet<T> toHashSet(Iterable<T> iterable) {
-    HashSet<T> newSet = new HashSet<T>();
+    HashSet<T> newSet = new HashSet<>();
     for (T item : iterable) {
       if (newSet.add(item) == false) {
         throw new IllegalArgumentException(
@@ -58,8 +58,8 @@ final class Util {
    */
   public static <T> HashSet<T> toHashSet(T[] items) {
     HashSet<T> newSet = new HashSet<>();
-    for (int i = 0; i < items.length; i++) {
-      if (newSet.add(items[i]) == false) {
+    for (T item : items) {
+      if (newSet.add(item) == false) {
         throw new IllegalArgumentException(
             "Cannot convert array to set: array contains duplicate elements");
       }
@@ -102,29 +102,16 @@ final class Util {
 
   public static Collection<User> generate3Users() {
 
-    Collection<User> users = new ArrayList();
+    Collection<User> users = new ArrayList<>();
     users.add(newSimpleUser(USER_NUMBER));
     users.add(newSimpleUser(12L));
     users.add(newSimpleUser(14L));
     return users;
   }
 
-  public static Collection<User> generate2Users() {
-    Collection<User> users = new ArrayList();
-    users.add(newSimpleUser(USER_NUMBER));
-    users.add(newSimpleUser(12L));
-    return users;
-  }
-
-  public static Collection<User> generate1Users() {
-    Collection<User> users = new ArrayList();
-    users.add(newSimpleUser(USER_NUMBER));
-    return users;
-  }
-
-  public static Date newDate(int year, int month, int day, int hour, int minute){
+  public static Date newDate(int year, int month, int day, int hour, int minute) {
     Calendar calendar2014 = new GregorianCalendar();
-    calendar2014.set(year,month,day,hour,minute);
+    calendar2014.set(year, month, day, hour, minute);
     return calendar2014.getTime();
   }
 }

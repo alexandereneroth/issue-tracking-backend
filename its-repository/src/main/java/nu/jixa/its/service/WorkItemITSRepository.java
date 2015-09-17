@@ -29,5 +29,8 @@ public interface WorkItemITSRepository {
 
   Collection<WorkItem> getWorkItemsPage(int pageIndex, int pageSize);
 
+  Collection<WorkItem> getWorkItems();
+
   WorkItem getWorkItem(Long workItemNumber);
+
 }

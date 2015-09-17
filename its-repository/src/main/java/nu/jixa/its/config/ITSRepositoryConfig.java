@@ -19,15 +19,19 @@ public class ITSRepositoryConfig {
   @Bean ITSRepository ITSRepository() {
     return new ITSRepositoryImpl();
   }
+
   @Bean UserITSRepository UserITSRepository() {
     return new UserITSRepositoryImpl();
   }
+
   @Bean WorkItemITSRepository WorkItemITSRepository() {
     return new WorkItemITSRepositoryImpl();
   }
+
   @Bean IssueITSRepository IssueITSRepository() {
     return new IssueITSRepositoryImpl();
   }
+
   @Bean TeamITSRepository TeamITSRepository() {
     return new TeamITSRepositoryImpl();
   }

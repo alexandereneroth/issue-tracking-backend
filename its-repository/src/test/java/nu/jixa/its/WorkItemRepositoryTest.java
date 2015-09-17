@@ -1,6 +1,5 @@
 package nu.jixa.its;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
@@ -29,7 +28,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { InfrastructureConfig.class,
@@ -85,7 +83,6 @@ public class WorkItemRepositoryTest {
 
   @Test
   public void testCanUpdateWorkItem() {
-
     Issue issue = new Issue(14L);
     Collection<User> users = new ArrayList();
 
@@ -128,7 +125,6 @@ public class WorkItemRepositoryTest {
 
   @Test
   public void testCanFindByUser() {
-
     User user = repository.getUser(Util.USER_NUMBER);
     ArrayList<WorkItem> workItemList = Util.workItems3List;
     for (WorkItem workItem : workItemList) {
@@ -143,7 +139,6 @@ public class WorkItemRepositoryTest {
 
   @Test
   public void testCanFindWithIssue() {
-
     Collection<WorkItem> workItem = repository.getWorkItemsWithIssue();
     assertThat(workItem.size(), is(3));
     //TODO test more
@@ -151,7 +146,6 @@ public class WorkItemRepositoryTest {
 
   @Test
   public void testCanFindByTeam() {
-
     User user = repository.getUser(Util.USER_NUMBER);
     Team team = new Team(222L);
     repository.addTeam(team);
@@ -177,7 +171,7 @@ public class WorkItemRepositoryTest {
   }
 
   @Test
-  public void canFindByCompletedDate(){
+  public void canFindByCompletedDate() {
     Long workItemId = 2043L;
     WorkItem workItem = new WorkItem(workItemId, Status.IN_PROGRESS);
 
@@ -187,15 +181,13 @@ public class WorkItemRepositoryTest {
     WorkItem inRepository = repository.getWorkItem(workItemId);
     assertThat(inRepository.getStatus(), is(Status.DONE));
 
-
     Collection<WorkItem> workItemsCompletedBetween = repository.getWorkItemsCompletedBetween(
-        Util.newDate(2014,01,01,01,01), Util.newDate(2016,01,01,01,01));
+        Util.newDate(2014, 01, 01, 01, 01), Util.newDate(2016, 01, 01, 01, 01));
     assertThat(workItemsCompletedBetween.size(), is(1));
   }
 
   @Test
   public void canUpdateIssue() {
-
     WorkItem workItemFromRepo = repository.getWorkItem(Util.WORKITEMNUMBER);
     Long issueNumber = 2005L;
     String issueStringBeforeUpdate = "BEFORE UPDATE";
@@ -237,7 +229,6 @@ public class WorkItemRepositoryTest {
   private void addUsersToRepository(ArrayList<User> users) {
     for (User user : users) {
       repository.addUser(user);
-      //assertNotNull(userRepository.getWorkItem(user.getNumber()));
     }
   }
 

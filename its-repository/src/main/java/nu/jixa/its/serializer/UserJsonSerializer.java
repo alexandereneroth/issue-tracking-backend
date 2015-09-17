@@ -1,7 +1,6 @@
 package nu.jixa.its.serializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import java.io.IOException;
@@ -19,13 +18,8 @@ public class UserJsonSerializer extends JsonSerializer<User> {
 
   @Override public void serialize(User user, JsonGenerator jsonGenerator,
       SerializerProvider serializerProvider) throws IOException {
-
     depth.set(depth.get() + 1);
     try {
-      //if (depth.get() > 2) {
-      //  jsonGenerator.writeNull();
-      //} else {
-
       jsonGenerator.writeStartObject();
       jsonGenerator.writeNumberField("number", user.getNumber());
       jsonGenerator.writeStringField("firstname", user.getFirstname());
@@ -43,8 +37,6 @@ public class UserJsonSerializer extends JsonSerializer<User> {
 
       jsonGenerator.writeEndObject();
 
-      return;
-      //}
     } catch (Exception ex) {
       ex.printStackTrace();
     }

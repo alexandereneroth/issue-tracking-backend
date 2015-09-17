@@ -130,7 +130,6 @@ public class UserITSRepositoryImpl implements UserITSRepository {
   }
 
   @Override public Collection<User> getUsersPage(int pageIndex, int pageSize) {
-
     if(pageIndex < 0 || pageSize < 1)
     {
       throw new ITSRepositoryException("Could not get Users: invalid page or pageSize");
@@ -141,7 +140,6 @@ public class UserITSRepositoryImpl implements UserITSRepository {
 
   @Override
   public void addWorkItemToUser(Long userId, Long workItemId) {
-
     WorkItem item = workItemITSRepository.getWorkItem(workItemId);
     User user = getUser(userId);
     Util.throwExceptionIfNull(item,

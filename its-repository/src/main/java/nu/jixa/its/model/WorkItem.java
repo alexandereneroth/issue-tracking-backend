@@ -25,7 +25,7 @@ public class WorkItem extends AbstractEntity<WorkItem> {
   @Column(name = "status", nullable = false)
   private Status status;
 
-  @JsonFormat(pattern="yyyy-MM-dd HH:mm")
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
   @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
   @Column(name = "completedDate")
   private Date completedDate;
@@ -38,7 +38,7 @@ public class WorkItem extends AbstractEntity<WorkItem> {
   private Issue issue;
 
   @ManyToMany(fetch = FetchType.EAGER, mappedBy = "workItems")
-  Collection<User> users;
+  private Collection<User> users;
 
   protected WorkItem() {
   }
@@ -65,7 +65,7 @@ public class WorkItem extends AbstractEntity<WorkItem> {
     Util.throwExceptionIfArgIsNull(status, "status");
     this.status = status;
     if (status == Status.DONE) {
-      completedDate = new Date();// it gets initalized with the current date/time
+      completedDate = new Date(); // Gets initalized with the current date/time.
     }
   }
 
@@ -91,7 +91,6 @@ public class WorkItem extends AbstractEntity<WorkItem> {
   }
 
   public User addUser(User user) {
-
     if (users.contains(user)) {
       throw new RepositoryModelException("the user already exist");
     }

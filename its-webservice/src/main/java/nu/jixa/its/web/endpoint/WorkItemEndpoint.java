@@ -41,9 +41,6 @@ public class WorkItemEndpoint {
       "Null or Invalid JSON Data in Request Body";
   private static final String BAD_REQUEST_MISMATCH_BETWEEN_PATH_AND_USER =
       "Usernumber mismatch between path and new user info";
-  private static final String STATUS_IN_PROGRESS = "IN_PROGRESS";
-  private static final String STATUS_ON_BACKLOG = "ON_BACKLOG";
-  private static final String STATUS_DONE = "DONE";
 
   @Autowired
   private ITSRepository itsRepository;
@@ -72,7 +69,6 @@ public class WorkItemEndpoint {
       @QueryParam("completed_time_to") @DefaultValue("") final String completedTimeToQuery,
       @QueryParam("page") @DefaultValue("") final String pageIndexQuery,
       @QueryParam("page_size") @DefaultValue("") final String pageSizeQuery) {
-
     if (Util.queryEntered(descriptionContainsQuery)) {
       return getByDescriptionContains(descriptionContainsQuery);
     }
@@ -89,8 +85,8 @@ public class WorkItemEndpoint {
     if (Util.queryEntered(pageIndexQuery) && Util.queryEntered(pageSizeQuery)) {
       return getPage(pageIndexQuery, pageSizeQuery);
     }
-    // If no queryParam is entered return all WorkItems
-    return getByDescriptionContains("");
+
+    return getAll();
   }
 
   @POST
@@ -136,7 +132,6 @@ public class WorkItemEndpoint {
   @Path("{workItemNumber}/status")
   public Response updateWorkItemStatus(@PathParam("workItemNumber") final long workItemNumber,
       final String statusString) {
-
     Status status;
     switch (statusString.toLowerCase()) {
       case "on_backlog":
@@ -197,6 +192,10 @@ public class WorkItemEndpoint {
     }
   }
 
+  private Response getAll() {
+    return Response.ok(itsRepository.getWorkItems()).build();
+  }
+
   private Response getByDescriptionContains(final String descriptionSubstring) {
     try {
       Collection<WorkItem> workItems =
@@ -228,7 +227,7 @@ public class WorkItemEndpoint {
     try {
       int pageIndexInt = Integer.parseInt(pageIndexQuery);
       int pageSizeInt = Integer.parseInt(pageSizeQuery);
-      Collection<WorkItem> workItems = itsRepository.getWorkItems(pageIndexInt, pageSizeInt);
+      Collection<WorkItem> workItems = itsRepository.getWorkItemsPage(pageIndexInt, pageSizeInt);
       return Response.ok(workItems).build();
     } catch (NumberFormatException e) {
       throw new StringNotConvertableToNumberWebApplicationException(

@@ -43,10 +43,6 @@ public class UsersEndpoint {
   private static final String BAD_REQUEST_MISMATCH_BETWEEN_PATH_AND_USER =
       "Usernumber mismatch between path and new user info";
 
-  //USER
-
-  //✓UserTeam   | Hämta alla User som ingår i ett visst team
-
   /**
    * Defaults to empty searchString which will return all Users if no queryParam is entered.
    */
@@ -55,7 +51,6 @@ public class UsersEndpoint {
       @QueryParam("name_substring") @DefaultValue("") final String nameSubstringQuery,
       @QueryParam("page") @DefaultValue("") final String pageIndexQuery,
       @QueryParam("page_size") @DefaultValue("") final String pageSizeQuery) {
-
     if (Util.queryEntered(nameSubstringQuery)) {
       Collection<User> usersByName = itsRepository.getUsersByNameLike(nameSubstringQuery);
       return Response.ok(usersByName).build();

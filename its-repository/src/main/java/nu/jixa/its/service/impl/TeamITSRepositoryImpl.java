@@ -101,7 +101,6 @@ public class TeamITSRepositoryImpl implements TeamITSRepository{
 
   @Override
   public User addUserToTeamWithNumber(Long userNumber, Long teamNumber) {
-
     User user = userITSRepository.getUser(userNumber);
     Team team = getTeam(teamNumber);
     user.joinTeam(team);

@@ -57,7 +57,6 @@ public class TeamRepositoryTest {
 
   @Before
   public void before() {
-
     // Gotcha: Must be created each time, so they contain no id. Otherwise spring thinks they have
     // already been added.
     testTeam = new Team(testTeamNumber);
@@ -112,7 +111,6 @@ public class TeamRepositoryTest {
 
   @Test
   public void canUpdate() {
-
     Collection<User> usersBefore = repository.getTeam(testTeamNumber).getUsers();
 
     assertThat(usersBefore.size(), is(3));

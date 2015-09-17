@@ -21,7 +21,6 @@ public class ModelUtilTest {
 
   @Test
   public void throwExceptionIfArgIsNull_ThrowsException() {
-
     expectedException.expect(RepositoryModelException.class);
     expectedException.expectMessage("Null value not allowed");
     expectedException.expectMessage("number");
