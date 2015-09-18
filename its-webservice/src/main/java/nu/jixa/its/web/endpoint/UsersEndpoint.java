@@ -74,14 +74,12 @@ public class UsersEndpoint {
   @POST
   public Response createUser(final User user) throws IllegalAccessException {
     if (user == null) {
-      return Response.status(Status.BAD_REQUEST)
-          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
+      return Util.badRequestResponse(Util.BAD_REQUEST_NULL_OR_INVALID);
     }
     try {
       itsRepository.addUser(user);
     } catch (ITSRepositoryException e) {
-      return Response.status(Status.BAD_REQUEST)
-          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
+      return Util.badRequestResponse(e);
     }
     final URI location = uriInfo.getAbsolutePathBuilder().path(user.getNumber().toString()).build();
     return Response.created(location).build();

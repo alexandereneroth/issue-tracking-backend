@@ -69,14 +69,12 @@ public class TeamsEndpoint {
   @POST
   public Response createTeam(final Team team) {
     if (team == null) {
-      return Response.status(Status.BAD_REQUEST)
-          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
+      return Util.badRequestResponse(Util.BAD_REQUEST_NULL_OR_INVALID);
     }
     try {
       itsRepository.addTeam(team);
     } catch (ITSRepositoryException e) {
-      return Response.status(Status.BAD_REQUEST)
-          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
+      return Util.badRequestResponse(e);
     }
     final URI location = uriInfo.getAbsolutePathBuilder().path(team.getNumber().toString()).build();
     return Response.created(location).build();

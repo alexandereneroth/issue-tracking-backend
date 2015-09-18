@@ -44,14 +44,12 @@ public class IssueEndpoint {
   @POST
   public Response createIssue(final Issue issue) throws IllegalAccessException {
     if (issue == null) {
-      return Response.status(Response.Status.BAD_REQUEST)
-          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
+      return Util.badRequestResponse(Util.BAD_REQUEST_NULL_OR_INVALID);
     }
     try {
       itsRepository.addIssue(issue);
     } catch (ITSRepositoryException e) {
-      return Response.status(Response.Status.BAD_REQUEST)
-          .entity(BAD_REQUEST_NULL_OR_INVALID).build();
+      return Util.badRequestResponse(e);
     }
     final URI location =
         uriInfo.getAbsolutePathBuilder().path(issue.getNumber().toString()).build();
