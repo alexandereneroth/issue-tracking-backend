@@ -126,6 +126,10 @@ public class ITSRepositoryImpl implements ITSRepository {
     userITSRepository.addWorkItemToUser(userNumber, workItemNumber);
   }
 
+  @Override public void removeWorkItemFromUser(Long userNumber, Long workItemNumber) {
+    userITSRepository.removeWorkItemFromUser(userNumber, workItemNumber);
+  }
+
   /*
   **    Team
    */

@@ -168,4 +168,16 @@ public class UsersEndpoint {
       return Response.status(Status.NOT_FOUND).entity(e.getMessage()).build();
     }
   }
+
+  @DELETE
+  @Path("{userNumber}/work-items/{workItemNumber}")
+  public Response addWorkItemToUser(@PathParam("userNumber") final Long userNumber,
+      @PathParam("workItemNumber") final Long workItemNumber) {
+    try {
+      itsRepository.removeWorkItemFromUser(userNumber, workItemNumber);
+      return Response.noContent().build();
+    } catch (ITSRepositoryException e) {
+      return Response.status(Status.NOT_FOUND).entity(e.getMessage()).build();
+    }
+  }
 }

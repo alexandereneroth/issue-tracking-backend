@@ -20,4 +20,6 @@ public interface UserITSRepository {
   Collection<User> getUsersPage(int pageIndex, int pageSize);
 
   void addWorkItemToUser(Long userNumber, Long workItemNumber);
+
+  void removeWorkItemFromUser(Long userNumber, Long workItemNumber);
 }

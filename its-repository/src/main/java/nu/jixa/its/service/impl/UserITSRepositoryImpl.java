@@ -5,6 +5,7 @@ import java.util.Iterator;
 import nu.jixa.its.model.Team;
 import nu.jixa.its.model.User;
 import nu.jixa.its.model.WorkItem;
+import nu.jixa.its.model.exception.RepositoryModelException;
 import nu.jixa.its.repository.TeamRepository;
 import nu.jixa.its.repository.UserRepository;
 import nu.jixa.its.repository.WorkItemRepository;
@@ -130,11 +131,10 @@ public class UserITSRepositoryImpl implements UserITSRepository {
   }
 
   @Override public Collection<User> getUsersPage(int pageIndex, int pageSize) {
-    if(pageIndex < 0 || pageSize < 1)
-    {
+    if (pageIndex < 0 || pageSize < 1) {
       throw new ITSRepositoryException("Could not get Users: invalid page or pageSize");
     }
-    Page<User> userPage = userRepository.findAll(new PageRequest(pageIndex,pageSize));
+    Page<User> userPage = userRepository.findAll(new PageRequest(pageIndex, pageSize));
     return Util.iterableToArrayList(userPage);
   }
 
@@ -154,4 +154,22 @@ public class UserITSRepositoryImpl implements UserITSRepository {
     }
   }
 
+  @Override public void removeWorkItemFromUser(Long userNumber, Long workItemNumber) {
+    WorkItem item = workItemITSRepository.getWorkItem(workItemNumber);
+    User user = getUser(userNumber);
+    Util.throwExceptionIfNull(item,
+        "Could not find workItem: No workItem with number " + workItemNumber);
+    Util.throwExceptionIfNull(user,
+        "Could not find user: No user with number " + userNumber);
+    try {
+      user.removeWorkItem(item);
+    } catch (RepositoryModelException e) {
+      throw new ITSRepositoryException(e.getMessage());
+    }
+    try {
+      userRepository.save(user);
+    } catch (DataIntegrityViolationException e) {
+      throw new ITSRepositoryException("Could not save user", e);
+    }
+  }
 }

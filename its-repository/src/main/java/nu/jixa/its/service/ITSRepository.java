@@ -56,6 +56,8 @@ public interface ITSRepository {
 
   void addWorkItemToUser(Long userNumber, Long workItemNumber);
 
+  void removeWorkItemFromUser(Long userNumber, Long workItemNumber);
+
   // Team
   Team addTeam(Team team);
 

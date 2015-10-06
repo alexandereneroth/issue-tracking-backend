@@ -14,6 +14,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import nu.jixa.its.model.exception.RepositoryModelException;
 import nu.jixa.its.serializer.UserJsonSerializer;
 
 @Entity
@@ -97,6 +98,13 @@ public class User extends AbstractEntity<User> {
 
   public void addWorkItem(WorkItem item) {
     workItems.add(item);
+  }
+
+  public void removeWorkItem(WorkItem item) throws RepositoryModelException {
+    if(workItems.remove(item) == false)
+    {
+      throw new RepositoryModelException("Could not remove workItem: Matching workItem not found");
+    }
   }
 
   public Collection<WorkItem> getWorkItems() {
