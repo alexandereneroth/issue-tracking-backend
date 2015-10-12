@@ -31,6 +31,9 @@ public class User extends AbstractEntity<User> {
   @Column(name = "lastname", nullable = false)
   private String lastname;
 
+  @Column(name = "password", nullable = false)
+  private String password;
+
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "team_id")
   private Team team;
@@ -54,12 +57,13 @@ public class User extends AbstractEntity<User> {
   }
 
   public User(@NotNull Long number, @NotNull String username, @NotNull String firstname,
-      @NotNull String lastname) {
+      @NotNull String lastname, @NotNull String password) {
     HashMap<Object, String> argsWithNames = new HashMap<>();
     argsWithNames.put(number, "number");
     argsWithNames.put(username, "username");
     argsWithNames.put(firstname, "firstname");
     argsWithNames.put(lastname, "lastname");
+    argsWithNames.put(password, "password");
 
     Util.throwExceptionIfArgIsNull(argsWithNames);
 
@@ -67,6 +71,7 @@ public class User extends AbstractEntity<User> {
     this.username = username;
     this.firstname = firstname;
     this.lastname = lastname;
+    this.password = password;
   }
 
   public String getUsername() {
@@ -94,6 +99,14 @@ public class User extends AbstractEntity<User> {
   public void setLastname(@NotNull final String lastname) {
     Util.throwExceptionIfArgIsNull(lastname, "lastname");
     this.lastname = lastname;
+  }
+
+  public void setPassword(@NotNull final String password) {
+    this.password = password;
+  }
+
+  public String getPassword() {
+    return password;
   }
 
   public void addWorkItem(WorkItem item) {

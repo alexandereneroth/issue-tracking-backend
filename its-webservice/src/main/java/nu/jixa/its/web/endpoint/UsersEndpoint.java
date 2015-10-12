@@ -1,6 +1,8 @@
 package nu.jixa.its.web.endpoint;
 
 import java.net.URI;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Collection;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -21,6 +23,7 @@ import nu.jixa.its.model.User;
 import nu.jixa.its.model.WorkItem;
 import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.service.exception.ITSRepositoryException;
+import nu.jixa.its.web.PasswordHash;
 import nu.jixa.its.web.StringNotConvertableToNumberWebApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -72,11 +75,26 @@ public class UsersEndpoint {
   }
 
   @POST
-  public Response createUser(final User user) throws IllegalAccessException {
+  @Path("{userNumber}/validate")
+  public Response validatePassword(@PathParam("userNumber") final long userNumber,
+      final String password) throws InvalidKeySpecException, NoSuchAlgorithmException {
+    User userToValidate = itsRepository.getUser(userNumber);
+    if(PasswordHash.validatePassword(password, userToValidate.getPassword())) {
+      return Response.ok().build();
+    } else {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+  }
+
+  @POST
+  public Response createUser(final User user)
+      throws IllegalAccessException, InvalidKeySpecException, NoSuchAlgorithmException {
     if (user == null) {
       return Util.badRequestResponse(Util.BAD_REQUEST_NULL_OR_INVALID);
     }
     try {
+      String unhashedPassword = user.getPassword();
+      user.setPassword(PasswordHash.createHash(unhashedPassword));
       itsRepository.addUser(user);
     } catch (ITSRepositoryException e) {
       return Util.badRequestResponse(e);
