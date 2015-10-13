@@ -17,7 +17,9 @@
 package nu.jixa.its.web.config;
 
 import nu.jixa.its.web.CORSResponseFilter;
+import nu.jixa.its.web.JixaAuthenticator;
 import nu.jixa.its.web.endpoint.IssueEndpoint;
+import nu.jixa.its.web.endpoint.LoginEndpoint;
 import nu.jixa.its.web.endpoint.TeamsEndpoint;
 import nu.jixa.its.web.endpoint.UsersEndpoint;
 import nu.jixa.its.web.endpoint.WorkItemEndpoint;
@@ -33,5 +35,6 @@ public class JerseyConfig extends ResourceConfig {
     register(TeamsEndpoint.class);
     register(IssueEndpoint.class);
     register(CORSResponseFilter.class);
+    register(LoginEndpoint.class);
   }
 }
