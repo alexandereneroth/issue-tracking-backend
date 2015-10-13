@@ -9,6 +9,8 @@ final class Util {
 
   public static final String BAD_REQUEST_NULL_OR_INVALID =
       "Null or Invalid JSON Data in Request Body";
+  public static final String MSG_UNAUTHORIZED_RESPONSE = "Invalid username and/or password";
+  public static final String HEADER_NAME_AUTH_TOKEN = "auth_token";
 
   /**
    * Returns false if the argument is null or an empty String, otherwise returns true.

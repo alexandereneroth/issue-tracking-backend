@@ -18,9 +18,7 @@ import org.springframework.stereotype.Component;
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class LoginEndpoint {
-
-  private static final String MSG_UNAUTHORIZED_RESPONSE = "Invalid username and/or password";
+public class RootEndpoint {
 
   @Autowired
   ITSRepository itsRepository;
@@ -34,9 +32,9 @@ public class LoginEndpoint {
     try {
       final String authToken = authenticator.login(username, password);
 
-      return Response.ok("{auth_token:" + authToken + "}" ).build();
+      return Response.ok("{auth_token:" + authToken + "}").build();
     } catch (LoginException e) {
-      return Response.status(Response.Status.UNAUTHORIZED).entity(MSG_UNAUTHORIZED_RESPONSE)
+      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE)
           .build();
     }
   }
@@ -47,15 +45,9 @@ public class LoginEndpoint {
 
     final JixaAuthenticator authenticator = JixaAuthenticator.getInstance();
 
-    try {
-      authenticator.logout()
+    final String authToken = httpHeaders.getHeaderString(Util.HEADER_NAME_AUTH_TOKEN);
+    authenticator.logout(authToken);
 
-      return Response.ok("{auth_token:" + authToken + "}" ).build();
-    } catch (LoginException e) {
-      return Response.status(Response.Status.UNAUTHORIZED).entity(MSG_UNAUTHORIZED_RESPONSE)
-          .build();
-    }
+    return Response.noContent().build();
   }
-
-
 }

@@ -26,7 +26,12 @@ public final class JixaAuthenticator {
   // No service key because its easier that way
   private HashMap<String, String> userNumberToAuthToken;
 
-  //public void AuthToken login(String username, String password) throws LoginException {
-  //
-  //}
+  public String login(String username, String password) throws LoginException {
+    return ""; //TODO
+  }
+
+  public void logout(String authToken) {
+
+  }
+
 }
