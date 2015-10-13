@@ -110,6 +110,10 @@ public class ITSRepositoryImpl implements ITSRepository {
     return userITSRepository.getUser(userNumber);
   }
 
+  @Override public User getUser(String username) {
+    return userITSRepository.getUser(username);
+  }
+
   @Override public Iterable<User> getUsersByTeam(Long teamNumber) {
     return userITSRepository.getUsersByTeam(teamNumber);
   }

@@ -48,6 +48,8 @@ public interface ITSRepository {
 
   User getUser(Long userNumber);
 
+  User getUser(String username);
+
   Iterable<User> getUsersByTeam(Long teamNumber);
 
   Collection<User> getUsersByNameLike(String nameLike);

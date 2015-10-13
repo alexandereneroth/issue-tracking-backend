@@ -51,9 +51,18 @@ public class UsersEndpoint {
    */
   @GET
   public Response getUsers(
+      @QueryParam("username") @DefaultValue("") final String userName,
       @QueryParam("name_substring") @DefaultValue("") final String nameSubstringQuery,
       @QueryParam("page") @DefaultValue("") final String pageIndexQuery,
       @QueryParam("page_size") @DefaultValue("") final String pageSizeQuery) {
+    if (Util.queryEntered(userName)) {
+      try {
+        User userResult = itsRepository.getUser(userName);
+        return Response.ok(userResult).build();
+      } catch (ITSRepositoryException e) {
+        return Util.badRequestResponse(e);
+      }
+    }
     if (Util.queryEntered(nameSubstringQuery)) {
       Collection<User> usersByName = itsRepository.getUsersByNameLike(nameSubstringQuery);
       return Response.ok(usersByName).build();
@@ -79,7 +88,7 @@ public class UsersEndpoint {
   public Response validatePassword(@PathParam("userNumber") final long userNumber,
       final String password) throws InvalidKeySpecException, NoSuchAlgorithmException {
     User userToValidate = itsRepository.getUser(userNumber);
-    if(PasswordHash.validatePassword(password, userToValidate.getPassword())) {
+    if (PasswordHash.validatePassword(password, userToValidate.getPassword())) {
       return Response.ok().build();
     } else {
       return Response.status(Status.BAD_REQUEST).build();

@@ -120,6 +120,14 @@ public class UserITSRepositoryImpl implements UserITSRepository {
     return gotUser;
   }
 
+  @Override public User getUser(String username) {
+    User gotUser = userRepository.findByUsername(username);
+    if (gotUser == null) {
+      throw new ITSRepositoryException("Could not get User: No user with username " + username);
+    }
+    return gotUser;
+  }
+
   @Override
   public Iterable<User> getUsersByTeam(Long teamNumber) {
     return userRepository.selectByTeamNumber(teamNumber);

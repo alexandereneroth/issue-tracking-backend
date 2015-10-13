@@ -17,4 +17,6 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
   Collection<User> selectByNameLike(@Param("name") String name);
 
   User findByNumber(Long number);
+
+  User findByUsername(String username);
 }
