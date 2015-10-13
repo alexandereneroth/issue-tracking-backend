@@ -105,6 +105,17 @@ public class WorkItem extends AbstractEntity<WorkItem> {
     return users;
   }
 
+  public boolean hasUserWithTeam(Team team) {
+    for(User user : users)
+    {
+      if(user.getTeam().getNumber() == team.getNumber())
+      {
+        return true;
+      }
+    }
+    return false;
+  }
+
   @Override public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
@@ -123,4 +134,5 @@ public class WorkItem extends AbstractEntity<WorkItem> {
     result = 31 * result + (getIssue() != null ? getIssue().hashCode() : 0);
     return result;
   }
+
 }

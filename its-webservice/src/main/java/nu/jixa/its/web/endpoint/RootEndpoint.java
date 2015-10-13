@@ -12,8 +12,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import nu.jixa.its.service.ITSRepository;
-import nu.jixa.its.web.JixaAuthenticator;
 import nu.jixa.its.web.Values;
+import nu.jixa.its.web.JixaAuthenticator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -45,7 +45,7 @@ public class RootEndpoint {
 
       return Response.ok("{auth_token:" + authToken + "}").build();
     } catch (LoginException e) {
-      return Response.status(Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_MESSAGE)
+      return Response.status(Status.UNAUTHORIZED).entity(Util.MSG_INVALID_LOGIN_RESPONSE)
           .build();
     }
   }

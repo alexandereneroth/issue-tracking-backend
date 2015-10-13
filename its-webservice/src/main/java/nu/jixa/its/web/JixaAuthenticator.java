@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 import javax.security.auth.login.LoginException;
 import nu.jixa.its.model.User;
+import nu.jixa.its.model.WorkItem;
 import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.service.exception.ITSRepositoryException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 public final class JixaAuthenticator {
 
   @Autowired
-  private ITSRepository itsRepository;
+  ITSRepository itsRepository;
 
   // An authentication token storage which stores <auth_token, username>.
   private final Map<String, String> authTokenStorage = new HashMap<>();
@@ -66,5 +67,12 @@ public final class JixaAuthenticator {
       return authTokenStorage.get(authToken);
     }
     throw new GeneralSecurityException("No user with this token logged in");
+  }
+
+  public boolean isAuthorizedToAccess(final String authToken, final long workItemNumber) {
+    String username =  authTokenStorage.get(authToken);
+    User user = itsRepository.getUser(username);
+    WorkItem workItem = itsRepository.getWorkItem(workItemNumber);
+    return workItem.hasUserWithTeam(user.getTeam());
   }
 }

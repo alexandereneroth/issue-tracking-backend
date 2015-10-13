@@ -17,6 +17,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -25,7 +26,9 @@ import nu.jixa.its.model.Status;
 import nu.jixa.its.model.WorkItem;
 import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.service.exception.ITSRepositoryException;
+import nu.jixa.its.web.JixaAuthenticator;
 import nu.jixa.its.web.StringNotConvertableToNumberWebApplicationException;
+import nu.jixa.its.web.Values;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,6 +47,9 @@ public class WorkItemEndpoint {
 
   @Autowired
   private ITSRepository itsRepository;
+
+  @Autowired
+  private JixaAuthenticator authenticator;
 
   @Context
   private UriInfo uriInfo;
@@ -158,7 +164,13 @@ public class WorkItemEndpoint {
 
   @DELETE
   @Path("{workItemNumber}")
-  public Response deleteWorkItem(@PathParam("workItemNumber") final long workItemNumber) {
+  public Response deleteWorkItem(@Context HttpHeaders httpHeaders, @PathParam("workItemNumber") final long workItemNumber) {
+
+    String authToken = httpHeaders.getHeaderString(Values.HEADER_NAME_AUTH_TOKEN);
+    if(!authenticator.isAuthorizedToAccess(authToken, workItemNumber)) {
+      Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
+    }
+
     try {
       itsRepository.removeWorkItem(workItemNumber);
     } catch (ITSRepositoryException e) {
