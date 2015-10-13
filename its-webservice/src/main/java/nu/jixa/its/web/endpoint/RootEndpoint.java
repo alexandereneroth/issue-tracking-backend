@@ -2,6 +2,7 @@ package nu.jixa.its.web.endpoint;
 
 import javax.security.auth.login.LoginException;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -15,16 +16,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@Path("/")
 @Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
 public class RootEndpoint {
 
   @Autowired
   ITSRepository itsRepository;
 
   @POST
-  @Path("/login")
-  public Response login(final String username, final String password) {
+  @Path("login")
+  public Response login(
+      @FormParam("username") final String username,
+      @FormParam("password") final String password) {
 
     final JixaAuthenticator authenticator = JixaAuthenticator.getInstance();
 
@@ -39,7 +42,7 @@ public class RootEndpoint {
   }
 
   @POST
-  @Path("/logout")
+  @Path("logout")
   public Response logout(@Context HttpHeaders httpHeaders) {
 
     final JixaAuthenticator authenticator = JixaAuthenticator.getInstance();
