@@ -11,8 +11,17 @@ public final class JixaAuthenticator {
     // TODO add security manager check
   }
 
+  private static JixaAuthenticator INSTANCE;
+
   @Autowired
   private ITSRepository itsRepository;
+
+  public static JixaAuthenticator getInstance(){
+    if(INSTANCE == null){
+      INSTANCE = new JixaAuthenticator();
+    }
+    return INSTANCE;
+  }
 
   // No service key because its easier that way
   private HashMap<String, String> userNumberToAuthToken;

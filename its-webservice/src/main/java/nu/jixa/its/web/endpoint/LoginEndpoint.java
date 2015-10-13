@@ -15,25 +15,47 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-@Path("/login")
+@Path("/")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class LoginEndpoint {
 
+  private static final String MSG_UNAUTHORIZED_RESPONSE = "Invalid username and/or password";
+
   @Autowired
   ITSRepository itsRepository;
 
-  @POST // (login)
-  public Response getAuthToken(@Context final HttpHeaders httpHeaders, final String username,
-      final String password) {
+  @POST
+  @Path("/login")
+  public Response login(final String username, final String password) {
 
-    JixaAuthenticator authenticator = new JixaAuthenticator();
+    final JixaAuthenticator authenticator = JixaAuthenticator.getInstance();
 
     try {
-      String authToken = authenticator.login(username, password);
+      final String authToken = authenticator.login(username, password);
 
-    }catch(LoginException e){
-      Response 
+      return Response.ok("{auth_token:" + authToken + "}" ).build();
+    } catch (LoginException e) {
+      return Response.status(Response.Status.UNAUTHORIZED).entity(MSG_UNAUTHORIZED_RESPONSE)
+          .build();
     }
   }
+
+  @POST
+  @Path("/logout")
+  public Response logout(@Context HttpHeaders httpHeaders) {
+
+    final JixaAuthenticator authenticator = JixaAuthenticator.getInstance();
+
+    try {
+      authenticator.logout()
+
+      return Response.ok("{auth_token:" + authToken + "}" ).build();
+    } catch (LoginException e) {
+      return Response.status(Response.Status.UNAUTHORIZED).entity(MSG_UNAUTHORIZED_RESPONSE)
+          .build();
+    }
+  }
+
+
 }
