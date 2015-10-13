@@ -60,4 +60,11 @@ public final class JixaAuthenticator {
   public boolean userIsLoggedIn(String username) {
     return authTokenStorage.containsValue(username);
   }
+
+  public String getUserWithToken(String authToken) throws GeneralSecurityException {
+    if (authTokenStorage.containsKey(authToken)) {
+      return authTokenStorage.get(authToken);
+    }
+    throw new GeneralSecurityException("No user with this token logged in");
+  }
 }
