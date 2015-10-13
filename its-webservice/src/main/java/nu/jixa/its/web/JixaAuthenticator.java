@@ -56,4 +56,8 @@ public final class JixaAuthenticator {
   public boolean isAuthTokenValid(String authToken) {
     return authTokenStorage.containsKey(authToken);
   }
+
+  public boolean userIsLoggedIn(String username) {
+    return authTokenStorage.containsValue(username);
+  }
 }

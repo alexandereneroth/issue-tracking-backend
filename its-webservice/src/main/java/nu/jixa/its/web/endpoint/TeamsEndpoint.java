@@ -69,7 +69,7 @@ public class TeamsEndpoint {
   @POST
   public Response createTeam(final Team team) {
     if (team == null) {
-      return Util.badRequestResponse(Util.BAD_REQUEST_NULL_OR_INVALID);
+      return Util.badRequestResponse(Util.BAD_REQUEST_NULL_OR_INVALID_MESSAGE);
     }
     try {
       itsRepository.addTeam(team);

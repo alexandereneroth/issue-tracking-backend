@@ -35,12 +35,17 @@ public class RootEndpoint {
       @FormParam("username") final String username,
       @FormParam("password") final String password) {
 
+    if (jixaAuthenticator.userIsLoggedIn(username)) {
+      return Response.status(Status.BAD_REQUEST).entity(Util.MSG_ALREADY_LOGGED_IN_MESSAGE).build();
+    }
+
     try {
+
       final String authToken = jixaAuthenticator.login(username, password);
 
       return Response.ok("{auth_token:" + authToken + "}").build();
     } catch (LoginException e) {
-      return Response.status(Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE)
+      return Response.status(Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_MESSAGE)
           .build();
     }
   }

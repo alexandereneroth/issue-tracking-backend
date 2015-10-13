@@ -87,7 +87,7 @@ public class UsersEndpoint {
   public Response createUser(final User user)
       throws IllegalAccessException, InvalidKeySpecException, NoSuchAlgorithmException {
     if (user == null) {
-      return Util.badRequestResponse(Util.BAD_REQUEST_NULL_OR_INVALID);
+      return Util.badRequestResponse(Util.BAD_REQUEST_NULL_OR_INVALID_MESSAGE);
     }
     try {
       String unhashedPassword = user.getPassword();

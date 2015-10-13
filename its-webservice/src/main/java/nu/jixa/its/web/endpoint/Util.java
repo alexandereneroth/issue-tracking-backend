@@ -7,9 +7,10 @@ import javax.ws.rs.core.Response;
  */
 final class Util {
 
-  public static final String BAD_REQUEST_NULL_OR_INVALID =
+  public static final String BAD_REQUEST_NULL_OR_INVALID_MESSAGE =
       "Null or Invalid JSON Data in Request Body";
-  public static final String MSG_UNAUTHORIZED_RESPONSE = "Invalid username and/or password";
+  public static final String MSG_UNAUTHORIZED_MESSAGE = "Invalid username and/or password";
+  public static final String MSG_ALREADY_LOGGED_IN_MESSAGE = "Already logged in";
 
   /**
    * Returns false if the argument is null or an empty String, otherwise returns true.
@@ -26,7 +27,7 @@ final class Util {
 
 
   public static Response badRequestResponse() {
-    return badRequestResponse(BAD_REQUEST_NULL_OR_INVALID);
+    return badRequestResponse(BAD_REQUEST_NULL_OR_INVALID_MESSAGE);
   }
 
   public static Response badRequestResponse(Exception e) {
