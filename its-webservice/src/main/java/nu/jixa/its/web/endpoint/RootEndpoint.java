@@ -1,7 +1,7 @@
 package nu.jixa.its.web.endpoint;
 
+import java.security.GeneralSecurityException;
 import javax.security.auth.login.LoginException;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -10,11 +10,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import nu.jixa.its.model.User;
+import javax.ws.rs.core.Response.Status;
 import nu.jixa.its.service.ITSRepository;
-import nu.jixa.its.service.exception.ITSRepositoryException;
-import nu.jixa.its.web.Values;
 import nu.jixa.its.web.JixaAuthenticator;
+import nu.jixa.its.web.Values;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +25,9 @@ public class RootEndpoint {
   @Autowired
   ITSRepository itsRepository;
 
+  @Autowired
+  JixaAuthenticator jixaAuthenticator;
+
   @POST
   @Path("login")
   public Response login(
@@ -33,13 +35,12 @@ public class RootEndpoint {
       @FormParam("username") final String username,
       @FormParam("password") final String password) {
 
-    final JixaAuthenticator authenticator = JixaAuthenticator.getInstance();
     try {
-      final String authToken = authenticator.login(username, password);
+      final String authToken = jixaAuthenticator.login(username, password);
 
       return Response.ok("{auth_token:" + authToken + "}").build();
     } catch (LoginException e) {
-      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE)
+      return Response.status(Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE)
           .build();
     }
   }
@@ -48,10 +49,15 @@ public class RootEndpoint {
   @Path("logout")
   public Response logout(@Context HttpHeaders httpHeaders) {
 
-    final JixaAuthenticator authenticator = JixaAuthenticator.getInstance();
-
     final String authToken = httpHeaders.getHeaderString(Values.HEADER_NAME_AUTH_TOKEN);
-    authenticator.logout(authToken);
+
+    try {
+      jixaAuthenticator.logout(authToken);
+    } catch (GeneralSecurityException e) {
+      return Response.status(Status.UNAUTHORIZED)
+          .entity(e.getMessage())
+          .build();
+    }
 
     return Response.noContent().build();
   }

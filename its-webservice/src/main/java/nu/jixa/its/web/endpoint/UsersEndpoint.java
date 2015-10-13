@@ -84,18 +84,6 @@ public class UsersEndpoint {
   }
 
   @POST
-  @Path("{userNumber}/validate")
-  public Response validatePassword(@PathParam("userNumber") final long userNumber,
-      final String password) throws InvalidKeySpecException, NoSuchAlgorithmException {
-    User userToValidate = itsRepository.getUser(userNumber);
-    if (PasswordHash.validatePassword(password, userToValidate.getPassword())) {
-      return Response.ok().build();
-    } else {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-  }
-
-  @POST
   public Response createUser(final User user)
       throws IllegalAccessException, InvalidKeySpecException, NoSuchAlgorithmException {
     if (user == null) {
