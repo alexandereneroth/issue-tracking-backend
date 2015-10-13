@@ -27,7 +27,7 @@ public final class JixaAuthenticator {
   private HashMap<String, String> userNumberToAuthToken;
 
   public String login(String username, String password) throws LoginException {
-    return ""; //TODO
+    return username + ":" + password; //TODO
   }
 
   public void logout(String authToken) {
