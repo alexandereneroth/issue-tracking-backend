@@ -10,7 +10,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import nu.jixa.its.model.User;
 import nu.jixa.its.service.ITSRepository;
+import nu.jixa.its.service.exception.ITSRepositoryException;
 import nu.jixa.its.web.Values;
 import nu.jixa.its.web.JixaAuthenticator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +29,11 @@ public class RootEndpoint {
   @POST
   @Path("login")
   public Response login(
+      @Context HttpHeaders httpHeaders,
       @FormParam("username") final String username,
       @FormParam("password") final String password) {
 
     final JixaAuthenticator authenticator = JixaAuthenticator.getInstance();
-
     try {
       final String authToken = authenticator.login(username, password);
 
