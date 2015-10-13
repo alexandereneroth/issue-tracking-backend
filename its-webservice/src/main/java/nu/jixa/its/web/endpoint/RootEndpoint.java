@@ -11,6 +11,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import nu.jixa.its.service.ITSRepository;
+import nu.jixa.its.web.Values;
 import nu.jixa.its.web.JixaAuthenticator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -47,7 +48,7 @@ public class RootEndpoint {
 
     final JixaAuthenticator authenticator = JixaAuthenticator.getInstance();
 
-    final String authToken = httpHeaders.getHeaderString(Util.HEADER_NAME_AUTH_TOKEN);
+    final String authToken = httpHeaders.getHeaderString(Values.HEADER_NAME_AUTH_TOKEN);
     authenticator.logout(authToken);
 
     return Response.noContent().build();

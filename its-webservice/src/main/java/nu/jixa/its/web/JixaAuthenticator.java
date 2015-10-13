@@ -34,4 +34,7 @@ public final class JixaAuthenticator {
 
   }
 
+  public boolean isAuthTokenValid(String authToken) {
+    return userNumberToAuthToken.containsValue(authToken);
+  }
 }
