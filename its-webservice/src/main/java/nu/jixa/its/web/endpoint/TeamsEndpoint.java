@@ -1,6 +1,7 @@
 package nu.jixa.its.web.endpoint;
 
 import java.net.URI;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.ws.rs.Consumes;
@@ -12,6 +13,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -22,6 +24,8 @@ import nu.jixa.its.model.User;
 import nu.jixa.its.model.WorkItem;
 import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.service.exception.ITSRepositoryException;
+import nu.jixa.its.web.JixaAuthenticator;
+import nu.jixa.its.web.Values;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -40,6 +44,9 @@ public class TeamsEndpoint {
   @Autowired
   private ITSRepository itsRepository;
 
+  @Autowired
+  JixaAuthenticator jixaAuthenticator;
+
   @Context
   private UriInfo uriInfo;
 
@@ -56,7 +63,15 @@ public class TeamsEndpoint {
 
   @GET
   @Path("{teamNumber}")
-  public Response getTeam(@PathParam("teamNumber") final long teamNumber) {
+  public Response getTeam(
+      @Context HttpHeaders httpHeaders,
+      @PathParam("teamNumber") final long teamNumber) {
+
+    //try {
+    //  jixaAuthenticator.getUserWithToken(httpHeaders.getHeaderString(Values.HEADER_NAME_AUTH_TOKEN));
+    //} catch (GeneralSecurityException e) {
+    //  e.printStackTrace();
+    //}
     try {
       Team team = itsRepository.getTeam(teamNumber);
       return Response.ok(team).build();
