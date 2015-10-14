@@ -2,7 +2,7 @@ package nu.jixa.its.web.endpoint;
 
 import java.security.GeneralSecurityException;
 import javax.security.auth.login.LoginException;
-import javax.ws.rs.FormParam;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -14,11 +14,14 @@ import javax.ws.rs.core.Response.Status;
 import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.web.Values;
 import nu.jixa.its.web.JixaAuthenticator;
+import nu.jixa.its.web.model.Credentials;
+import nu.jixa.its.web.model.StringResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 @Path("/")
+@Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class RootEndpoint {
 
@@ -30,22 +33,32 @@ public class RootEndpoint {
 
   @POST
   @Path("login")
-  public Response login(
-      @Context HttpHeaders httpHeaders,
-      @FormParam("username") final String username,
-      @FormParam("password") final String password) {
 
-    if (jixaAuthenticator.userIsLoggedIn(username)) {
-      return Response.status(Status.BAD_REQUEST).entity(Util.MSG_ALREADY_LOGGED_IN_MESSAGE).build();
+  public Response login(
+      @Context HttpHeaders httpHeaders, Credentials credentials) {
+
+    if (jixaAuthenticator.userIsLoggedIn(credentials.getUsername())) {
+      StringResponse errorResponse = new StringResponse();
+      errorResponse.setName("Error");
+      errorResponse.setValue(Util.MSG_ALREADY_LOGGED_IN);
+      return Response.status(Status.BAD_REQUEST).entity(errorResponse).build();
     }
 
     try {
 
-      final String authToken = jixaAuthenticator.login(username, password);
+      final String authToken =
+          jixaAuthenticator.login(credentials.getUsername(), credentials.getPassword());
 
-      return Response.ok("{auth_token:" + authToken + "}").build();
+      StringResponse tokenResponse = new StringResponse();
+      tokenResponse.setName(Values.HEADER_NAME_AUTH_TOKEN);
+      tokenResponse.setValue(authToken);
+
+      return Response.ok(tokenResponse).build();
     } catch (LoginException e) {
-      return Response.status(Status.UNAUTHORIZED).entity(Util.MSG_INVALID_LOGIN_RESPONSE)
+      StringResponse errorResponse = new StringResponse();
+      errorResponse.setName("Error");
+      errorResponse.setValue(Util.MSG_UNAUTHORIZED);
+      return Response.status(Status.UNAUTHORIZED).entity(errorResponse)
           .build();
     }
   }

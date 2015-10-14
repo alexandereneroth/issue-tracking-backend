@@ -17,7 +17,6 @@
 package nu.jixa.its.web.config;
 
 import nu.jixa.its.web.CORSResponseFilter;
-import nu.jixa.its.web.JixaAuthenticator;
 import nu.jixa.its.web.RequestFilter;
 import nu.jixa.its.web.endpoint.IssueEndpoint;
 import nu.jixa.its.web.endpoint.RootEndpoint;
