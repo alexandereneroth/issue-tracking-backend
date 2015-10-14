@@ -2,6 +2,7 @@ package nu.jixa.its.web.endpoint;
 
 import java.security.GeneralSecurityException;
 import javax.security.auth.login.LoginException;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -30,6 +31,7 @@ public class RootEndpoint {
 
   @POST
   @Path("login")
+  @Consumes("application/x-www-form-urlencoded")
   public Response login(
       @Context HttpHeaders httpHeaders,
       @FormParam("username") final String username,
