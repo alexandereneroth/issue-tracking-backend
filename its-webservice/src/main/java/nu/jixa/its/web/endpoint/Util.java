@@ -9,8 +9,8 @@ final class Util {
 
   public static final String BAD_REQUEST_NULL_OR_INVALID_MESSAGE =
       "Null or Invalid JSON Data in Request Body";
-  public static final String MSG_UNAUTHORIZED_MESSAGE = "Invalid username and/or password";
-  public static final String MSG_ALREADY_LOGGED_IN_MESSAGE = "Already logged in";
+  public static final String MSG_UNAUTHORIZED = "Invalid username and/or password";
+  public static final String MSG_ALREADY_LOGGED_IN = "Already logged in";
 
   /**
    * Returns false if the argument is null or an empty String, otherwise returns true.

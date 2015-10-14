@@ -15,11 +15,14 @@ import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.web.JixaAuthenticator;
 import nu.jixa.its.web.Values;
 import nu.jixa.its.web.model.Credentials;
+import nu.jixa.its.web.model.StringResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 @Path("/")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class RootEndpoint {
 
   @Autowired
@@ -30,13 +33,15 @@ public class RootEndpoint {
 
   @POST
   @Path("login")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
+
   public Response login(
       @Context HttpHeaders httpHeaders, Credentials credentials) {
 
     if (jixaAuthenticator.userIsLoggedIn(credentials.getUsername())) {
-      return Response.status(Status.BAD_REQUEST).entity(Util.MSG_ALREADY_LOGGED_IN_MESSAGE).build();
+      StringResponse errorResponse = new StringResponse();
+      errorResponse.setName("Error");
+      errorResponse.setValue(Util.MSG_ALREADY_LOGGED_IN);
+      return Response.status(Status.BAD_REQUEST).entity(errorResponse).build();
     }
 
     try {
@@ -44,9 +49,16 @@ public class RootEndpoint {
       final String authToken =
           jixaAuthenticator.login(credentials.getUsername(), credentials.getPassword());
 
-      return Response.ok(authToken).build();
+      StringResponse tokenResponse = new StringResponse();
+      tokenResponse.setName(Values.HEADER_NAME_AUTH_TOKEN);
+      tokenResponse.setValue(authToken);
+
+      return Response.ok(tokenResponse).build();
     } catch (LoginException e) {
-      return Response.status(Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_MESSAGE)
+      StringResponse errorResponse = new StringResponse();
+      errorResponse.setName("Error");
+      errorResponse.setValue(Util.MSG_UNAUTHORIZED);
+      return Response.status(Status.UNAUTHORIZED).entity(errorResponse)
           .build();
     }
   }
