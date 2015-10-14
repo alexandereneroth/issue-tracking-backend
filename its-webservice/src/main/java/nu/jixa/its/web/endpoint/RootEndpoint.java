@@ -67,7 +67,7 @@ public class RootEndpoint {
   @Path("logout")
   public Response logout(@Context HttpHeaders httpHeaders) {
 
-    final String authToken = httpHeaders.getHeaderString(Values.HEADER_NAME_AUTH_TOKEN);
+    final String authToken = Util.extractAuthorizationToken(httpHeaders);
 
     try {
       jixaAuthenticator.logout(authToken);

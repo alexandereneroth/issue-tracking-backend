@@ -43,7 +43,6 @@ public class RequestFilter implements ContainerRequestFilter {
       // Extract the token from the HTTP Authorization header
       String authToken = authorizationHeader.substring("Bearer".length()).trim();
 
-
       if(!jixaAuthenticator.isAuthTokenValid(authToken)){
         requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
       }
