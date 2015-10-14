@@ -3,8 +3,8 @@ SET unique_checks=0;
 SET foreign_key_checks=0;
 
 insert into tblTeam (id, number) values (1, 101);
-insert into tblTeam (id, number) values (2, 101);
-insert into tblTeam (id, number) values (3, 101);
+insert into tblTeam (id, number) values (2, 102);
+insert into tblTeam (id, number) values (3, 103);
 
 insert into tblUser (id, number, firstname, lastname, username, team_id, password) values (1, 101, 'Kelly', 'Lewis', 'user1', 1, '1000:6a141086635a31296a28452b2b3fa407032c20e5886e14d7:21678a520d8f2e2abe044973568afd11118d073c1b9ca911');
 insert into tblUser (id, number, firstname, lastname, username, team_id, password) values (2, 102, 'William', 'Edwards', 'user2', 1, '1000:6a141086635a31296a28452b2b3fa407032c20e5886e14d7:21678a520d8f2e2abe044973568afd11118d073c1b9ca911');
