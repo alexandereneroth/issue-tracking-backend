@@ -69,10 +69,48 @@ public final class JixaAuthenticator {
     throw new GeneralSecurityException("No user with this token logged in");
   }
 
-  public boolean isAuthorizedToAccess(final String authToken, final long workItemNumber) {
-    String username =  authTokenStorage.get(authToken);
-    User user = itsRepository.getUser(username);
+  public boolean isAuthorizedToAccessWorkItem(final String authToken, final long workItemNumber) {
+    User loggedInUser = getUserObjWithToken(authToken);
+    if(loggedInUser.getTeam() == null){
+      return false;
+    }
     WorkItem workItem = itsRepository.getWorkItem(workItemNumber);
-    return workItem.hasUserWithTeam(user.getTeam());
+    return workItem.hasUserWithTeam(loggedInUser.getTeam());
+  }
+
+  public boolean isAuthorizedToAccessTeam(final String authToken, final long teamNumber) {
+    User loggedInUser = getUserObjWithToken(authToken);
+    if(loggedInUser.getTeam() == null){
+      return false;
+    }
+    return loggedInUser.getTeam().getNumber() == teamNumber;
+  }
+
+  public boolean isAuthorizedToEditUser(final String authToken, final long userNumber) {
+    User loggedInUser = getUserObjWithToken(authToken);
+    return loggedInUser.getNumber() == userNumber;
+  }
+
+  public boolean isAuthorizedToViewUser(final String authToken, final long userNumber) {
+    User loggedInUser = getUserObjWithToken(authToken);
+    User checkedUser = itsRepository.getUser(userNumber);
+    if(loggedInUser.getTeam() == null || checkedUser.getTeam() == null){
+      return false;
+    }
+
+    return loggedInUser.getTeam().getNumber() == checkedUser.getTeam().getNumber();
+  }
+
+  private User getUserObjWithToken(final String authToken){
+    String username =  authTokenStorage.get(authToken);
+    return itsRepository.getUser(username);
+  }
+
+  public void setLoggedInUsersUsername(final String authToken, String newUsername)
+      throws GeneralSecurityException {
+    if(!authTokenStorage.containsKey(authToken)){
+      throw new GeneralSecurityException("User not logged in");
+    }
+     authTokenStorage.put(authToken, newUsername);
   }
 }

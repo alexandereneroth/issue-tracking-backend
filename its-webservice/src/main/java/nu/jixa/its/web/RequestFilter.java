@@ -47,6 +47,8 @@ public class RequestFilter implements ContainerRequestFilter {
       if(!jixaAuthenticator.isAuthTokenValid(authToken)){
         requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
       }
+
     }
   }
+
 }

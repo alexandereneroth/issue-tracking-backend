@@ -1,6 +1,7 @@
 package nu.jixa.its.web.endpoint;
 
 import java.net.URI;
+import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Collection;
@@ -15,6 +16,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -23,8 +25,10 @@ import nu.jixa.its.model.User;
 import nu.jixa.its.model.WorkItem;
 import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.service.exception.ITSRepositoryException;
+import nu.jixa.its.web.JixaAuthenticator;
 import nu.jixa.its.web.PasswordHash;
 import nu.jixa.its.web.StringNotConvertableToNumberWebApplicationException;
+import nu.jixa.its.web.Values;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,6 +40,9 @@ public class UsersEndpoint {
 
   @Autowired
   private ITSRepository itsRepository;
+
+  @Autowired
+  private JixaAuthenticator authenticator;
 
   @Context
   private UriInfo uriInfo;
@@ -84,11 +91,18 @@ public class UsersEndpoint {
   }
 
   @POST
-  public Response createUser(final User user)
+  public Response createUser(@Context HttpHeaders httpHeaders, final User user)
       throws IllegalAccessException, InvalidKeySpecException, NoSuchAlgorithmException {
     if (user == null) {
       return Util.badRequestResponse(Util.BAD_REQUEST_NULL_OR_INVALID_MESSAGE);
     }
+    if(user.getTeam() != null){
+      String authToken = httpHeaders.getHeaderString(Values.HEADER_NAME_AUTH_TOKEN);
+      if(!authenticator.isAuthorizedToAccessTeam(authToken, user.getTeam().getNumber())) {
+        return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
+      }
+    }
+
     try {
       String unhashedPassword = user.getPassword();
       user.setPassword(PasswordHash.createHash(unhashedPassword));
@@ -102,7 +116,13 @@ public class UsersEndpoint {
 
   @GET
   @Path("{userNumber}")
-  public Response getUser(@PathParam("userNumber") final long userNumber) {
+  public Response getUser(@Context HttpHeaders httpHeaders,
+      @PathParam("userNumber") final long userNumber) {
+    String authToken = httpHeaders.getHeaderString(Values.HEADER_NAME_AUTH_TOKEN);
+    if(!authenticator.isAuthorizedToViewUser(authToken, userNumber)) {
+      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
+    }
+
     try {
       User user = itsRepository.getUser(userNumber);
       return Response.ok(user).build();
@@ -114,10 +134,14 @@ public class UsersEndpoint {
 
   @GET
   @Path("{userNumber}/work-items")
-  public Response getWorkItemsForUser(
+  public Response getWorkItemsForUser(@Context HttpHeaders httpHeaders,
       @PathParam("userNumber") final long userNumber) {
     if (userNumber == 0) {
       return Response.status(Status.BAD_REQUEST).entity(BAD_REQUEST_NULL_OR_INVALID).build();
+    }
+    String authToken = httpHeaders.getHeaderString(Values.HEADER_NAME_AUTH_TOKEN);
+    if(!authenticator.isAuthorizedToViewUser(authToken, userNumber)) {
+      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
     }
     try {
       Iterable<WorkItem> workItemsByUser = itsRepository.getWorkItemsByUser(userNumber);
@@ -134,27 +158,46 @@ public class UsersEndpoint {
 
   @DELETE
   @Path("{userNumber}")
-  public Response deleteUser(@PathParam("userNumber") final long userNumber) {
+  public Response deleteUser(@Context HttpHeaders httpHeaders,
+      @PathParam("userNumber") final long userNumber) {
+    String authToken = httpHeaders.getHeaderString(Values.HEADER_NAME_AUTH_TOKEN);
+    if(!authenticator.isAuthorizedToEditUser(authToken, userNumber)) {
+      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
+    }
     try {
+      authenticator.logout(authToken);
       itsRepository.deleteUser(userNumber);
     } catch (ITSRepositoryException e) {
       return Response.status(Status.NOT_FOUND)
           .entity(NO_USER_WITH_USERNUMBER + userNumber).build();
+    } catch (GeneralSecurityException e) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR)
+          .entity(e.getMessage() + "(this should not be possible! probable race condition!)").build();
     }
     return Response.noContent().build();
   }
 
   @PUT
   @Path("{userNumber}")
-  public Response updateUser(@PathParam("userNumber") final long userNumber,
+  public Response updateUser(@Context HttpHeaders httpHeaders,
+      @PathParam("userNumber") final long userNumber,
       final User updatedUser) {
     if (updatedUser == null || updatedUser.getNumber() == null) {
       return Response.status(Status.BAD_REQUEST)
           .entity(BAD_REQUEST_NULL_OR_INVALID).build();
     }
+    String authToken = httpHeaders.getHeaderString(Values.HEADER_NAME_AUTH_TOKEN);
+    if(!authenticator.isAuthorizedToEditUser(authToken, userNumber)) {
+      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
+    }
     try {
       if (userNumber == updatedUser.getNumber()) {
         itsRepository.updateUser(updatedUser);
+        if(updatedUser.getUsername() != null)
+        {
+          authenticator.setLoggedInUsersUsername(authToken, updatedUser.getUsername());
+        }
+
         return Response.status(Status.NO_CONTENT).build();
       } else {
         return Response.status(Status.BAD_REQUEST)
@@ -163,17 +206,26 @@ public class UsersEndpoint {
     } catch (ITSRepositoryException e) {
       return Response.status(Status.NOT_FOUND)
           .entity(NO_USER_WITH_USERNUMBER + userNumber).build();
+    } catch (GeneralSecurityException e) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR)
+          .entity(e.getMessage() + "(this should not be possible! probable race condition!)").build();
     }
   }
 
   @PUT
   @Path("{userNumber}/work-items")
-  public Response addWorkItemToUser(@PathParam("userNumber") final Long userNumber,
+  public Response addWorkItemToUser(@Context HttpHeaders httpHeaders,
+      @PathParam("userNumber") final Long userNumber,
       final WorkItem workItemToAdd) {
     if (workItemToAdd == null) {
       return Response.status(Status.BAD_REQUEST)
           .entity(BAD_REQUEST_NULL_OR_INVALID).build();
     }
+    String authToken = httpHeaders.getHeaderString(Values.HEADER_NAME_AUTH_TOKEN);
+    if(!authenticator.isAuthorizedToAccessWorkItem(authToken, workItemToAdd.getNumber())) {
+      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
+    }
+
     try {
       itsRepository.addWorkItemToUser(userNumber, workItemToAdd.getNumber());
       final URI location =
@@ -186,8 +238,14 @@ public class UsersEndpoint {
 
   @DELETE
   @Path("{userNumber}/work-items/{workItemNumber}")
-  public Response addWorkItemToUser(@PathParam("userNumber") final Long userNumber,
+  public Response removeWorkItemFromUser(@Context HttpHeaders httpHeaders,
+      @PathParam("userNumber") final Long userNumber,
       @PathParam("workItemNumber") final Long workItemNumber) {
+    String authToken = httpHeaders.getHeaderString(Values.HEADER_NAME_AUTH_TOKEN);
+    if(!authenticator.isAuthorizedToAccessWorkItem(authToken, workItemNumber)) {
+      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
+    }
+
     try {
       itsRepository.removeWorkItemFromUser(userNumber, workItemNumber);
       return Response.noContent().build();

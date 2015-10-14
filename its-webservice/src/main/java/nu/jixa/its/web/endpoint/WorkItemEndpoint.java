@@ -56,7 +56,13 @@ public class WorkItemEndpoint {
 
   @GET
   @Path("{workItemNumber}")
-  public Response getWorkItem(@PathParam("workItemNumber") final long workItemNumber) {
+  public Response getWorkItem(@Context HttpHeaders httpHeaders,
+      @PathParam("workItemNumber") final long workItemNumber) {
+    String authToken = httpHeaders.getHeaderString(Values.HEADER_NAME_AUTH_TOKEN);
+    if(!authenticator.isAuthorizedToAccessWorkItem(authToken, workItemNumber)) {
+      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
+    }
+
     try {
       WorkItem workItem = itsRepository.getWorkItem(workItemNumber);
       return Response.ok(workItem).build();
@@ -75,6 +81,7 @@ public class WorkItemEndpoint {
       @QueryParam("completed_time_to") @DefaultValue("") final String completedTimeToQuery,
       @QueryParam("page") @DefaultValue("") final String pageIndexQuery,
       @QueryParam("page_size") @DefaultValue("") final String pageSizeQuery) {
+
     if (Util.queryEntered(descriptionContainsQuery)) {
       return getByDescriptionContains(descriptionContainsQuery);
     }
@@ -114,8 +121,14 @@ public class WorkItemEndpoint {
 
   @POST
   @Path("{workItemNumber}")
-  public Response addIssueToWorkItem(@PathParam("workItemNumber") final long workItemNumber,
+  public Response addIssueToWorkItem(@Context HttpHeaders httpHeaders,
+      @PathParam("workItemNumber") final long workItemNumber,
       final Issue issue) {
+    String authToken = httpHeaders.getHeaderString(Values.HEADER_NAME_AUTH_TOKEN);
+    if(!authenticator.isAuthorizedToAccessWorkItem(authToken, workItemNumber)) {
+      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
+    }
+
     WorkItem workItem;
     try {
       workItem = itsRepository.getWorkItem(workItemNumber);
@@ -136,8 +149,14 @@ public class WorkItemEndpoint {
 
   @PUT
   @Path("{workItemNumber}/status")
-  public Response updateWorkItemStatus(@PathParam("workItemNumber") final long workItemNumber,
+  public Response updateWorkItemStatus(@Context HttpHeaders httpHeaders,
+      @PathParam("workItemNumber") final long workItemNumber,
       final String statusString) {
+    String authToken = httpHeaders.getHeaderString(Values.HEADER_NAME_AUTH_TOKEN);
+    if(!authenticator.isAuthorizedToAccessWorkItem(authToken, workItemNumber)) {
+      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
+    }
+
     Status status;
     switch (statusString.toLowerCase()) {
       case "on_backlog":
@@ -164,11 +183,11 @@ public class WorkItemEndpoint {
 
   @DELETE
   @Path("{workItemNumber}")
-  public Response deleteWorkItem(@Context HttpHeaders httpHeaders, @PathParam("workItemNumber") final long workItemNumber) {
-
+  public Response deleteWorkItem(@Context HttpHeaders httpHeaders,
+      @PathParam("workItemNumber") final long workItemNumber) {
     String authToken = httpHeaders.getHeaderString(Values.HEADER_NAME_AUTH_TOKEN);
-    if(!authenticator.isAuthorizedToAccess(authToken, workItemNumber)) {
-      Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
+    if(!authenticator.isAuthorizedToAccessWorkItem(authToken, workItemNumber)) {
+      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
     }
 
     try {
