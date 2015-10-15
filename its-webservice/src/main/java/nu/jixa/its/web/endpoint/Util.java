@@ -10,13 +10,6 @@ import nu.jixa.its.web.Values;
  */
 final class Util {
 
-  public static final String BAD_REQUEST_NULL_OR_INVALID_MESSAGE =
-      "Null or Invalid JSON Data in Request Body";
-  public static final String MSG_INVALID_LOGIN_RESPONSE = "Invalid username and/or password";
-  public static final String MSG_UNAUTHORIZED_RESPONSE = "You are not authorized to access this resource";
-  public static final String MSG_UNAUTHORIZED = "Invalid username and/or password";
-  public static final String MSG_ALREADY_LOGGED_IN = "Already logged in";
-
   /**
    * Returns false if the argument is null or an empty String, otherwise returns true.
    */
@@ -32,7 +25,7 @@ final class Util {
 
 
   public static Response badRequestResponse() {
-    return badRequestResponse(BAD_REQUEST_NULL_OR_INVALID_MESSAGE);
+    return badRequestResponse(Values.BAD_REQUEST_NULL_OR_INVALID_MESSAGE);
   }
 
   public static Response badRequestResponse(Exception e) {
@@ -47,7 +40,7 @@ final class Util {
     return Response.status(status).entity(message).build();
   }
 
-  /**
+  /** TODO REMOVE
    * @return The Authorization Token
    * @throws NotAuthorizedException If the header doesn't start with substr "Bearer "
    */
@@ -61,4 +54,5 @@ final class Util {
 
     return authorizationHeader.substring("Bearer".length()).trim();
   }
+
 }

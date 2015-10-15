@@ -28,6 +28,7 @@ import nu.jixa.its.service.exception.ITSRepositoryException;
 import nu.jixa.its.web.JixaAuthenticator;
 import nu.jixa.its.web.PasswordHash;
 import nu.jixa.its.web.StringNotConvertableToNumberWebApplicationException;
+import nu.jixa.its.web.Values;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -93,12 +94,12 @@ public class UsersEndpoint {
   public Response createUser(@Context HttpHeaders httpHeaders, final User user)
       throws IllegalAccessException, InvalidKeySpecException, NoSuchAlgorithmException {
     if (user == null) {
-      return Util.badRequestResponse(Util.BAD_REQUEST_NULL_OR_INVALID_MESSAGE);
+      return Util.badRequestResponse(Values.BAD_REQUEST_NULL_OR_INVALID_MESSAGE);
     }
     if(user.getTeam() != null){
       String authToken = Util.extractAuthorizationToken(httpHeaders);
       if(!authenticator.isAuthorizedToAccessTeam(authToken, user.getTeam().getNumber())) {
-        return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
+        return Response.status(Response.Status.UNAUTHORIZED).entity(Values.MSG_UNAUTHORIZED_RESPONSE).build();
       }
     }
 
@@ -119,7 +120,7 @@ public class UsersEndpoint {
       @PathParam("userNumber") final long userNumber) {
     String authToken = Util.extractAuthorizationToken(httpHeaders);
     if(!authenticator.isAuthorizedToViewUser(authToken, userNumber)) {
-      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
+      return Response.status(Response.Status.UNAUTHORIZED).entity(Values.MSG_UNAUTHORIZED_RESPONSE).build();
     }
 
     try {
@@ -140,7 +141,7 @@ public class UsersEndpoint {
     }
     String authToken = Util.extractAuthorizationToken(httpHeaders);
     if(!authenticator.isAuthorizedToViewUser(authToken, userNumber)) {
-      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
+      return Response.status(Response.Status.UNAUTHORIZED).entity(Values.MSG_UNAUTHORIZED_RESPONSE).build();
     }
     try {
       Iterable<WorkItem> workItemsByUser = itsRepository.getWorkItemsByUser(userNumber);
@@ -161,7 +162,7 @@ public class UsersEndpoint {
       @PathParam("userNumber") final long userNumber) {
     String authToken = Util.extractAuthorizationToken(httpHeaders);
     if(!authenticator.isAuthorizedToEditUser(authToken, userNumber)) {
-      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
+      return Response.status(Response.Status.UNAUTHORIZED).entity(Values.MSG_UNAUTHORIZED_RESPONSE).build();
     }
     try {
       authenticator.logout(authToken);
@@ -187,7 +188,7 @@ public class UsersEndpoint {
     }
     String authToken = Util.extractAuthorizationToken(httpHeaders);
     if(!authenticator.isAuthorizedToEditUser(authToken, userNumber)) {
-      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
+      return Response.status(Response.Status.UNAUTHORIZED).entity(Values.MSG_UNAUTHORIZED_RESPONSE).build();
     }
     try {
       if (userNumber == updatedUser.getNumber()) {
@@ -222,7 +223,7 @@ public class UsersEndpoint {
     }
     String authToken = Util.extractAuthorizationToken(httpHeaders);
     if(!authenticator.isAuthorizedToAccessWorkItem(authToken, workItemToAdd.getNumber())) {
-      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
+      return Response.status(Response.Status.UNAUTHORIZED).entity(Values.MSG_UNAUTHORIZED_RESPONSE).build();
     }
 
     try {
@@ -242,7 +243,7 @@ public class UsersEndpoint {
       @PathParam("workItemNumber") final Long workItemNumber) {
     String authToken = Util.extractAuthorizationToken(httpHeaders);
     if(!authenticator.isAuthorizedToAccessWorkItem(authToken, workItemNumber)) {
-      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
+      return Response.status(Response.Status.UNAUTHORIZED).entity(Values.MSG_UNAUTHORIZED_RESPONSE).build();
     }
 
     try {

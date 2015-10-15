@@ -40,7 +40,7 @@ public class RootEndpoint {
     if (jixaAuthenticator.userIsLoggedIn(credentials.getUsername())) {
       StringResponse errorResponse = new StringResponse();
       errorResponse.setName("Error");
-      errorResponse.setValue(Util.MSG_ALREADY_LOGGED_IN);
+      errorResponse.setValue(Values.MSG_ALREADY_LOGGED_IN);
       return Response.status(Status.BAD_REQUEST).entity(errorResponse).build();
     }
 
@@ -57,7 +57,7 @@ public class RootEndpoint {
     } catch (LoginException e) {
       StringResponse errorResponse = new StringResponse();
       errorResponse.setName("Error");
-      errorResponse.setValue(Util.MSG_UNAUTHORIZED);
+      errorResponse.setValue(Values.MSG_UNAUTHORIZED);
       return Response.status(Status.UNAUTHORIZED).entity(errorResponse)
           .build();
     }

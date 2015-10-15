@@ -20,6 +20,7 @@ import nu.jixa.its.model.Issue;
 import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.service.exception.ITSRepositoryException;
 import nu.jixa.its.web.StringNotConvertableToNumberWebApplicationException;
+import nu.jixa.its.web.Values;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,7 +45,7 @@ public class IssueEndpoint {
   @POST
   public Response createIssue(final Issue issue) throws IllegalAccessException {
     if (issue == null) {
-      return Util.badRequestResponse(Util.BAD_REQUEST_NULL_OR_INVALID_MESSAGE);
+      return Util.badRequestResponse(Values.BAD_REQUEST_NULL_OR_INVALID_MESSAGE);
     }
     try {
       itsRepository.addIssue(issue);

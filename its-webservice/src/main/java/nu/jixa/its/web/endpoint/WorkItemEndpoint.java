@@ -28,6 +28,7 @@ import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.service.exception.ITSRepositoryException;
 import nu.jixa.its.web.JixaAuthenticator;
 import nu.jixa.its.web.StringNotConvertableToNumberWebApplicationException;
+import nu.jixa.its.web.Values;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -59,7 +60,7 @@ public class WorkItemEndpoint {
       @PathParam("workItemNumber") final long workItemNumber) {
     String authToken = Util.extractAuthorizationToken(httpHeaders);
     if(!authenticator.isAuthorizedToAccessWorkItem(authToken, workItemNumber)) {
-      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
+      return Response.status(Response.Status.UNAUTHORIZED).entity(Values.MSG_UNAUTHORIZED_RESPONSE).build();
     }
 
     try {
@@ -125,7 +126,7 @@ public class WorkItemEndpoint {
       final Issue issue) {
     String authToken = Util.extractAuthorizationToken(httpHeaders);
     if(!authenticator.isAuthorizedToAccessWorkItem(authToken, workItemNumber)) {
-      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
+      return Response.status(Response.Status.UNAUTHORIZED).entity(Values.MSG_UNAUTHORIZED_RESPONSE).build();
     }
 
     WorkItem workItem;
@@ -153,7 +154,7 @@ public class WorkItemEndpoint {
       final String statusString) {
     String authToken = Util.extractAuthorizationToken(httpHeaders);
     if(!authenticator.isAuthorizedToAccessWorkItem(authToken, workItemNumber)) {
-      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
+      return Response.status(Response.Status.UNAUTHORIZED).entity(Values.MSG_UNAUTHORIZED_RESPONSE).build();
     }
 
     Status status;
@@ -186,7 +187,7 @@ public class WorkItemEndpoint {
       @PathParam("workItemNumber") final long workItemNumber) {
     String authToken = Util.extractAuthorizationToken(httpHeaders);
     if(!authenticator.isAuthorizedToAccessWorkItem(authToken, workItemNumber)) {
-      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
+      return Response.status(Response.Status.UNAUTHORIZED).entity(Values.MSG_UNAUTHORIZED_RESPONSE).build();
     }
 
     try {

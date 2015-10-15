@@ -24,6 +24,7 @@ import nu.jixa.its.model.WorkItem;
 import nu.jixa.its.service.ITSRepository;
 import nu.jixa.its.service.exception.ITSRepositoryException;
 import nu.jixa.its.web.JixaAuthenticator;
+import nu.jixa.its.web.Values;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -64,10 +65,7 @@ public class TeamsEndpoint {
   public Response getTeam(
       @Context HttpHeaders httpHeaders,
       @PathParam("teamNumber") final long teamNumber) {
-    String authToken = Util.extractAuthorizationToken(httpHeaders);
-    if(!authenticator.isAuthorizedToAccessTeam(authToken, teamNumber)) {
-      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
-    }
+    authenticator.enforceTeamAccessRights(httpHeaders,teamNumber);
 
     try {
       Team team = itsRepository.getTeam(teamNumber);
@@ -81,7 +79,7 @@ public class TeamsEndpoint {
   @POST
   public Response createTeam(final Team team) {
     if (team == null) {
-      return Util.badRequestResponse(Util.BAD_REQUEST_NULL_OR_INVALID_MESSAGE);
+      return Util.badRequestResponse(Values.BAD_REQUEST_NULL_OR_INVALID_MESSAGE);
     }
     try {
       itsRepository.addTeam(team);
@@ -97,10 +95,7 @@ public class TeamsEndpoint {
   public Response updateTeam(@Context HttpHeaders httpHeaders,
       @PathParam("teamNumber") final long teamNumber,
       final Team updatedTeam) {
-    String authToken = Util.extractAuthorizationToken(httpHeaders);
-    if(!authenticator.isAuthorizedToAccessTeam(authToken, teamNumber)) {
-      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
-    }
+    authenticator.enforceTeamAccessRights(httpHeaders, teamNumber);
 
     if (updatedTeam == null || updatedTeam.getNumber() == null) {
       return Response.status(Status.BAD_REQUEST)
@@ -124,10 +119,7 @@ public class TeamsEndpoint {
   @Path("{teamNumber}")
   public Response deleteTeam(@Context HttpHeaders httpHeaders,
       @PathParam("teamNumber") final long teamNumber) {
-    String authToken = Util.extractAuthorizationToken(httpHeaders);
-    if(!authenticator.isAuthorizedToAccessTeam(authToken, teamNumber)) {
-      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
-    }
+    authenticator.enforceTeamAccessRights(httpHeaders,teamNumber);
 
     try {
       itsRepository.deleteTeam(teamNumber);
@@ -143,10 +135,7 @@ public class TeamsEndpoint {
   public Response getAllUsersInTeam(@Context HttpHeaders httpHeaders,
       @PathParam("teamNumber") final long teamNumber) {
 
-    String authToken = Util.extractAuthorizationToken(httpHeaders);
-    if(!authenticator.isAuthorizedToAccessTeam(authToken, teamNumber)) {
-      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
-    }
+    authenticator.enforceTeamAccessRights(httpHeaders,teamNumber);
 
     if (teamNumber == 0) {
       return Response.status(Status.BAD_REQUEST).entity(BAD_REQUEST_NULL_OR_INVALID).build();
@@ -168,10 +157,7 @@ public class TeamsEndpoint {
   @Path("{teamNumber}/work-items")
   public Response getAllWorkItemsForTeam(@Context HttpHeaders httpHeaders,
       @PathParam("teamNumber") final long teamNumber) {
-    String authToken = Util.extractAuthorizationToken(httpHeaders);
-    if(!authenticator.isAuthorizedToAccessTeam(authToken, teamNumber)) {
-      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
-    }
+    authenticator.enforceTeamAccessRights(httpHeaders,teamNumber);
 
     if (teamNumber == 0) {
       return Response.status(Status.BAD_REQUEST).entity(BAD_REQUEST_NULL_OR_INVALID).build();
@@ -194,10 +180,7 @@ public class TeamsEndpoint {
   public Response addUserToTeam(@Context HttpHeaders httpHeaders,
       @PathParam("teamNumber") final long teamNumber,
       final User userToAdd) {
-    String authToken = Util.extractAuthorizationToken(httpHeaders);
-    if(!authenticator.isAuthorizedToAccessTeam(authToken, teamNumber)) {
-      return Response.status(Response.Status.UNAUTHORIZED).entity(Util.MSG_UNAUTHORIZED_RESPONSE).build();
-    }
+    authenticator.enforceTeamAccessRights(httpHeaders,teamNumber);
 
     if (userToAdd == null) {
       return Response.status(Status.BAD_REQUEST)
