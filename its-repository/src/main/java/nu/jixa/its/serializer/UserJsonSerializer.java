@@ -29,9 +29,9 @@ public class UserJsonSerializer extends JsonSerializer<User> {
         jsonGenerator.writeObjectField("team", user.getTeam());
       } else {
         if (user.getTeam() == null) {
-          jsonGenerator.writeNullField("team-number");
+          jsonGenerator.writeNullField("teamnumber");
         } else {
-          jsonGenerator.writeNumberField("team-number", user.getTeam().getNumber());
+          jsonGenerator.writeNumberField("teamnumber", user.getTeam().getNumber());
         }
       }
 
