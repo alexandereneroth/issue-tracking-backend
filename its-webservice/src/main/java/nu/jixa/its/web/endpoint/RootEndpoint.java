@@ -12,8 +12,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import nu.jixa.its.service.ITSRepository;
-import nu.jixa.its.web.Values;
 import nu.jixa.its.web.JixaAuthenticator;
+import nu.jixa.its.web.Values;
 import nu.jixa.its.web.model.Credentials;
 import nu.jixa.its.web.model.StringResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +38,11 @@ public class RootEndpoint {
       @Context HttpHeaders httpHeaders, Credentials credentials) {
 
     if (jixaAuthenticator.userIsLoggedIn(credentials.getUsername())) {
-      StringResponse errorResponse = new StringResponse();
-      errorResponse.setName("Error");
-      errorResponse.setValue(Values.MSG_ALREADY_LOGGED_IN);
-      return Response.status(Status.BAD_REQUEST).entity(errorResponse).build();
+      try {
+        jixaAuthenticator.logout(Util.extractAuthorizationToken(httpHeaders));
+      } catch (GeneralSecurityException e) {
+        e.printStackTrace();
+      }
     }
 
     try {
